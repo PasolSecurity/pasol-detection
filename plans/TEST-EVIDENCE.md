@@ -39,6 +39,26 @@ Exit code 0; incremental-directory cleanup warnings only.
 `crates/pasol-lab/tests/cli.rs`, `fixtures/golden/rules/`.
 ### Conclusion
 Repository-wide quality gate passed; golden schema/byte-comparison and operator matrix remain open.
+
+## 2026-08-03 — Golden and operator matrix
+### Requirement verified
+Supported operator uncertainty semantics and deterministic rule-report goldens.
+### Commit tested
+Working tree before this planning update.
+### Environment
+Windows; rustc/cargo 1.97.1.
+### Commands
+`cargo test -p pasol-rules`; `cargo clippy --workspace --all-targets --all-features -- -D warnings`; `cargo test --workspace --all-features`.
+### Results
+Six rule tests passed, including the operator/state matrix and byte-stable/schema-valid golden reports; full workspace tests and Clippy passed.
+### Expected result
+Unknown, truncated, not-applicable, and unsupported states become `not_evaluated`; missing `exists` is a known non-match; all four golden reports validate and regenerated production serialization matches byte-for-byte (including checked-in newline).
+### Actual result
+All assertions passed. Windows incremental cleanup warnings only.
+### Artifacts or fixtures
+`fixtures/golden/rules/{match,no-match,not-evaluated,budget-warning}.json`; `crates/pasol-rules/src/lib.rs` matrix and golden tests.
+### Conclusion
+Golden rule evidence and operator/state semantics are verified. Schema-drift CI and starter-rule positive/negative fixtures remain.
 Build and baseline runtime behavior verified.
 
 ## 2026-08-03 — Feature schema runtime validation

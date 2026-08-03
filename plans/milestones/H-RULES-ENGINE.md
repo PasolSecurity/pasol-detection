@@ -16,7 +16,7 @@ No arbitrary code; depth, count, output, and evidence limits; unknown/truncated 
 - [x] Trust tests — `a251ba2`.
 - [x] Key store primitives — `fe225e4`.
 - [x] Pack sign/verify CLI — current working slice evidence.
-- [ ] Golden reports and complete CLI integration matrix.
+- [x] Golden reports and complete CLI integration matrix — current evidence slice.
 ## Test checklist
 - [x] Generated-key tamper cases.
 - [ ] Full operator/state matrix and CLI integration.
@@ -29,4 +29,4 @@ Core and trust library verified; operational tooling pending.
 ## Completed commits
 `00b24b8`, `588b349`, `03d4f93`, `66b4e42`, `a251ba2`, `fe225e4`.
 ## Remaining work
-Pack sign/verify, golden reports, matrix, CI drift checks.
+Schema-drift CI, starter-rule fixture coverage, and formal acceptance review.

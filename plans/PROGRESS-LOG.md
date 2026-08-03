@@ -132,6 +132,28 @@ Validate golden reports and add operator/state tests.
 ### Next exact action
 Add the operator/state matrix tests and validate each golden rule report against the rule-report schema.
 
+## 2026-08-03 — Golden reports and operator matrix
+### Planned work
+Validate all four rule goldens and cover operators across uncertain states, missing features, and wrong types.
+### Work completed
+Added the full uncertainty matrix, explicit missing-feature `exists` behavior, wrong-type stability test, and byte-stable/schema-valid checks for match, no-match, not-evaluated, and budget-warning goldens.
+### Files changed
+`crates/pasol-rules/src/lib.rs`.
+### Tests run
+`cargo test -p pasol-rules`; full workspace tests; workspace Clippy with warnings denied.
+### Results
+6 rule tests passed; all workspace tests and Clippy passed.
+### Commit
+Pending focused commit after plan update.
+### Checklist changes
+Golden rule evidence and operator/state matrix marked complete.
+### Known limitations
+Schema-drift CI and complete starter-rule fixture coverage remain open.
+### Remaining work
+Add CI drift gate and starter-rule positive/negative fixtures before formal H acceptance.
+### Next exact action
+Add schema-drift CI enforcement and starter-rule positive/negative fixture coverage; do not begin Phase I until G/H acceptance evidence is complete.
+
 ## 2026-08-03 — Workspace regression gate
 ### Planned work
 Run the complete workspace quality gate after CLI integration tests.

@@ -477,6 +477,9 @@ fn eval(expr: &Expr, features: &[Feature]) -> Option<bool> {
             operator,
             value,
         } => {
+            if matches!(operator, Operator::Exists) {
+                return Some(find(features, feature).is_some());
+            }
             let item = find(features, feature)?;
             if !matches!(item.state, FeatureState::Present | FeatureState::Absent) {
                 return None;
@@ -579,25 +582,27 @@ fn collect_evidence(
 mod tests {
     use super::*;
     use ed25519_dalek::{Signer, SigningKey};
+    use serde_json::json;
 
     fn fixture_pack() -> RulePack {
         RulePack {
-            id: "test".into(),
-            version: "1".into(),
+            id: "pasol-starter-rules".into(),
+            version: "0.1.0".into(),
             feature_schema: "1.0.0".into(),
             rules: vec![Rule {
-                id: "r".into(),
+                id: "pasol.pe.writable_executable_section".into(),
                 version: 1,
-                title: "r".into(),
-                description: "test".into(),
-                severity: Severity::Low,
-                confidence: Confidence::Low,
+                title: "Writable and executable section".into(),
+                description: "A PE section is both writable and executable.".into(),
+                severity: Severity::Medium,
+                confidence: Confidence::Medium,
                 condition: Expr::Compare {
-                    feature: "x".into(),
-                    operator: Operator::Equals,
-                    value: Some(Value::Bool(true)),
+                    feature: "pe.sections.writable_executable.count".into(),
+                    operator: Operator::GreaterThan,
+                    value: Some(json!(0)),
                 },
-                explanation: "e".into(),
+                explanation: "The feature report contains a writable-and-executable section."
+                    .into(),
             }],
         }
     }
@@ -733,5 +738,194 @@ mod tests {
                 .warnings
                 .is_empty()
         );
+    }
+
+    fn report_for(state: FeatureState, value: Option<Value>) -> FeatureReport {
+        FeatureReport {
+            schema_version: "1.0.0".into(),
+            extractor: "x".into(),
+            extractor_version: "0.1.0".into(),
+            source: pasol_detection_sdk::FeatureSource {
+                parser: "p".into(),
+                parser_version: "1".into(),
+                parser_schema_version: "1".into(),
+                sha256: "a".repeat(64),
+                file_type: "pe64".into(),
+            },
+            status: pasol_detection_sdk::FeatureReportStatus::Complete,
+            features: vec![Feature {
+                id: "x".into(),
+                state,
+                value,
+                evidence: vec![],
+            }],
+            warnings: vec![],
+        }
+    }
+
+    #[test]
+    fn operator_state_matrix_preserves_uncertainty() {
+        let operators = [
+            Operator::Equals,
+            Operator::NotEquals,
+            Operator::GreaterThan,
+            Operator::GreaterThanOrEqual,
+            Operator::LessThan,
+            Operator::LessThanOrEqual,
+            Operator::In,
+            Operator::NotIn,
+            Operator::Contains,
+            Operator::StartsWith,
+            Operator::EndsWith,
+            Operator::CountGreaterThan,
+        ];
+        let uncertain = [
+            FeatureState::Unknown,
+            FeatureState::Truncated,
+            FeatureState::NotApplicable,
+            FeatureState::Unsupported,
+        ];
+        for operator in operators {
+            for state in uncertain.clone() {
+                let pack = RulePack {
+                    id: "matrix".into(),
+                    version: "1".into(),
+                    feature_schema: "1.0.0".into(),
+                    rules: vec![Rule {
+                        id: "matrix.rule".into(),
+                        version: 1,
+                        title: "matrix".into(),
+                        description: "".into(),
+                        severity: Severity::Low,
+                        confidence: Confidence::Low,
+                        condition: Expr::Compare {
+                            feature: "x".into(),
+                            operator: operator.clone(),
+                            value: Some(json!(1)),
+                        },
+                        explanation: "matrix".into(),
+                    }],
+                };
+                assert_eq!(
+                    evaluate(&pack, &report_for(state, None)).not_evaluated,
+                    vec!["matrix.rule"]
+                );
+            }
+        }
+        let missing = FeatureReport {
+            features: vec![],
+            ..report_for(FeatureState::Present, Some(json!(1)))
+        };
+        let exists = RulePack {
+            id: "exists".into(),
+            version: "1".into(),
+            feature_schema: "1.0.0".into(),
+            rules: vec![Rule {
+                id: "exists.rule".into(),
+                version: 1,
+                title: "exists".into(),
+                description: "".into(),
+                severity: Severity::Low,
+                confidence: Confidence::Low,
+                condition: Expr::Compare {
+                    feature: "missing".into(),
+                    operator: Operator::Exists,
+                    value: None,
+                },
+                explanation: "exists".into(),
+            }],
+        };
+        assert!(evaluate(&exists, &missing).not_evaluated.is_empty());
+        assert!(evaluate(&exists, &missing).matches.is_empty());
+        let wrong_type = RulePack {
+            id: "type".into(),
+            version: "1".into(),
+            feature_schema: "1.0.0".into(),
+            rules: vec![Rule {
+                id: "type.rule".into(),
+                version: 1,
+                title: "type".into(),
+                description: "".into(),
+                severity: Severity::Low,
+                confidence: Confidence::Low,
+                condition: Expr::Compare {
+                    feature: "x".into(),
+                    operator: Operator::GreaterThan,
+                    value: Some(json!(1)),
+                },
+                explanation: "type".into(),
+            }],
+        };
+        assert!(
+            evaluate(
+                &wrong_type,
+                &report_for(FeatureState::Present, Some(json!("wrong")))
+            )
+            .matches
+            .is_empty()
+        );
+    }
+
+    #[test]
+    fn golden_rule_reports_validate_and_are_byte_stable() {
+        let golden = |name: &str| {
+            std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+                .join("../../fixtures/golden/rules")
+                .join(name)
+        };
+        let pack = fixture_pack();
+        let mut no_match_report = report_for(FeatureState::Present, Some(json!(false)));
+        no_match_report.features[0].id = "pe.sections.writable_executable.count".into();
+        let no_match =
+            serde_json::to_string(&evaluate(&pack, &no_match_report)).expect("golden serializes");
+        assert_eq!(
+            format!("{no_match}\n"),
+            std::fs::read_to_string(golden("no-match.json")).expect("no-match golden")
+        );
+        let unknown =
+            serde_json::to_string(&evaluate(&pack, &report_for(FeatureState::Unknown, None)))
+                .expect("golden serializes");
+        assert_eq!(
+            format!("{unknown}\n"),
+            std::fs::read_to_string(golden("not-evaluated.json")).expect("not-evaluated golden")
+        );
+        let mut match_report = report_for(FeatureState::Present, Some(json!(1)));
+        match_report.features[0].id = "pe.sections.writable_executable.count".into();
+        match_report.features[0]
+            .evidence
+            .push(pasol_detection_sdk::evidence(
+                "/metadata/sections",
+                "Writable and executable section count",
+            ));
+        let matched =
+            serde_json::to_string(&evaluate(&pack, &match_report)).expect("golden serializes");
+        assert_eq!(
+            format!("{matched}\n"),
+            std::fs::read_to_string(golden("match.json")).expect("match golden")
+        );
+        let budget = serde_json::to_string(&evaluate_with_limits(
+            &pack,
+            &no_match_report,
+            &RuleLimits {
+                max_expressions: 0,
+                ..RuleLimits::default()
+            },
+        ))
+        .expect("golden serializes");
+        assert_eq!(
+            format!("{budget}\n"),
+            std::fs::read_to_string(golden("budget-warning.json")).expect("budget golden")
+        );
+        for name in [
+            "no-match.json",
+            "not-evaluated.json",
+            "match.json",
+            "budget-warning.json",
+        ] {
+            let value: Value =
+                serde_json::from_str(&std::fs::read_to_string(golden(name)).expect("golden file"))
+                    .expect("golden JSON");
+            validate_rule_report_json(&value).expect("golden validates");
+        }
     }
 }
