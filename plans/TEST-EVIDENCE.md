@@ -24,7 +24,7 @@ Build and baseline runtime behavior verified.
 ### Requirement verified
 Repository-wide regression safety after adding CLI integration tests and golden candidates.
 ### Commit tested
-Working tree before this planning update.
+`772eec6`.
 ### Environment
 Windows; rustc/cargo 1.97.1.
 ### Commands

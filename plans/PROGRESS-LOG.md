@@ -144,7 +144,7 @@ Planning evidence only.
 ### Results
 All passed; 2 CLI integration tests, 4 rule tests, feature/state/scoring tests, and doc tests passed. Windows incremental cleanup warnings only.
 ### Commit
-Pending focused commit after plan update.
+`772eec6`.
 ### Checklist changes
 Workspace regression evidence recorded; G/H golden and operator items remain open.
 ### Known limitations
