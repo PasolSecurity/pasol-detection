@@ -1,0 +1,17 @@
+{
+  "id": "pasol-starter-rules",
+  "version": "0.1.0",
+  "feature_schema": "1.0.0",
+  "rules": [
+    {
+      "id": "pasol.pe.writable_executable_section",
+      "version": 1,
+      "title": "Writable and executable section",
+      "description": "A PE section is both writable and executable.",
+      "severity": "medium",
+      "confidence": "medium",
+      "condition": { "compare": { "feature": "pe.sections.writable_executable.count", "operator": "greater_than", "value": 0 } },
+      "explanation": "The feature report contains a writable-and-executable section."
+    }
+  ]
+}

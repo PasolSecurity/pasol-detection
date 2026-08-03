@@ -1,0 +1,22 @@
+[package]
+name = "pasol-lab"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "pasol-lab"
+path = "src/main.rs"
+
+[dependencies]
+clap.workspace = true
+pasol-detection-sdk = { path = "../pasol-detection-sdk", version = "0.1.0" }
+pasol-features = { path = "../pasol-features", version = "0.1.0" }
+pasol-rules = { path = "../pasol-rules", version = "0.1.0" }
+pasol-static-score = { path = "../pasol-static-score", version = "0.1.0" }
+serde_json.workspace = true
+
+[lints]
+workspace = true

@@ -1,0 +1,33 @@
+[workspace]
+members = [
+    "crates/pasol-detection-sdk",
+    "crates/pasol-features",
+    "crates/pasol-rules",
+    "crates/pasol-static-score",
+    "crates/pasol-lab",
+]
+resolver = "3"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.91"
+license = "Apache-2.0"
+authors = ["PasolSecurity contributors"]
+repository = "https://github.com/PasolSecurity/pasol-detection"
+
+[workspace.dependencies]
+clap = { version = "4.5", features = ["derive"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = { version = "1.0", features = ["preserve_order"] }
+schemars = "1.0"
+sha2 = "0.10"
+thiserror = "2.0"
+ed25519-dalek = { version = "2.1", features = ["rand_core"] }
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+panic = "deny"
+unwrap_used = "deny"

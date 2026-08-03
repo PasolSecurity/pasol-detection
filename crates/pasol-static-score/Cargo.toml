@@ -1,0 +1,10 @@
+[package]
+name = "pasol-static-score"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+pasol-detection-sdk = { path = "../pasol-detection-sdk" }
+serde.workspace = true

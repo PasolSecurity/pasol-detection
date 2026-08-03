@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pasolsecurity.org/schemas/feature-report-v1.schema.json",
+  "title": "Pasol feature report v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "extractor", "extractor_version", "source", "status", "features", "warnings"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "extractor": { "type": "string", "minLength": 1 },
+    "extractor_version": { "type": "string", "minLength": 1 },
+    "source": { "$ref": "#/$defs/source" },
+    "status": { "enum": ["complete", "partial"] },
+    "features": { "type": "array", "items": { "$ref": "#/$defs/feature" } },
+    "warnings": { "type": "array", "items": { "type": "string" } }
+  },
+  "$defs": {
+    "source": {
+      "type": "object", "additionalProperties": false,
+      "required": ["parser", "parser_version", "parser_schema_version", "sha256", "file_type"],
+      "properties": {
+        "parser": { "type": "string" }, "parser_version": { "type": "string" },
+        "parser_schema_version": { "type": "string" }, "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "file_type": { "type": "string" }
+      }
+    },
+    "feature": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "state", "evidence"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+        "state": { "enum": ["present", "absent", "unknown", "truncated", "not_applicable", "unsupported"] },
+        "value": {},
+        "evidence": { "type": "array", "items": { "$ref": "#/$defs/evidence" } }
+      }
+    },
+    "evidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "summary"],
+      "properties": { "path": { "type": "string" }, "summary": { "type": "string" }, "attributes": { "type": "object" } }
+    }
+  }
+}
