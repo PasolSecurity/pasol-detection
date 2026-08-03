@@ -1,4 +1,8 @@
+![PasolSecurity](assets/pasol-security-readme-banner.png)
+
 # PasolSecurity Detection Foundation
+
+![PasolSecurity avatar](assets/pasol-security-avatar-512.png)
 
 This repository is the Stage 2 detection workspace. The first milestone is implemented and reviewable: versioned feature reports, deterministic PE extraction, bounded declarative rules, a starter pack, and an advisory heuristic score.
 
