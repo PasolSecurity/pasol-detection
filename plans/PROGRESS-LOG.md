@@ -109,3 +109,25 @@ No pack-sign/verify automated CLI test harness yet; revoked-key and invalid-priv
 Generated-key CLI integration matrix and golden rule reports.
 ### Next exact action
 Add generated-key CLI integration tests and deterministic golden rule reports.
+
+## 2026-08-03 — CLI adversarial integration tests
+### Planned work
+Automate the generated-key CLI matrix and add deterministic rule-report fixtures.
+### Work completed
+Added actual-binary integration tests for valid, tampered, revoked, unknown, invalid-private-key, unsigned, leakage, and deterministic-output cases; checked in four rule-report golden candidates.
+### Files changed
+`crates/pasol-lab/tests/cli.rs`, `fixtures/golden/rules/`.
+### Tests run
+`cargo test -p pasol-lab --test cli -- --nocapture`; `cargo fmt --all`.
+### Results
+2 tests passed; expected exit codes and output assertions passed.
+### Commit
+Pending focused commit after plan update.
+### Checklist changes
+Automated CLI matrix complete; golden evidence remains in progress.
+### Known limitations
+Golden schema validation and operator/state matrix are not yet implemented.
+### Remaining work
+Validate golden reports and add operator/state tests.
+### Next exact action
+Add the operator/state matrix tests and validate each golden rule report against the rule-report schema.
