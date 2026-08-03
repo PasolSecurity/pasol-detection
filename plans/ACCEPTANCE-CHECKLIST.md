@@ -4,7 +4,10 @@
 - [x] Runtime feature-schema validation — Evidence: `TEST-EVIDENCE.md#2026-08-03-feature-schema`; Commit `03d4f93`.
 - [x] Six availability states — Evidence: `TEST-EVIDENCE.md#2026-08-03-feature-states`; Commit `588b349`.
 - [ ] Golden PE32/PE64/partial reports and byte-for-byte comparison.
-- [ ] Complete per-feature positive/negative coverage and schema-drift CI.
+- [ ] Complete per-feature positive/negative coverage.
+  - Evidence: `TEST-EVIDENCE.md#2026-08-03-schema-drift-and-starter-fixtures` (starter-rule fixtures verified; catalog-wide coverage remains open).
+- [x] Schema-drift validation gate for checked-in schemas, parser outputs, and rule goldens.
+  - Evidence: `TEST-EVIDENCE.md#2026-08-03-schema-drift-and-starter-fixtures`.
 
 ## H — Rules Engine
 - [x] Runtime pack/report schemas — Evidence: `TEST-EVIDENCE.md#2026-08-03-rule-schemas`; Commit `66b4e42`.

@@ -132,6 +132,28 @@ Validate golden reports and add operator/state tests.
 ### Next exact action
 Add the operator/state matrix tests and validate each golden rule report against the rule-report schema.
 
+## 2026-08-03 — Schema drift and starter fixtures
+### Planned work
+Add a checked-in schema validation gate and positive/negative fixtures for the starter rule.
+### Work completed
+Added `pasol-lab` integration tests for parser-derived features, rule packs, rule goldens, generated reports, and starter positive/negative fixtures. Added the schema-drift CI workflow.
+### Files changed
+`crates/pasol-lab/tests/schema.rs`, `fixtures/rules/`, `.github/workflows/schema-drift.yml`, planning files.
+### Tests run
+`cargo fmt --all`; `cargo test --workspace --all-features`; `cargo test --workspace schema`; `cargo clippy --workspace --all-targets --all-features -- -D warnings`.
+### Results
+All passed; 2 new schema tests passed; Windows incremental cleanup warnings only.
+### Commit
+`5627210`.
+### Checklist changes
+Schema drift gate and starter fixture coverage verified; catalog-wide feature coverage remains open.
+### Known limitations
+CI action SHA pinning remains open as a separate supply-chain requirement.
+### Remaining work
+Complete Phase G golden feature reports and per-feature coverage, then formal G/H acceptance review.
+### Next exact action
+Generate and check in deterministic PE32, PE64, and partial feature golden reports with schema validation.
+
 ## 2026-08-03 — Golden reports and operator matrix
 ### Planned work
 Validate all four rule goldens and cover operators across uncertain states, missing features, and wrong types.

@@ -19,14 +19,15 @@ No arbitrary code; depth, count, output, and evidence limits; unknown/truncated 
 - [x] Golden reports and complete CLI integration matrix — current evidence slice.
 ## Test checklist
 - [x] Generated-key tamper cases.
-- [ ] Full operator/state matrix and CLI integration.
+- [x] Full operator/state matrix and CLI integration.
+- [x] Schema drift gate and starter-rule positive/negative fixtures.
 ## Documentation checklist
 - [x] Trust lifecycle documentation — `a251ba2`.
 ## Acceptance criteria
 All mandatory checklist items must be verified.
 ## Current status
-Core and trust library verified; operational tooling pending.
+Core, trust library, operational tooling, schema gate, and starter fixtures verified; formal acceptance review pending.
 ## Completed commits
 `00b24b8`, `588b349`, `03d4f93`, `66b4e42`, `a251ba2`, `fe225e4`.
 ## Remaining work
-Schema-drift CI, starter-rule fixture coverage, and formal acceptance review.
+Formal acceptance review and CI supply-chain hardening (including pinned action SHAs).

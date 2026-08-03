@@ -24,6 +24,7 @@ Existing rule schemas, Ed25519 library, `TrustedKeyStore`, and current rule CLI.
 - [x] Implement pack verify CLI against trusted store.
 - [x] Add tamper and deterministic-manifest integration tests.
 - [x] Add golden rule evidence and update acceptance records.
+- [x] Add schema-drift CI enforcement and starter-rule positive/negative fixture coverage.
 
 ## Files expected to change
 `crates/pasol-lab/src/main.rs`, `crates/pasol-rules/src/lib.rs`, schemas, tests, docs, and `plans/`.
@@ -41,7 +42,7 @@ Trust lifecycle, CLI usage, rotation/revocation, and evidence updates.
 Do not mark H accepted until all mandatory H checklist items have evidence.
 
 ## Current status
-Pack sign/verify CLI works on Windows and rejects modified content; automated CLI integration coverage and golden evidence remain.
+Pack signing, CLI integration, golden rule reports, operator/state semantics, schema validation, and starter fixtures are verified. G/H formal acceptance evidence remains under review.
 
 ## Next exact action
-Add schema-drift CI enforcement and starter-rule positive/negative fixture coverage; do not begin Phase I until G/H acceptance evidence is complete.
+Complete Phase G golden feature reports and comprehensive per-feature positive/negative coverage before any Phase I work.
