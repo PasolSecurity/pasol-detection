@@ -930,6 +930,7 @@ name = "pasol-rules"
 version = "0.1.0"
 dependencies = [
  "ed25519-dalek",
+ "jsonschema",
  "pasol-detection-sdk",
  "serde",
  "serde_json",

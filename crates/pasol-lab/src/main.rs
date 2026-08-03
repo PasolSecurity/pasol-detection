@@ -5,7 +5,7 @@ use std::path::PathBuf;
 use clap::{Parser, Subcommand};
 use pasol_detection_sdk::{FeatureExtractor, ParserReport, validate_feature_report_json};
 use pasol_features::PeFeatureExtractor;
-use pasol_rules::{evaluate, load_pack};
+use pasol_rules::{evaluate, load_pack, validate_rule_pack_json, validate_rule_report_json};
 use pasol_static_score::score;
 
 #[derive(Debug, Parser)]
@@ -66,9 +66,18 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
             feature_report,
             pack,
         } => {
-            let report = serde_json::from_slice(&std::fs::read(feature_report)?)?;
-            let pack = load_pack(&std::fs::read(pack)?)?;
-            println!("{}", serde_json::to_string(&evaluate(&pack, &report))?);
+            let report_value: serde_json::Value =
+                serde_json::from_slice(&std::fs::read(feature_report)?)?;
+            let report = serde_json::from_value(report_value)?;
+            let pack_value: serde_json::Value = serde_json::from_slice(&std::fs::read(&pack)?)?;
+            validate_rule_pack_json(&pack_value)
+                .map_err(|error| format!("rule-pack schema validation failed: {error}"))?;
+            let pack = load_pack(&serde_json::to_vec(&pack_value)?)?;
+            let output = evaluate(&pack, &report);
+            let output_value = serde_json::to_value(&output)?;
+            validate_rule_report_json(&output_value)
+                .map_err(|error| format!("rule-report schema validation failed: {error}"))?;
+            println!("{}", serde_json::to_string(&output_value)?);
         }
         Commands::Score { feature_report } => {
             let report = serde_json::from_slice(&std::fs::read(feature_report)?)?;

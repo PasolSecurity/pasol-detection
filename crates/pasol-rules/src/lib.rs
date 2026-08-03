@@ -115,6 +115,8 @@ pub struct RuleLimits {
     pub max_expressions: usize,
     pub max_string_length: usize,
     pub max_output_matches: usize,
+    pub max_evidence_items: usize,
+    pub max_output_bytes: usize,
 }
 impl Default for RuleLimits {
     fn default() -> Self {
@@ -123,6 +125,8 @@ impl Default for RuleLimits {
             max_expressions: 4096,
             max_string_length: 4096,
             max_output_matches: 1024,
+            max_evidence_items: 4096,
+            max_output_bytes: 1_048_576,
         }
     }
 }
@@ -163,6 +167,27 @@ pub fn load_pack_with_limits(bytes: &[u8], limits: &RuleLimits) -> Result<RulePa
         return Err(RuleError::Schema(pack.feature_schema));
     }
     Ok(pack)
+}
+
+pub fn validate_rule_pack_json(value: &Value) -> Result<(), String> {
+    let schema: Value =
+        serde_json::from_str(include_str!("../../../schemas/rule-pack-1.0.0.schema.json"))
+            .map_err(|error| error.to_string())?;
+    jsonschema::validator_for(&schema)
+        .map_err(|error| error.to_string())?
+        .validate(value)
+        .map_err(|error| error.to_string())
+}
+
+pub fn validate_rule_report_json(value: &Value) -> Result<(), String> {
+    let schema: Value = serde_json::from_str(include_str!(
+        "../../../schemas/rule-report-1.0.0.schema.json"
+    ))
+    .map_err(|error| error.to_string())?;
+    jsonschema::validator_for(&schema)
+        .map_err(|error| error.to_string())?
+        .validate(value)
+        .map_err(|error| error.to_string())
 }
 
 pub fn verify_signed_pack(
@@ -215,9 +240,34 @@ fn hex_value(byte: u8) -> Option<u8> {
 }
 
 pub fn evaluate(pack: &RulePack, report: &FeatureReport) -> RuleReport {
+    evaluate_with_limits(pack, report, &RuleLimits::default())
+}
+
+pub fn evaluate_with_limits(
+    pack: &RulePack,
+    report: &FeatureReport,
+    limits: &RuleLimits,
+) -> RuleReport {
     let mut matches = Vec::new();
     let mut not_evaluated = Vec::new();
+    let mut warnings = Vec::new();
+    if pack.rules.len() > limits.max_rules {
+        warnings.push("rule count exceeds evaluation limit".into());
+    }
+    if pack
+        .rules
+        .iter()
+        .map(|rule| expression_count(&rule.condition))
+        .sum::<usize>()
+        > limits.max_expressions
+    {
+        warnings.push("expression count exceeds evaluation limit".into());
+    }
     for rule in &pack.rules {
+        if matches.len() >= limits.max_output_matches {
+            warnings.push("match output limit reached".into());
+            break;
+        }
         match eval(&rule.condition, &report.features) {
             Some(true) => matches.push(RuleMatch {
                 rule_id: rule.id.clone(),
@@ -226,7 +276,10 @@ pub fn evaluate(pack: &RulePack, report: &FeatureReport) -> RuleReport {
                 confidence: rule.confidence.clone(),
                 title: rule.title.clone(),
                 explanation: rule.explanation.clone(),
-                evidence: collect_evidence(&rule.condition, &report.features),
+                evidence: collect_evidence(&rule.condition, &report.features)
+                    .into_iter()
+                    .take(limits.max_evidence_items)
+                    .collect(),
             }),
             None => not_evaluated.push(rule.id.clone()),
             Some(false) => {}
@@ -244,7 +297,16 @@ pub fn evaluate(pack: &RulePack, report: &FeatureReport) -> RuleReport {
         rule_pack_sha256: format!("{:x}", hasher.finalize()),
         matches,
         not_evaluated,
-        warnings: Vec::new(),
+        warnings,
+    }
+}
+
+fn expression_count(expr: &Expr) -> usize {
+    match expr {
+        Expr::All { all } => 1 + all.iter().map(expression_count).sum::<usize>(),
+        Expr::Any { any } => 1 + any.iter().map(expression_count).sum::<usize>(),
+        Expr::Not { not } => 1 + expression_count(not),
+        Expr::Compare { .. } => 1,
     }
 }
 
