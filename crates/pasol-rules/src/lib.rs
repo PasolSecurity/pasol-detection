@@ -73,6 +73,7 @@ pub enum Operator {
     Contains,
     StartsWith,
     EndsWith,
+    CountGreaterThan,
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RuleMatch {
@@ -115,6 +116,7 @@ pub fn load_pack(bytes: &[u8]) -> Result<RulePack, RuleError> {
         if !ids.insert(&rule.id) {
             return Err(RuleError::Invalid(format!("duplicate rule id {}", rule.id)));
         }
+        validate_depth(&rule.condition, 0)?;
     }
     if !pack.feature_schema.starts_with("1.") {
         return Err(RuleError::Schema(pack.feature_schema));
@@ -141,7 +143,9 @@ pub fn evaluate(pack: &RulePack, report: &FeatureReport) -> RuleReport {
         }
     }
     let mut hasher = Sha256::new();
-    hasher.update(serde_json::to_vec(pack).unwrap_or_default());
+    if let Ok(serialized) = serde_json::to_vec(pack) {
+        hasher.update(serialized);
+    }
     RuleReport {
         schema_version: "1.0.0".into(),
         engine: "pasol-rules".into(),
@@ -224,9 +228,36 @@ fn eval(expr: &Expr, features: &[Feature]) -> Option<bool> {
                     .is_some_and(|items| {
                         actual.is_some_and(|candidate| !items.iter().any(|item| item == candidate))
                     }),
+                Operator::CountGreaterThan => actual
+                    .and_then(Value::as_array)
+                    .zip(value.as_ref().and_then(Value::as_u64))
+                    .is_some_and(|(items, count)| items.len() as u64 > count),
             })
         }
     }
+}
+
+fn validate_depth(expr: &Expr, depth: usize) -> Result<(), RuleError> {
+    if depth > 32 {
+        return Err(RuleError::Invalid(
+            "rule expression exceeds depth limit".into(),
+        ));
+    }
+    match expr {
+        Expr::All { all } => {
+            for child in all {
+                validate_depth(child, depth + 1)?;
+            }
+        }
+        Expr::Any { any } => {
+            for child in any {
+                validate_depth(child, depth + 1)?;
+            }
+        }
+        Expr::Not { not } => validate_depth(not, depth + 1)?,
+        Expr::Compare { .. } => {}
+    }
+    Ok(())
 }
 
 fn numeric(actual: Option<&Value>, expected: &Option<Value>) -> Option<(f64, f64)> {

@@ -130,3 +130,28 @@ pub fn evidence(path: impl Into<String>, summary: impl Into<String>) -> FeatureE
         attributes: BTreeMap::new(),
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn all_availability_states_are_distinct_and_stable() {
+        let states = [
+            FeatureState::Present,
+            FeatureState::Absent,
+            FeatureState::Unknown,
+            FeatureState::Truncated,
+            FeatureState::NotApplicable,
+            FeatureState::Unsupported,
+        ];
+        let encoded = serde_json::to_string(&states).expect("states serialize");
+        assert_eq!(
+            encoded,
+            "[\"present\",\"absent\",\"unknown\",\"truncated\",\"not_applicable\",\"unsupported\"]"
+        );
+        let decoded: Vec<FeatureState> =
+            serde_json::from_str(&encoded).expect("states deserialize");
+        assert_eq!(decoded, states);
+    }
+}
