@@ -100,7 +100,7 @@ Formatting; `cargo test -p pasol-lab -p pasol-rules`; Clippy with warnings denie
 ### Results
 Tests and Clippy passed; sign and verify exited 0; modified pack exited 4 with trust failure.
 ### Commit
-Pending focused commit after planning update.
+`6df45d6`.
 ### Checklist changes
 Pack CLI marked complete; automated integration and golden evidence remain in progress.
 ### Known limitations

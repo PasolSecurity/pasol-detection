@@ -84,7 +84,7 @@ Key-store primitives verified; pack sign/verify still pending.
 ### Requirement verified
 Pack signing, trusted-store verification, deterministic manifest output, and modified-content rejection.
 ### Commit tested
-Working tree immediately before planning update.
+`6df45d6`.
 ### Environment
 Windows; rustc/cargo 1.97.1.
 ### Commands
