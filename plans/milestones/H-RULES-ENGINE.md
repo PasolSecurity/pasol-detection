@@ -15,7 +15,8 @@ No arbitrary code; depth, count, output, and evidence limits; unknown/truncated 
 - [x] Evaluator and budgets — `66b4e42`.
 - [x] Trust tests — `a251ba2`.
 - [x] Key store primitives — `fe225e4`.
-- [ ] Pack sign/verify CLI and golden reports.
+- [x] Pack sign/verify CLI — current working slice evidence.
+- [ ] Golden reports and complete CLI integration matrix.
 ## Test checklist
 - [x] Generated-key tamper cases.
 - [ ] Full operator/state matrix and CLI integration.

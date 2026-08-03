@@ -7,8 +7,8 @@ use ed25519_dalek::SigningKey;
 use pasol_detection_sdk::{FeatureExtractor, ParserReport, validate_feature_report_json};
 use pasol_features::PeFeatureExtractor;
 use pasol_rules::{
-    KeyStatus, TrustedKey, TrustedKeyStore, evaluate, load_pack, validate_rule_pack_json,
-    validate_rule_report_json,
+    KeyStatus, RuleLimits, SignedRulePack, TrustedKey, TrustedKeyStore, evaluate, load_pack,
+    sign_pack, validate_rule_pack_json, validate_rule_report_json, verify_signed_pack,
 };
 use pasol_static_score::score;
 use rand_core::OsRng;
@@ -49,6 +49,31 @@ enum RuleCommands {
     Key {
         #[command(subcommand)]
         command: KeyCommands,
+    },
+    Pack {
+        #[command(subcommand)]
+        command: PackCommands,
+    },
+}
+#[derive(Debug, Subcommand)]
+enum PackCommands {
+    Sign {
+        pack: PathBuf,
+        #[arg(long)]
+        key: PathBuf,
+        #[arg(long)]
+        key_id: String,
+        #[arg(long)]
+        output: PathBuf,
+        #[arg(long)]
+        format: Option<String>,
+    },
+    Verify {
+        pack: PathBuf,
+        #[arg(long, default_value = "trusted-keys.json")]
+        store: PathBuf,
+        #[arg(long)]
+        format: Option<String>,
     },
 }
 #[derive(Debug, Subcommand)]
@@ -181,6 +206,66 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
                 keys.save_atomic(&store)?;
             }
         },
+        Commands::Rules {
+            command: RuleCommands::Pack { command },
+        } => match command {
+            PackCommands::Sign {
+                pack,
+                key,
+                key_id,
+                output,
+                format,
+            } => {
+                if format.as_deref().is_some_and(|value| value != "json") {
+                    return Err("only --format json is supported".into());
+                }
+                let value: serde_json::Value = serde_json::from_slice(&std::fs::read(&pack)?)?;
+                validate_rule_pack_json(&value)
+                    .map_err(|error| format!("rule-pack schema validation failed: {error}"))?;
+                let model = load_pack(&serde_json::to_vec(&value)?)?;
+                let private_hex = String::from_utf8(std::fs::read(key)?)?;
+                let secret = parse_hex_32(private_hex.trim()).ok_or("invalid private-key data")?;
+                let signing = SigningKey::from_bytes(&secret);
+                let signed = sign_pack(&model, &key_id, &signing, &RuleLimits::default())?;
+                let bytes = serde_json::to_vec_pretty(&signed)?;
+                let temp = output.with_extension("tmp");
+                std::fs::write(&temp, &bytes)?;
+                std::fs::rename(&temp, &output)?;
+                let mut keys = std::collections::BTreeMap::new();
+                keys.insert(key_id, signing.verifying_key());
+                let _ = verify_signed_pack(&bytes, &keys, &RuleLimits::default())?;
+                if format.as_deref() == Some("json") {
+                    println!(
+                        "{{\"status\":\"signed\",\"manifest_sha256\":\"{}\"}}",
+                        signed.manifest_sha256
+                    );
+                } else {
+                    println!("signed");
+                }
+            }
+            PackCommands::Verify {
+                pack,
+                store,
+                format,
+            } => {
+                if format.as_deref().is_some_and(|value| value != "json") {
+                    return Err("only --format json is supported".into());
+                }
+                let bytes = std::fs::read(&pack)?;
+                let signed: SignedRulePack = serde_json::from_slice(&bytes)?;
+                let store = TrustedKeyStore::load(&store)?;
+                let keys = store.verifying_keys()?;
+                let verified = verify_signed_pack(&bytes, &keys, &RuleLimits::default())?;
+                if format.as_deref() == Some("json") {
+                    println!(
+                        "{{\"status\":\"verified\",\"key_id\":\"{}\",\"pack_id\":\"{}\"}}",
+                        signed.key_id, verified.id
+                    );
+                } else {
+                    println!("verified: {}", signed.key_id);
+                }
+            }
+        },
         Commands::Score { feature_report } => {
             let report = serde_json::from_slice(&std::fs::read(feature_report)?)?;
             println!("{}", serde_json::to_string(&score(&report))?);
@@ -191,4 +276,23 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
 
 fn hex(bytes: &[u8]) -> String {
     bytes.iter().map(|byte| format!("{byte:02x}")).collect()
+}
+
+fn parse_hex_32(input: &str) -> Option<[u8; 32]> {
+    if input.len() != 64 {
+        return None;
+    }
+    let mut out = [0u8; 32];
+    for (index, pair) in input.as_bytes().chunks_exact(2).enumerate() {
+        out[index] = (hex_value(pair[0])? << 4) | hex_value(pair[1])?;
+    }
+    Some(out)
+}
+fn hex_value(byte: u8) -> Option<u8> {
+    match byte {
+        b'0'..=b'9' => Some(byte - b'0'),
+        b'a'..=b'f' => Some(byte - b'a' + 10),
+        b'A'..=b'F' => Some(byte - b'A' + 10),
+        _ => None,
+    }
 }

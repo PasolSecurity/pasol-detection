@@ -87,3 +87,25 @@ Pack sign/verify CLI and golden reports pending.
 Final G/H acceptance slice.
 ### Next exact action
 Implement pack sign and verify CLI.
+
+## 2026-08-03 — Pack signing and verification CLI
+### Planned work
+Implement the exact current-milestone pack sign/verify commands using the existing trust store.
+### Work completed
+Added schema-validated signing, deterministic SHA-256 manifest generation, atomic signed-output write, post-write verification, trusted-store verification, and JSON/human output.
+### Files changed
+`crates/pasol-rules/src/lib.rs`, `crates/pasol-lab/src/main.rs`.
+### Tests run
+Formatting; `cargo test -p pasol-lab -p pasol-rules`; Clippy with warnings denied; Windows key-generation, trust, sign, verify, and tamper smoke commands.
+### Results
+Tests and Clippy passed; sign and verify exited 0; modified pack exited 4 with trust failure.
+### Commit
+Pending focused commit after planning update.
+### Checklist changes
+Pack CLI marked complete; automated integration and golden evidence remain in progress.
+### Known limitations
+No pack-sign/verify automated CLI test harness yet; revoked-key and invalid-private-key CLI cases remain open.
+### Remaining work
+Generated-key CLI integration matrix and golden rule reports.
+### Next exact action
+Add generated-key CLI integration tests and deterministic golden rule reports.

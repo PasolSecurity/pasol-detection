@@ -20,9 +20,9 @@ Do not start I, J, K, or ML. Do not commit private keys or add enforcement.
 Existing rule schemas, Ed25519 library, `TrustedKeyStore`, and current rule CLI.
 
 ## Tasks
-- [~] Implement pack sign CLI.
-- [ ] Implement pack verify CLI against trusted store.
-- [ ] Add tamper and deterministic-manifest integration tests.
+- [x] Implement pack sign CLI.
+- [x] Implement pack verify CLI against trusted store.
+- [~] Add tamper and deterministic-manifest integration tests.
 - [ ] Add golden rule evidence and update acceptance records.
 
 ## Files expected to change
@@ -41,7 +41,7 @@ Trust lifecycle, CLI usage, rotation/revocation, and evidence updates.
 Do not mark H accepted until all mandatory H checklist items have evidence.
 
 ## Current status
-Trusted-key store and key-management commands exist in `fe225e4`; pack sign/verify commands and golden evidence remain.
+Pack sign/verify CLI works on Windows and rejects modified content; automated CLI integration coverage and golden evidence remain.
 
 ## Next exact action
-Implement `pasol-lab rules pack sign` and `pasol-lab rules pack verify` using the existing signed-pack format and trusted-key store, then add generated-key CLI integration tests.
+Add generated-key CLI integration tests covering unknown/revoked keys, invalid signatures, invalid private keys, deterministic output, and schema-valid JSON; then add golden rule reports.

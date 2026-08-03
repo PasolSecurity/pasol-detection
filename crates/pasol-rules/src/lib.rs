@@ -316,6 +316,29 @@ pub fn verify_signed_pack(
     load_pack_with_limits(&pack_bytes, limits)
 }
 
+pub fn sign_pack(
+    pack: &RulePack,
+    key_id: &str,
+    signing_key: &ed25519_dalek::SigningKey,
+    limits: &RuleLimits,
+) -> Result<SignedRulePack, RuleError> {
+    let pack_bytes = serde_json::to_vec(pack)?;
+    let _ = load_pack_with_limits(&pack_bytes, limits)?;
+    let mut hasher = Sha256::new();
+    hasher.update(&pack_bytes);
+    let signature = ed25519_dalek::Signer::sign(signing_key, &pack_bytes);
+    Ok(SignedRulePack {
+        pack: pack.clone(),
+        key_id: key_id.into(),
+        manifest_sha256: format!("{:x}", hasher.finalize()),
+        signature_hex: signature
+            .to_bytes()
+            .iter()
+            .map(|byte| format!("{byte:02x}"))
+            .collect(),
+    })
+}
+
 pub fn load_unsigned_development_pack(
     bytes: &[u8],
     limits: &RuleLimits,

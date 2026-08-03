@@ -79,3 +79,23 @@ Public-key hex only appeared in store; private key remained separate.
 Ephemeral files under the Windows temp directory.
 ### Conclusion
 Key-store primitives verified; pack sign/verify still pending.
+
+## 2026-08-03 — Pack CLI
+### Requirement verified
+Pack signing, trusted-store verification, deterministic manifest output, and modified-content rejection.
+### Commit tested
+Working tree immediately before planning update.
+### Environment
+Windows; rustc/cargo 1.97.1.
+### Commands
+`pasol-lab rules key generate test-key PRIVATE PUBLIC`; `pasol-lab rules key trust test-key PUBLIC --store STORE`; `pasol-lab rules pack sign rule-packs/pasol-starter.json --key PRIVATE --key-id test-key --output SIGNED --format json`; `pasol-lab rules pack verify SIGNED --store STORE --format json`.
+### Results
+Signing and verification exited 0; modified pack exited 4 with manifest-mismatch trust error.
+### Expected result
+Valid pack verifies; changed content is rejected; JSON contains status/key/manifest without local paths or private material.
+### Actual result
+Valid output: `status=signed` and `status=verified`, key ID `test-key`; tampering rejected; private key was only written to the temporary key file.
+### Artifacts or fixtures
+`rule-packs/pasol-starter.json`; temporary Windows files outside the repository.
+### Conclusion
+CLI smoke behavior verified. Automated integration matrix, revoked-key CLI case, and golden reports remain open.
