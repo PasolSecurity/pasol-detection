@@ -20,6 +20,27 @@ Real PE parser report and PE32/PE64 fixtures.
 ### Conclusion
 Build and baseline runtime behavior verified.
 
+## 2026-08-03 — Workspace after CLI integration
+### Requirement verified
+Repository-wide regression safety after adding CLI integration tests and golden candidates.
+### Commit tested
+Working tree before this planning update.
+### Environment
+Windows; rustc/cargo 1.97.1.
+### Commands
+`cargo fmt --all`; `cargo clippy --workspace --all-targets --all-features -- -D warnings`; `cargo test --workspace --all-features`.
+### Results
+Clippy passed; all workspace tests passed, including 2 CLI integration tests, 4 rule tests, feature/state tests, scoring tests, and doc tests.
+### Expected result
+Exit code 0.
+### Actual result
+Exit code 0; incremental-directory cleanup warnings only.
+### Artifacts or fixtures
+`crates/pasol-lab/tests/cli.rs`, `fixtures/golden/rules/`.
+### Conclusion
+Repository-wide quality gate passed; golden schema/byte-comparison and operator matrix remain open.
+Build and baseline runtime behavior verified.
+
 ## 2026-08-03 — Feature schema runtime validation
 ### Requirement verified
 Generated feature reports validate against schema `1.0.0`.
@@ -104,7 +125,7 @@ CLI smoke behavior verified. Automated integration matrix, revoked-key CLI case,
 ### Requirement verified
 Actual-binary CLI key generation, trust, signing, verification, tamper rejection, revocation rejection, unknown-store rejection, invalid private-key rejection, unsigned verification rejection, deterministic signed bytes, and private-key non-disclosure.
 ### Commit tested
-Working tree before this planning update.
+`a8ad9db`.
 ### Environment
 Windows; cargo 1.97.1.
 ### Commands

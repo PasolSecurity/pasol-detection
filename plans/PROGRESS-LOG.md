@@ -122,12 +122,34 @@ Added actual-binary integration tests for valid, tampered, revoked, unknown, inv
 ### Results
 2 tests passed; expected exit codes and output assertions passed.
 ### Commit
-Pending focused commit after plan update.
+`a8ad9db`.
 ### Checklist changes
 Automated CLI matrix complete; golden evidence remains in progress.
 ### Known limitations
 Golden schema validation and operator/state matrix are not yet implemented.
 ### Remaining work
 Validate golden reports and add operator/state tests.
+### Next exact action
+Add the operator/state matrix tests and validate each golden rule report against the rule-report schema.
+
+## 2026-08-03 — Workspace regression gate
+### Planned work
+Run the complete workspace quality gate after CLI integration tests.
+### Work completed
+Ran formatting, Clippy with warnings denied, and all workspace tests.
+### Files changed
+Planning evidence only.
+### Tests run
+`cargo fmt --all`; `cargo clippy --workspace --all-targets --all-features -- -D warnings`; `cargo test --workspace --all-features`.
+### Results
+All passed; 2 CLI integration tests, 4 rule tests, feature/state/scoring tests, and doc tests passed. Windows incremental cleanup warnings only.
+### Commit
+Pending focused commit after plan update.
+### Checklist changes
+Workspace regression evidence recorded; G/H golden and operator items remain open.
+### Known limitations
+Golden schema/byte comparison and operator/state matrix are not yet implemented.
+### Remaining work
+Validate goldens and complete operator matrix.
 ### Next exact action
 Add the operator/state matrix tests and validate each golden rule report against the rule-report schema.

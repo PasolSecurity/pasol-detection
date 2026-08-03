@@ -1,3 +1,5 @@
+#![allow(clippy::unwrap_used)]
+
 use std::{
     fs,
     path::PathBuf,
@@ -24,7 +26,7 @@ fn temp_dir() -> PathBuf {
     fs::create_dir_all(&path).expect("temp directory");
     path
 }
-fn copy_pack(dir: &PathBuf) -> PathBuf {
+fn copy_pack(dir: &std::path::Path) -> PathBuf {
     let pack = dir.join("pack.json");
     fs::copy(root().join("rule-packs/pasol-starter.json"), &pack).expect("copy pack");
     pack
