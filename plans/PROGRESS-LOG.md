@@ -144,7 +144,7 @@ Added the full uncertainty matrix, explicit missing-feature `exists` behavior, w
 ### Results
 6 rule tests passed; all workspace tests and Clippy passed.
 ### Commit
-Pending focused commit after plan update.
+`ff39e83`.
 ### Checklist changes
 Golden rule evidence and operator/state matrix marked complete.
 ### Known limitations

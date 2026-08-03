@@ -44,7 +44,7 @@ Repository-wide quality gate passed; golden schema/byte-comparison and operator 
 ### Requirement verified
 Supported operator uncertainty semantics and deterministic rule-report goldens.
 ### Commit tested
-Working tree before this planning update.
+`ff39e83`.
 ### Environment
 Windows; rustc/cargo 1.97.1.
 ### Commands
