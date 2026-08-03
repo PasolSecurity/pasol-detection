@@ -220,6 +220,14 @@ pub fn load_unsigned_development_pack(
     load_pack_with_limits(bytes, limits)
 }
 
+pub fn load_production_pack(
+    bytes: &[u8],
+    trusted_keys: &std::collections::BTreeMap<String, VerifyingKey>,
+    limits: &RuleLimits,
+) -> Result<RulePack, RuleError> {
+    verify_signed_pack(bytes, trusted_keys, limits)
+}
+
 fn decode_hex<const N: usize>(input: &str) -> Option<[u8; N]> {
     if input.len() != N * 2 {
         return None;
@@ -444,6 +452,51 @@ fn collect_evidence(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use ed25519_dalek::{Signer, SigningKey};
+
+    fn fixture_pack() -> RulePack {
+        RulePack {
+            id: "test".into(),
+            version: "1".into(),
+            feature_schema: "1.0.0".into(),
+            rules: vec![Rule {
+                id: "r".into(),
+                version: 1,
+                title: "r".into(),
+                description: "test".into(),
+                severity: Severity::Low,
+                confidence: Confidence::Low,
+                condition: Expr::Compare {
+                    feature: "x".into(),
+                    operator: Operator::Equals,
+                    value: Some(Value::Bool(true)),
+                },
+                explanation: "e".into(),
+            }],
+        }
+    }
+
+    fn signed_fixture() -> (Vec<u8>, SigningKey) {
+        let key = SigningKey::from_bytes(&[7u8; 32]);
+        let pack = fixture_pack();
+        let bytes = serde_json::to_vec(&pack).expect("pack serializes");
+        let mut digest = Sha256::new();
+        digest.update(&bytes);
+        let signed = SignedRulePack {
+            pack,
+            key_id: "test-key".into(),
+            manifest_sha256: format!("{:x}", digest.finalize()),
+            signature_hex: hex_encode(&key.sign(&bytes).to_bytes()),
+        };
+        (
+            serde_json::to_vec(&signed).expect("signed pack serializes"),
+            key,
+        )
+    }
+
+    fn hex_encode(bytes: &[u8]) -> String {
+        bytes.iter().map(|byte| format!("{byte:02x}")).collect()
+    }
     #[test]
     fn unknown_is_not_false() {
         let report = FeatureReport {
@@ -486,5 +539,73 @@ mod tests {
             }],
         };
         assert_eq!(evaluate(&pack, &report).not_evaluated, vec!["r"]);
+    }
+
+    #[test]
+    fn signed_pack_verifies_and_tampering_fails() {
+        let (bytes, key) = signed_fixture();
+        let mut trusted = std::collections::BTreeMap::new();
+        trusted.insert("test-key".into(), key.verifying_key());
+        assert!(load_production_pack(&bytes, &trusted, &RuleLimits::default()).is_ok());
+        let mut changed: Value = serde_json::from_slice(&bytes).expect("signed JSON");
+        changed["pack"]["id"] = Value::String("changed".into());
+        let changed = serde_json::to_vec(&changed).expect("changed JSON");
+        assert!(matches!(
+            load_production_pack(&changed, &trusted, &RuleLimits::default()),
+            Err(RuleError::Trust(_))
+        ));
+    }
+
+    #[test]
+    fn unknown_key_invalid_encoding_and_unsigned_production_are_rejected() {
+        let (bytes, key) = signed_fixture();
+        let no_keys = std::collections::BTreeMap::new();
+        assert!(matches!(
+            load_production_pack(&bytes, &no_keys, &RuleLimits::default()),
+            Err(RuleError::Trust(_))
+        ));
+        let mut trusted = std::collections::BTreeMap::new();
+        trusted.insert("test-key".into(), key.verifying_key());
+        let mut invalid: Value = serde_json::from_slice(&bytes).expect("signed JSON");
+        invalid["signature_hex"] = Value::String("bad".into());
+        assert!(matches!(
+            load_production_pack(
+                &serde_json::to_vec(&invalid).expect("invalid JSON"),
+                &trusted,
+                &RuleLimits::default()
+            ),
+            Err(RuleError::Trust(_))
+        ));
+        let unsigned = serde_json::to_vec(&fixture_pack()).expect("pack JSON");
+        assert!(load_production_pack(&unsigned, &trusted, &RuleLimits::default()).is_err());
+        assert!(load_unsigned_development_pack(&unsigned, &RuleLimits::default()).is_ok());
+    }
+
+    #[test]
+    fn evaluation_budget_emits_warning() {
+        let report = FeatureReport {
+            schema_version: "1.0.0".into(),
+            extractor: "x".into(),
+            extractor_version: "x".into(),
+            source: pasol_detection_sdk::FeatureSource {
+                parser: "p".into(),
+                parser_version: "1".into(),
+                parser_schema_version: "1".into(),
+                sha256: "a".into(),
+                file_type: "x".into(),
+            },
+            status: pasol_detection_sdk::FeatureReportStatus::Complete,
+            features: vec![],
+            warnings: vec![],
+        };
+        let limits = RuleLimits {
+            max_expressions: 0,
+            ..RuleLimits::default()
+        };
+        assert!(
+            !evaluate_with_limits(&fixture_pack(), &report, &limits)
+                .warnings
+                .is_empty()
+        );
     }
 }
