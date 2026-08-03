@@ -3,7 +3,7 @@
 use std::path::PathBuf;
 
 use clap::{Parser, Subcommand};
-use pasol_detection_sdk::{FeatureExtractor, ParserReport};
+use pasol_detection_sdk::{FeatureExtractor, ParserReport, validate_feature_report_json};
 use pasol_features::PeFeatureExtractor;
 use pasol_rules::{evaluate, load_pack};
 use pasol_static_score::score;
@@ -57,6 +57,9 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
             }
             let report: ParserReport = serde_json::from_slice(&std::fs::read(parser_report)?)?;
             let extracted = PeFeatureExtractor.extract(&report)?;
+            let value = serde_json::to_value(&extracted)?;
+            validate_feature_report_json(&value)
+                .map_err(|error| format!("feature schema validation failed: {error}"))?;
             println!("{}", serde_json::to_string(&extracted)?);
         }
         Commands::Rules {

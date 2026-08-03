@@ -24,6 +24,7 @@ schemars = "1.0"
 sha2 = "0.10"
 thiserror = "2.0"
 ed25519-dalek = { version = "2.1", features = ["rand_core"] }
+jsonschema = "0.29"
 
 [workspace.lints.rust]
 unsafe_code = "forbid"

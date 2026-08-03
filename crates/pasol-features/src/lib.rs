@@ -410,11 +410,9 @@ fn nested_presence(
     id: &str,
     path: &str,
 ) {
-    let value = keys
-        .iter()
-        .try_fold(Value::Object(metadata.clone()), |current, key| {
-            current.get(*key).cloned()
-        });
+    let value = metadata
+        .get(keys[0])
+        .and_then(|parent| parent.get(keys[1]).cloned());
     let Some(value) = value else {
         add_scalar(
             features,

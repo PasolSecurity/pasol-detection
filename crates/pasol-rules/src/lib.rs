@@ -1,5 +1,6 @@
 #![forbid(unsafe_code)]
 
+use ed25519_dalek::{Signature, Verifier, VerifyingKey};
 use pasol_detection_sdk::{Feature, FeatureReport, FeatureState};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
@@ -104,12 +105,47 @@ pub enum RuleError {
     Schema(String),
     #[error("serialization error: {0}")]
     Json(#[from] serde_json::Error),
+    #[error("rule-pack signature or trust failure: {0}")]
+    Trust(String),
+}
+
+#[derive(Debug, Clone)]
+pub struct RuleLimits {
+    pub max_rules: usize,
+    pub max_expressions: usize,
+    pub max_string_length: usize,
+    pub max_output_matches: usize,
+}
+impl Default for RuleLimits {
+    fn default() -> Self {
+        Self {
+            max_rules: 1024,
+            max_expressions: 4096,
+            max_string_length: 4096,
+            max_output_matches: 1024,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SignedRulePack {
+    pub pack: RulePack,
+    pub key_id: String,
+    pub manifest_sha256: String,
+    pub signature_hex: String,
 }
 
 pub fn load_pack(bytes: &[u8]) -> Result<RulePack, RuleError> {
+    load_pack_with_limits(bytes, &RuleLimits::default())
+}
+
+pub fn load_pack_with_limits(bytes: &[u8], limits: &RuleLimits) -> Result<RulePack, RuleError> {
     let pack: RulePack = serde_json::from_slice(bytes)?;
     if pack.rules.is_empty() {
         return Err(RuleError::Invalid("rule pack is empty".into()));
+    }
+    if pack.rules.len() > limits.max_rules {
+        return Err(RuleError::Invalid("rule count exceeds limit".into()));
     }
     let mut ids = std::collections::BTreeSet::new();
     for rule in &pack.rules {
@@ -117,11 +153,65 @@ pub fn load_pack(bytes: &[u8]) -> Result<RulePack, RuleError> {
             return Err(RuleError::Invalid(format!("duplicate rule id {}", rule.id)));
         }
         validate_depth(&rule.condition, 0)?;
+        let encoded =
+            serde_json::to_string(rule).map_err(|error| RuleError::Invalid(error.to_string()))?;
+        if encoded.len() > limits.max_string_length * 16 {
+            return Err(RuleError::Invalid("rule size exceeds limit".into()));
+        }
     }
     if !pack.feature_schema.starts_with("1.") {
         return Err(RuleError::Schema(pack.feature_schema));
     }
     Ok(pack)
+}
+
+pub fn verify_signed_pack(
+    bytes: &[u8],
+    trusted_keys: &std::collections::BTreeMap<String, VerifyingKey>,
+    limits: &RuleLimits,
+) -> Result<RulePack, RuleError> {
+    let signed: SignedRulePack = serde_json::from_slice(bytes)?;
+    let pack_bytes = serde_json::to_vec(&signed.pack)?;
+    let mut hasher = Sha256::new();
+    hasher.update(&pack_bytes);
+    let digest = format!("{:x}", hasher.finalize());
+    if digest != signed.manifest_sha256 {
+        return Err(RuleError::Trust("manifest hash mismatch".into()));
+    }
+    let key = trusted_keys
+        .get(&signed.key_id)
+        .ok_or_else(|| RuleError::Trust("unknown signing key".into()))?;
+    let signature = decode_hex::<64>(&signed.signature_hex)
+        .ok_or_else(|| RuleError::Trust("invalid signature encoding".into()))?;
+    key.verify(&pack_bytes, &Signature::from_bytes(&signature))
+        .map_err(|_| RuleError::Trust("signature verification failed".into()))?;
+    load_pack_with_limits(&pack_bytes, limits)
+}
+
+pub fn load_unsigned_development_pack(
+    bytes: &[u8],
+    limits: &RuleLimits,
+) -> Result<RulePack, RuleError> {
+    load_pack_with_limits(bytes, limits)
+}
+
+fn decode_hex<const N: usize>(input: &str) -> Option<[u8; N]> {
+    if input.len() != N * 2 {
+        return None;
+    }
+    let mut output = [0u8; N];
+    for (index, pair) in input.as_bytes().chunks_exact(2).enumerate() {
+        output[index] = (hex_value(pair[0])? << 4) | hex_value(pair[1])?;
+    }
+    Some(output)
+}
+fn hex_value(byte: u8) -> Option<u8> {
+    match byte {
+        b'0'..=b'9' => Some(byte - b'0'),
+        b'a'..=b'f' => Some(byte - b'a' + 10),
+        b'A'..=b'F' => Some(byte - b'A' + 10),
+        _ => None,
+    }
 }
 
 pub fn evaluate(pack: &RulePack, report: &FeatureReport) -> RuleReport {

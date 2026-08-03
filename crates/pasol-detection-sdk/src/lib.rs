@@ -9,6 +9,15 @@ use thiserror::Error;
 
 pub const FEATURE_SCHEMA_VERSION: &str = "1.0.0";
 
+pub fn validate_feature_report_json(value: &Value) -> Result<(), String> {
+    let schema: Value = serde_json::from_str(include_str!(
+        "../../../schemas/feature-report-v1.schema.json"
+    ))
+    .map_err(|error| error.to_string())?;
+    let validator = jsonschema::validator_for(&schema).map_err(|error| error.to_string())?;
+    validator.validate(value).map_err(|error| error.to_string())
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum FeatureState {
