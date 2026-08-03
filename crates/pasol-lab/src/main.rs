@@ -3,10 +3,15 @@
 use std::path::PathBuf;
 
 use clap::{Parser, Subcommand};
+use ed25519_dalek::SigningKey;
 use pasol_detection_sdk::{FeatureExtractor, ParserReport, validate_feature_report_json};
 use pasol_features::PeFeatureExtractor;
-use pasol_rules::{evaluate, load_pack, validate_rule_pack_json, validate_rule_report_json};
+use pasol_rules::{
+    KeyStatus, TrustedKey, TrustedKeyStore, evaluate, load_pack, validate_rule_pack_json,
+    validate_rule_report_json,
+};
 use pasol_static_score::score;
+use rand_core::OsRng;
 
 #[derive(Debug, Parser)]
 #[command(
@@ -27,11 +32,51 @@ enum Commands {
         format: Option<String>,
     },
     Rules {
-        feature_report: PathBuf,
-        pack: PathBuf,
+        #[command(subcommand)]
+        command: RuleCommands,
     },
     Score {
         feature_report: PathBuf,
+    },
+}
+
+#[derive(Debug, Subcommand)]
+enum RuleCommands {
+    Evaluate {
+        feature_report: PathBuf,
+        pack: PathBuf,
+    },
+    Key {
+        #[command(subcommand)]
+        command: KeyCommands,
+    },
+}
+#[derive(Debug, Subcommand)]
+enum KeyCommands {
+    Generate {
+        key_id: String,
+        private_key: PathBuf,
+        public_key: PathBuf,
+    },
+    List {
+        #[arg(long, default_value = "trusted-keys.json")]
+        store: PathBuf,
+    },
+    Trust {
+        key_id: String,
+        public_key: PathBuf,
+        #[arg(long, default_value = "trusted-keys.json")]
+        store: PathBuf,
+    },
+    Revoke {
+        key_id: String,
+        #[arg(long, default_value = "trusted-keys.json")]
+        store: PathBuf,
+    },
+    Remove {
+        key_id: String,
+        #[arg(long, default_value = "trusted-keys.json")]
+        store: PathBuf,
     },
 }
 
@@ -63,8 +108,11 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
             println!("{}", serde_json::to_string(&extracted)?);
         }
         Commands::Rules {
-            feature_report,
-            pack,
+            command:
+                RuleCommands::Evaluate {
+                    feature_report,
+                    pack,
+                },
         } => {
             let report_value: serde_json::Value =
                 serde_json::from_slice(&std::fs::read(feature_report)?)?;
@@ -79,10 +127,68 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
                 .map_err(|error| format!("rule-report schema validation failed: {error}"))?;
             println!("{}", serde_json::to_string(&output_value)?);
         }
+        Commands::Rules {
+            command: RuleCommands::Key { command },
+        } => match command {
+            KeyCommands::Generate {
+                key_id,
+                private_key,
+                public_key,
+            } => {
+                let signing = SigningKey::generate(&mut OsRng);
+                std::fs::write(private_key, hex(&signing.to_bytes()))?;
+                std::fs::write(public_key, hex(&signing.verifying_key().to_bytes()))?;
+                eprintln!("generated Ed25519 key {key_id}; protect the private-key file");
+            }
+            KeyCommands::List { store } => {
+                let store = if store.exists() {
+                    TrustedKeyStore::load(&store)?
+                } else {
+                    TrustedKeyStore::empty()
+                };
+                println!("{}", serde_json::to_string(&store)?);
+            }
+            KeyCommands::Trust {
+                key_id,
+                public_key,
+                store,
+            } => {
+                let mut keys = if store.exists() {
+                    TrustedKeyStore::load(&store)?
+                } else {
+                    TrustedKeyStore::empty()
+                };
+                let value = String::from_utf8(std::fs::read(public_key)?)?;
+                keys.add(TrustedKey {
+                    key_id,
+                    algorithm: "ed25519".into(),
+                    public_key_hex: value.trim().into(),
+                    status: KeyStatus::Active,
+                    trusted_from: "manual".into(),
+                    revoked_at: None,
+                    replacement_key_id: None,
+                })?;
+                keys.save_atomic(&store)?;
+            }
+            KeyCommands::Revoke { key_id, store } => {
+                let mut keys = TrustedKeyStore::load(&store)?;
+                keys.revoke(&key_id, "manual".into())?;
+                keys.save_atomic(&store)?;
+            }
+            KeyCommands::Remove { key_id, store } => {
+                let mut keys = TrustedKeyStore::load(&store)?;
+                keys.remove(&key_id)?;
+                keys.save_atomic(&store)?;
+            }
+        },
         Commands::Score { feature_report } => {
             let report = serde_json::from_slice(&std::fs::read(feature_report)?)?;
             println!("{}", serde_json::to_string(&score(&report))?);
         }
     }
     Ok(())
+}
+
+fn hex(bytes: &[u8]) -> String {
+    bytes.iter().map(|byte| format!("{byte:02x}")).collect()
 }
