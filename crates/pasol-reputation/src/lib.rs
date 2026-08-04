@@ -669,11 +669,20 @@ fn canonical_timestamp(value: OffsetDateTime) -> Result<String, time::error::For
 }
 
 pub fn report(hash: &str, result: ReputationResult) -> Result<ReputationReport, ReputationError> {
+    report_at(hash, result, &now_utc())
+}
+
+pub fn report_at(
+    hash: &str,
+    result: ReputationResult,
+    queried_at: &str,
+) -> Result<ReputationReport, ReputationError> {
     validate_sha256(hash)?;
+    validate_timestamp(queried_at)?;
     Ok(ReputationReport {
         schema_version: REPORT_SCHEMA_VERSION.into(),
         sha256: hash.into(),
-        queried_at: now_utc(),
+        queried_at: queried_at.into(),
         status: "complete".into(),
         results: vec![result],
         warnings: Vec::new(),
