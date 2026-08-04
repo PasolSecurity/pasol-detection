@@ -74,6 +74,32 @@ fn actual_binary_reputation_matrix_and_import_export() {
     assert!(unknown.status.success());
     assert!(String::from_utf8_lossy(&unknown.stdout).contains("\"state\":\"unknown\""));
     assert!(unknown.stderr.is_empty());
+    let cache = dir.join("cache.json");
+    let first_cached = run(&[
+        "reputation",
+        "lookup",
+        &benign,
+        "--store",
+        store.to_str().unwrap(),
+        "--cache",
+        cache.to_str().unwrap(),
+        "--format",
+        "json",
+    ]);
+    assert!(first_cached.status.success());
+    let second_cached = run(&[
+        "reputation",
+        "lookup",
+        &benign,
+        "--store",
+        store.to_str().unwrap(),
+        "--cache",
+        cache.to_str().unwrap(),
+        "--format",
+        "json",
+    ]);
+    assert!(second_cached.status.success());
+    assert!(String::from_utf8_lossy(&second_cached.stdout).contains("\"hit\":true"));
     let conflict = run(&[
         "reputation",
         "add",

@@ -7,8 +7,9 @@ use ed25519_dalek::SigningKey;
 use pasol_detection_sdk::{FeatureExtractor, ParserReport, validate_feature_report_json};
 use pasol_features::PeFeatureExtractor;
 use pasol_reputation::{
-    LocalStore, ReputationEntry, ReputationState, now_utc, report, validate_report_json,
-    validate_sha256, validate_store_json,
+    CacheKey, CachePolicy, LocalReputationProvider, LocalStore, ReputationCache, ReputationContext,
+    ReputationEntry, ReputationProvider, ReputationState, Sha256, SystemClock, now_utc, report,
+    validate_report_json, validate_sha256, validate_store_json,
 };
 use pasol_rules::{
     KeyStatus, RuleLimits, SignedRulePack, TrustedKey, TrustedKeyStore, evaluate, load_pack,
@@ -56,6 +57,8 @@ enum ReputationCommands {
         store: PathBuf,
         #[arg(long)]
         format: Option<String>,
+        #[arg(long)]
+        cache: Option<PathBuf>,
     },
     List {
         #[arg(long)]
@@ -346,6 +349,7 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
                 sha256,
                 store,
                 format,
+                cache,
             } => {
                 if format
                     .as_deref()
@@ -354,7 +358,44 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
                     return Err("format must be human or json".into());
                 }
                 validate_sha256(&sha256)?;
-                let result = LocalStore::load(&store)?.lookup(&sha256)?;
+                let local = LocalStore::load(&store)?;
+                let clock = SystemClock;
+                let source_revision = local.revision()?;
+                let typed_hash = Sha256::parse(&sha256)?;
+                let key = CacheKey {
+                    provider: "local-pasol-reputation".into(),
+                    provider_version: "0.1.0".into(),
+                    query_type: "sha256".into(),
+                    sha256: sha256.clone(),
+                };
+                let result = if let Some(cache_path) = cache {
+                    let mut cache_store = if cache_path.exists() {
+                        ReputationCache::load(&cache_path)?
+                    } else {
+                        ReputationCache::empty()
+                    };
+                    if let Some(hit) = cache_store.get(&key, &source_revision, &clock)? {
+                        hit
+                    } else {
+                        let provider = LocalReputationProvider::new(local);
+                        let context = ReputationContext {
+                            clock: &clock,
+                            query_type: "sha256",
+                        };
+                        let fresh = provider.lookup_hash(&typed_hash, &context)?;
+                        cache_store.put(
+                            key,
+                            source_revision,
+                            fresh.clone(),
+                            &clock,
+                            CachePolicy::default(),
+                        )?;
+                        cache_store.save_atomic(&cache_path)?;
+                        fresh
+                    }
+                } else {
+                    local.lookup(&sha256)?
+                };
                 let output = report(&sha256, result)?;
                 let value = serde_json::to_value(&output)?;
                 validate_report_json(&value)
