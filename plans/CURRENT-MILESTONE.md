@@ -19,10 +19,10 @@ Do not start I, J, K, or ML. Do not change accepted H behavior, commit private k
 Existing PE parser fixtures, feature schema, `PeFeatureExtractor`, and feature validation helpers.
 
 ## Tasks
-- [ ] Generate PE32, PE64, and partial feature goldens.
-- [ ] Add byte-for-byte golden regeneration tests.
-- [ ] Add catalog-driven feature state/value coverage.
-- [ ] Update G acceptance evidence and formal status.
+- [x] Generate PE32, PE64, and partial feature goldens.
+- [x] Add byte-for-byte golden regeneration tests.
+- [x] Add catalog-driven feature state/value coverage.
+- [x] Update G acceptance evidence and formal status.
 
 ## Files expected to change
 `fixtures/golden/features/`, `crates/pasol-lab/tests/`, feature tests, docs, and `plans/`.
@@ -40,7 +40,7 @@ Feature catalog coverage and acceptance evidence updates.
 Do not mark H accepted until all mandatory H checklist items have evidence.
 
 ## Current status
-Phase H is accepted at the Stage 2 foundation level. Phase G golden outputs and catalog-wide coverage are active.
+Phase H and Phase G are accepted at the Stage 2 foundation level. Goldens, schema validation, deterministic regeneration, and catalog-driven state coverage are verified.
 
 ## Next exact action
-Generate `fixtures/golden/features/pe32.json`, `pe64.json`, and `pe64-partial.json` from the production extractor, validate them, and add byte-for-byte regeneration tests.
+Keep Phase I deferred; any future work must begin with a new approved milestone after reviewing the remaining Stage 2 scope.

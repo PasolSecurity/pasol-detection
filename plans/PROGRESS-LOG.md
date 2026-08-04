@@ -132,6 +132,28 @@ Validate golden reports and add operator/state tests.
 ### Next exact action
 Add the operator/state matrix tests and validate each golden rule report against the rule-report schema.
 
+## 2026-08-03 — Phase G acceptance closure
+### Planned work
+Generate deterministic feature goldens and add catalog-driven state coverage.
+### Work completed
+Added PE32, PE64, and partial parser fixtures/goldens, byte-for-byte regeneration tests, schema validation, and catalog-driven feature coverage for positive, negative, unknown, unsupported, and partial paths.
+### Files changed
+`fixtures/golden/features/`, `fixtures/pe64-partial-parser-report.json`, `crates/pasol-lab/tests/features.rs`, and planning files.
+### Tests run
+`cargo fmt --all -- --check`; `cargo test -p pasol-lab --test features`; `cargo clippy --workspace --all-targets --all-features -- -D warnings`; `cargo test --workspace --all-features`.
+### Results
+All checks passed; 3 feature tests and the full workspace suite passed. Windows incremental cleanup warnings only.
+### Commit
+`ffa4442`.
+### Checklist changes
+Phase G golden and catalog coverage items marked complete; G accepted at the Stage 2 foundation level.
+### Known limitations
+Not-applicable is outside the PE applicability domain; the six-state SDK contract remains tested separately.
+### Remaining work
+No mandatory G/H implementation work remains. Phase I remains deferred.
+### Next exact action
+Do not begin Phase I without a new approved milestone and review of the full Stage 2 plan.
+
 ## 2026-08-03 — Schema drift and starter fixtures
 ### Planned work
 Add a checked-in schema validation gate and positive/negative fixtures for the starter rule.
