@@ -22,7 +22,7 @@ No uploads by default; unknown/unavailable remain distinct; secrets redacted.
 - [x] Offline, conflict, expiry, schema, import/export, and first actual-binary CLI tests.
 - [~] Typed JSON-error and exit-class matrix.
 ## Documentation checklist
-- [ ] Provider and privacy docs.
+- [x] Provider, store, privacy, and threat-model docs. Evidence: `../TEST-EVIDENCE.md#2026-08-04-reputation-documentation-closure`; Commit `14d9849`.
 ## Acceptance criteria
 All provider and offline tests pass.
 ## Current status
@@ -30,4 +30,4 @@ J1–J4 are verified at the core level; final J5/J6 evidence remains. No network
 ## Completed commits
 None.
 ## Remaining work
-Create the Phase J fuzz workspace and add bounded targets for reputation reports, CLI errors, local stores, caches, imports, hashes, timestamps, conflicts, and cache keys.
+Reconcile the Phase J acceptance checklist, risks, deferred work, and final evidence without marking scheduled fuzzing or CI execution complete.

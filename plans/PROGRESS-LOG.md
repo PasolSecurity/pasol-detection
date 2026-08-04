@@ -198,6 +198,50 @@ Add bounded fuzz targets and compile them, then complete reputation documentatio
 ### Next exact action
 Create the Phase J fuzz workspace and add bounded targets for reputation reports, CLI errors, local stores, caches, imports, hashes, timestamps, conflicts, and cache keys.
 
+## 2026-08-04 — Reputation fuzz-target compilation
+### Planned work
+Create and compile bounded Phase J fuzz targets for parsing, validation, state resolution, expiration, and round trips.
+### Work completed
+Added seven standalone libFuzzer binaries with 1 MiB input caps, 4 MiB serialization caps, schema validation, fixed-clock state checks, and no file/network side effects. Added a CI compile step and ignored fuzz build artifacts.
+### Files changed
+`fuzz/Cargo.toml`, `fuzz/fuzz_targets/*.rs`, `fuzz/.gitignore`, `.github/workflows/schema-drift.yml`.
+### Tests run
+`cargo fmt --manifest-path fuzz/Cargo.toml --all`; `cargo check --manifest-path fuzz/Cargo.toml --bins`.
+### Results
+All seven fuzz targets compiled successfully on Windows.
+### Commit
+`d770c90`; cleanup `585b0cf`.
+### Checklist changes
+J7 fuzz targets implemented and compile-verified in `TEST-EVIDENCE.md`; scheduled fuzzing and corpus regression remain unchecked.
+### Known limitations
+`cargo-fuzz` is not installed locally, so no native fuzz campaign was run. The workflow currently compiles targets but does not schedule campaigns.
+### Remaining work
+Add scheduled bounded fuzz campaigns and regression-corpus handling, then complete reputation documentation and final acceptance evidence.
+### Next exact action
+Complete the Phase J reputation provider, store, cache, privacy, and threat-model documentation and reconcile the remaining acceptance checkboxes.
+
+## 2026-08-04 — Reputation documentation closure
+### Planned work
+Finalize the Phase J provider, store, privacy, and threat-model documentation.
+### Work completed
+Documented all reputation states, conflict and expiration semantics, store/cache limits and invalidation, atomic persistence and import rollback, CLI exit classes and JSON errors, offline privacy guarantees, corruption recovery, and non-enforcement boundaries.
+### Files changed
+`docs/REPUTATION-PROVIDERS.md`, `docs/LOCAL-REPUTATION-STORE.md`, `docs/REPUTATION-PRIVACY.md`, `docs/REPUTATION-THREAT-MODEL.md`.
+### Tests run
+Documentation review against the Phase J acceptance requirements.
+### Results
+All required documentation topics are present; Windows ACL hardening remains explicitly open.
+### Commit
+`14d9849`.
+### Checklist changes
+J8 documentation review is recorded in `TEST-EVIDENCE.md`; scheduled fuzzing, corpus regression, and final acceptance remain open.
+### Known limitations
+No scheduled fuzz campaign has run locally; CI workflow activation remains unverified.
+### Remaining work
+Reconcile final Phase J acceptance checkboxes and record unresolved risks/deferred work.
+### Next exact action
+Reconcile the Phase J acceptance checklist, risks, deferred work, and final evidence without marking scheduled fuzzing or CI execution complete.
+
 ## 2026-08-04 — Reputation store and CLI hardening
 ### Planned work
 Add the clock abstraction, transactional import/export, deterministic store behavior, and actual-binary CLI coverage.

@@ -361,5 +361,45 @@ All generated cases and deterministic invariants passed on Windows. No network, 
 ### Conclusion
 The J7 property-test slice is verified. Fuzz targets, documentation, and final J8 acceptance remain open.
 
+## 2026-08-04 — Reputation fuzz-target compilation
+### Requirement verified
+Seven bounded in-memory fuzz targets were added for report, local-store, cache, import, conflict, expiration, and store/cache round-trip paths. Inputs are capped at 1 MiB and serialized outputs at 4 MiB; no target performs network access or file writes.
+### Commit tested
+`d770c90`, with build-artifact cleanup in `585b0cf`.
+### Environment
+Windows; rustc/cargo 1.97.1. `cargo-fuzz` was not installed locally.
+### Commands
+`cargo fmt --manifest-path fuzz/Cargo.toml --all`; `cargo check --manifest-path fuzz/Cargo.toml --bins`.
+### Results
+All seven fuzz binaries compiled successfully with exit code 0 after one compile fix. The generated `fuzz/target` directory is ignored and not tracked.
+### Expected result
+Every target compiles, remains bounded, and exercises production validators without network, uploads, or unrestricted filesystem operations.
+### Actual result
+Seven targets compiled successfully. A native `cargo fuzz build` and scheduled campaign were not run because `cargo-fuzz` is unavailable in this Windows environment.
+### Artifacts or fixtures
+`fuzz/Cargo.toml`, `fuzz/fuzz_targets/`, `fuzz/.gitignore`, schema-drift compile step.
+### Conclusion
+Fuzz targets are implemented and compile-verified. Scheduled fuzzing, regression corpora, documentation, and final J8 acceptance remain open.
+
+## 2026-08-04 — Reputation documentation closure
+### Requirement verified
+Provider semantics, store safety, privacy behavior, cache invalidation, CLI exit classes, import rollback, limits, corruption recovery, and the Phase J threat model are documented.
+### Commit tested
+`14d9849`.
+### Environment
+Windows; repository inspection after documentation update.
+### Commands
+Documentation review of `docs/REPUTATION-PROVIDERS.md`, `docs/LOCAL-REPUTATION-STORE.md`, `docs/REPUTATION-PRIVACY.md`, and `docs/REPUTATION-THREAT-MODEL.md`.
+### Results
+All required Phase J documentation topics are present; no code behavior was changed in this slice.
+### Expected result
+Documentation distinguishes all states, unknown from benign, conflict and expiration behavior, bounds, atomic persistence, privacy, typed errors, and non-enforcement scope.
+### Actual result
+The reviewed documents contain the required semantics and retain Windows ACL hardening as an open limitation.
+### Artifacts or fixtures
+The four reputation documentation files listed above.
+### Conclusion
+Documentation closure is verified. Scheduled fuzzing, regression corpus, and final acceptance reconciliation remain open.
+
 ### Additional workspace verification
 `cargo test --workspace --all-features` passed after commit `035c087`; 25 tests and all doc tests completed successfully. Windows incremental cleanup warnings remained non-fatal.

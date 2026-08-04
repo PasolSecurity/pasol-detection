@@ -27,11 +27,23 @@
 ## Golden evidence and schema drift
 - Status: Open
 - Severity: Medium
-- Area: G/H testing
-- Description: Golden reports and CI drift checks are not yet checked in.
-- Impact: Regression evidence remains incomplete.
-- Mitigation: Current milestone tracks exact next action and acceptance remains unchecked.
+- Area: J testing
+- Description: Reputation goldens and the schema-drift workflow are checked in, but hosted CI execution has not been verified locally.
+- Impact: Cross-platform hosted execution remains unconfirmed.
+- Mitigation: Workflow includes Ubuntu and Windows matrices; retain local evidence as separate from hosted-run evidence.
 - Owner: Detection maintainers
-- Introduced: 2026-08-03
-- Target resolution: Final G/H slice
+- Introduced: 2026-08-04
+- Target resolution: First successful hosted workflow run
+- Resolution evidence: Pending
+
+## Fuzz campaign availability
+- Status: Open
+- Severity: Medium
+- Area: J7 validation
+- Description: Seven fuzz targets compile, but `cargo-fuzz` is not installed in the current Windows environment and no scheduled campaign or regression corpus has run.
+- Impact: Compile coverage exists without campaign-level crash, hang, or allocation evidence.
+- Mitigation: Keep the compile gate active; run bounded scheduled campaigns in CI and preserve minimized regressions.
+- Owner: Detection maintainers
+- Introduced: 2026-08-04
+- Target resolution: First scheduled fuzz campaign and corpus check-in
 - Resolution evidence: Pending
