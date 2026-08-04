@@ -1,5 +1,7 @@
 #![allow(clippy::unwrap_used)]
 
+use pasol_reputation::validate_cli_error_json;
+use serde_json::Value;
 use std::{
     fs,
     path::PathBuf,
@@ -26,6 +28,14 @@ fn temp() -> PathBuf {
     ));
     fs::create_dir_all(&p).unwrap();
     p
+}
+
+fn assert_json_error(output: &std::process::Output, expected_code: u8, expected_class: &str) {
+    assert_eq!(output.status.code(), Some(i32::from(expected_code)));
+    assert!(output.stdout.is_empty());
+    let value: Value = serde_json::from_slice(&output.stderr).unwrap();
+    validate_cli_error_json(&value).unwrap();
+    assert_eq!(value["error"]["class"], expected_class);
 }
 
 #[test]
@@ -160,8 +170,7 @@ fn actual_binary_reputation_matrix_and_import_export() {
         "--format",
         "json",
     ]);
-    assert_eq!(invalid.status.code(), Some(4));
-    assert!(invalid.stdout.is_empty());
+    assert_json_error(&invalid, 4, "invalid_input");
     let bad_format = run(&[
         "reputation",
         "list",
@@ -181,7 +190,31 @@ fn actual_binary_reputation_matrix_and_import_export() {
         "--format",
         "json",
     ]);
-    assert_eq!(invalid_store.status.code(), Some(4));
+    assert_json_error(&invalid_store, 4, "invalid_input");
+    let missing_store = run(&[
+        "reputation",
+        "lookup",
+        &"f".repeat(64),
+        "--store",
+        dir.join("missing.json").to_str().unwrap(),
+        "--format",
+        "json",
+    ]);
+    assert_json_error(&missing_store, 3, "io");
+    let corrupt_cache = dir.join("cache-corrupt.json");
+    fs::write(&corrupt_cache, b"not-json").unwrap();
+    let invalid_cache = run(&[
+        "reputation",
+        "lookup",
+        &benign,
+        "--store",
+        store.to_str().unwrap(),
+        "--cache",
+        corrupt_cache.to_str().unwrap(),
+        "--format",
+        "json",
+    ]);
+    assert_json_error(&invalid_cache, 4, "invalid_input");
     let _ = fs::remove_dir_all(dir);
 }
 

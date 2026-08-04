@@ -237,6 +237,12 @@ pub fn validate_store_json(value: &Value) -> Result<(), String> {
         include_str!("../../../schemas/local-reputation-store-1.0.0.schema.json"),
     )
 }
+pub fn validate_cli_error_json(value: &Value) -> Result<(), String> {
+    validate(
+        value,
+        include_str!("../../../schemas/reputation-cli-error-1.0.0.schema.json"),
+    )
+}
 fn validate(value: &Value, schema_text: &str) -> Result<(), String> {
     let schema: Value = serde_json::from_str(schema_text).map_err(|e| e.to_string())?;
     let validator = jsonschema::validator_for(&schema).map_err(|e| e.to_string())?;

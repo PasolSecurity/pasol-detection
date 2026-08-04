@@ -8,8 +8,8 @@ use pasol_detection_sdk::{FeatureExtractor, ParserReport, validate_feature_repor
 use pasol_features::PeFeatureExtractor;
 use pasol_reputation::{
     CacheKey, CachePolicy, LocalReputationProvider, LocalStore, ReputationCache, ReputationContext,
-    ReputationEntry, ReputationProvider, ReputationState, Sha256, SystemClock, now_utc, report,
-    validate_report_json, validate_sha256, validate_store_json,
+    ReputationEntry, ReputationError, ReputationProvider, ReputationState, Sha256, SystemClock,
+    now_utc, report, validate_report_json, validate_sha256, validate_store_json,
 };
 use pasol_rules::{
     KeyStatus, RuleLimits, SignedRulePack, TrustedKey, TrustedKeyStore, evaluate, load_pack,
@@ -183,9 +183,68 @@ fn main() -> std::process::ExitCode {
     match run() {
         Ok(()) => std::process::ExitCode::SUCCESS,
         Err(error) => {
-            eprintln!("{error}");
-            std::process::ExitCode::from(4)
+            let (code, class, message) = classify_error(error.as_ref());
+            if format_json_requested() {
+                eprintln!(
+                    "{{\"schema_version\":\"1.0.0\",\"error\":{{\"code\":\"{code}\",\"class\":\"{class}\",\"message\":\"{message}\"}}}}"
+                );
+            } else {
+                eprintln!("{message}");
+            }
+            std::process::ExitCode::from(exit_code(class))
         }
+    }
+}
+
+fn format_json_requested() -> bool {
+    let args: Vec<String> = std::env::args().collect();
+    args.windows(2)
+        .any(|pair| pair[0] == "--format" && pair[1] == "json")
+}
+
+fn classify_error(
+    error: &(dyn std::error::Error + 'static),
+) -> (&'static str, &'static str, &'static str) {
+    if let Some(error) = error.downcast_ref::<ReputationError>() {
+        return match error {
+            ReputationError::InvalidHash => (
+                "reputation.hash.invalid",
+                "invalid_input",
+                "The SHA-256 hash is invalid",
+            ),
+            ReputationError::Schema(_) | ReputationError::InvalidStore(_) => (
+                "reputation.store.invalid",
+                "invalid_input",
+                "The reputation store or cache is invalid",
+            ),
+            ReputationError::Limit(_) => (
+                "reputation.resource.limit",
+                "resource_limit",
+                "The reputation resource limit was exceeded",
+            ),
+            ReputationError::Io(_) => (
+                "reputation.io.failure",
+                "io",
+                "The reputation file could not be read or written",
+            ),
+        };
+    }
+    (
+        "pasol.cli.invalid_input",
+        "invalid_input",
+        "The command input is invalid",
+    )
+}
+
+fn exit_code(class: &str) -> u8 {
+    match class {
+        "io" => 3,
+        "resource_limit" => 5,
+        "provider_unavailable" => 6,
+        "integrity" => 7,
+        "internal" => 1,
+        "usage" => 2,
+        _ => 4,
     }
 }
 
