@@ -281,5 +281,45 @@ All assertions passed. Cache reports `hit=false` on fresh provider results and `
 ### Conclusion
 J4 cache core is verified; typed exits, goldens, schema-drift CI, property/fuzz tests, and final J6 evidence remain.
 
+## 2026-08-04 — Typed reputation CLI errors
+### Requirement verified
+Reputation CLI failures now use stable exit classes and a versioned JSON error envelope when `--format json` is requested. Error output is emitted on stderr, success output remains on stdout, and normalized messages do not expose local paths.
+### Commit tested
+`210eeff`.
+### Environment
+Windows; rustc/cargo 1.97.1.
+### Commands
+`cargo fmt --all`; `cargo test -p pasol-lab --test reputation_cli -p pasol-reputation`; `cargo clippy --workspace --all-targets --all-features -- -D warnings`.
+### Results
+Two actual-binary reputation CLI tests and all reputation unit tests passed; Clippy passed with warnings denied.
+### Expected result
+Invalid input exits 4, missing files exit 3, corrupt store/cache errors exit 4, JSON errors validate against `reputation-cli-error-1.0.0.schema.json`, and stdout remains empty on failure.
+### Actual result
+All assertions passed on Windows. Invalid hash, corrupt store, missing store, and corrupt cache produced schema-valid JSON errors on stderr with the expected exit classes. Existing unknown lookup and cache-hit success paths remained exit 0.
+### Artifacts or fixtures
+`schemas/reputation-cli-error-1.0.0.schema.json`, `validate_cli_error_json`, `crates/pasol-lab/tests/reputation_cli.rs`.
+### Conclusion
+The typed CLI error slice is verified. Reputation goldens, schema-drift extension, property/fuzz coverage, and final J6 acceptance remain open.
+
+## 2026-08-04 — Workspace regression after typed errors
+### Requirement verified
+The typed error implementation does not regress accepted G/H behavior or existing J1–J4 reputation behavior.
+### Commit tested
+`210eeff`.
+### Environment
+Windows; rustc/cargo 1.97.1.
+### Commands
+`cargo test --workspace --all-features`.
+### Results
+All workspace unit, integration, schema, feature, rule, reputation, scoring, and documentation tests passed.
+### Expected result
+Workspace tests pass with exit code 0 and no functional regressions.
+### Actual result
+Exit code 0; all listed tests passed. Windows incremental cleanup warnings were non-fatal.
+### Artifacts or fixtures
+Workspace test binaries and checked-in schemas/goldens.
+### Conclusion
+The typed CLI error slice is compatible with the current workspace; J5/J6 acceptance work remains open.
+
 ### Additional workspace verification
 `cargo test --workspace --all-features` passed after commit `035c087`; 25 tests and all doc tests completed successfully. Windows incremental cleanup warnings remained non-fatal.

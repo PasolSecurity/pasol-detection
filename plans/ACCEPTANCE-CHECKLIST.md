@@ -21,8 +21,12 @@
 - [ ] YARA-X worker, packs, limits, schemas, CLI, and tests.
 
 ## J — Reputation
-- [~] J1 contracts and schemas active; implementation evidence pending.
-- [ ] Offline provider, cache, mock provider, privacy, schema, CLI, and tests.
+- [x] J1 provider contract, versioned records, states, and schema validation. Evidence: `TEST-EVIDENCE.md#2026-08-04-reputation-store-and-cli-hardening`; Commits `6c9f199`, `3574c22`.
+- [x] J2 offline local provider with allowlist/blocklist semantics and conflict preservation. Evidence: `TEST-EVIDENCE.md#2026-08-04-reputation-store-and-cli-hardening`.
+- [x] J3 bounded persistent store, atomic writes, deterministic import/export, and duplicate rollback. Evidence: `TEST-EVIDENCE.md#2026-08-04-reputation-store-and-cli-hardening`.
+- [x] J4 provider-scoped persistent cache with TTL, revision invalidation, deterministic eviction, and corruption rejection. Evidence: `TEST-EVIDENCE.md#2026-08-04-persistent-reputation-cache`; Commit `035c087`.
+- [~] J5 typed CLI exit classes, JSON errors, full integration matrix, and offline privacy behavior. Evidence: `TEST-EVIDENCE.md#2026-08-04-typed-reputation-cli-errors`; Commit `210eeff`.
+- [ ] J6 deterministic goldens, schema-drift CI, property/fuzz coverage, documentation, and final acceptance evidence.
 
 ## K — Additional Parsers
 - [ ] .NET, scripts, LNK, ZIP, Office, PDF, MSI/CAB, ISO, fixtures, fuzzing, and parser release.

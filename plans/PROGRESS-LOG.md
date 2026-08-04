@@ -132,6 +132,28 @@ Validate golden reports and add operator/state tests.
 ### Next exact action
 Add the operator/state matrix tests and validate each golden rule report against the rule-report schema.
 
+## 2026-08-04 — Typed reputation CLI errors
+### Planned work
+Add stable reputation CLI exit classes and structured JSON errors before beginning reputation goldens and final J6 evidence.
+### Work completed
+Added the versioned CLI error schema, mapped reputation failures to typed exit classes, emitted structured errors to stderr for JSON mode, and expanded actual-binary tests for invalid hash, corrupt store/cache, and missing-store cases.
+### Files changed
+`crates/pasol-lab/src/main.rs`, `crates/pasol-lab/tests/reputation_cli.rs`, `crates/pasol-reputation/src/lib.rs`, `schemas/reputation-cli-error-1.0.0.schema.json`.
+### Tests run
+`cargo fmt --all`; `cargo test -p pasol-lab --test reputation_cli -p pasol-reputation`; `cargo clippy --workspace --all-targets --all-features -- -D warnings`.
+### Results
+All focused tests passed on Windows; Clippy passed with warnings denied.
+### Commit
+`210eeff`.
+### Checklist changes
+J5 typed exit/error behavior is verified in `TEST-EVIDENCE.md`; J5 and J6 remain open pending goldens and broader integration evidence.
+### Known limitations
+Clap usage errors are still handled by Clap’s native usage path; reputation provider-unavailable and integrity-specific classes have no active provider implementation yet.
+### Remaining work
+Add deterministic reputation goldens, extend schema-drift CI, add property/fuzz coverage, and complete final Phase J acceptance evidence.
+### Next exact action
+Add deterministic reputation report/store/cache golden fixtures and byte-for-byte regeneration tests with runtime schema validation.
+
 ## 2026-08-04 — Reputation store and CLI hardening
 ### Planned work
 Add the clock abstraction, transactional import/export, deterministic store behavior, and actual-binary CLI coverage.

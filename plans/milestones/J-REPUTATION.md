@@ -16,10 +16,11 @@ No uploads by default; unknown/unavailable remain distinct; secrets redacted.
 - [x] J2 offline local provider.
 - [x] J3 persistent store.
 - [x] J4 cache and expiration semantics.
-- [ ] J5 CLI and integration tests.
+- [~] J5 CLI and integration tests, including typed exit classes and schema-valid JSON errors. Evidence: `../TEST-EVIDENCE.md#2026-08-04-typed-reputation-cli-errors`; Commit `210eeff`.
 - [ ] J6 goldens, CI, documentation, and acceptance.
 ## Test checklist
-- [x] Offline, conflict, expiry, schema, import/export, and CLI tests.
+- [x] Offline, conflict, expiry, schema, import/export, and first actual-binary CLI tests.
+- [~] Typed JSON-error and exit-class matrix.
 ## Documentation checklist
 - [ ] Provider and privacy docs.
 ## Acceptance criteria
@@ -29,4 +30,4 @@ J1–J4 are verified at the core level; final J5/J6 evidence remains. No network
 ## Completed commits
 None.
 ## Remaining work
-Implement typed CLI exit classes, structured JSON errors, and reputation schema-drift/golden coverage.
+Add deterministic reputation report/store/cache golden fixtures and byte-for-byte regeneration tests with runtime schema validation.
