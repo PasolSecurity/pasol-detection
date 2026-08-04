@@ -526,3 +526,24 @@ No hosted compile, replay, or smoke campaign evidence yet.
 Commit and push the workflow correction, rerun hosted workflow, capture job logs and artifact counts.
 ### Next exact action
 Push the nightly-toolchain workflow correction and rerun `reputation-fuzz` from `main`.
+## 2026-08-04 — Hosted nightly smoke success
+### Planned work
+Verify hosted Phase J fuzz execution.
+### Work completed
+Corrected the workflow to select nightly Rust and dispatched run 30931071619.
+### Files changed
+`.github/workflows/reputation-fuzz.yml`, `plans/`.
+### Tests run
+Hosted `cargo fuzz build` and seven bounded fifteen-second campaigns.
+### Results
+Compile and smoke jobs passed; compile-and-replay was skipped on manual dispatch.
+### Commit
+a6d54ee
+### Checklist changes
+Hosted smoke evidence recorded; full hosted acceptance remains open pending replay.
+### Known limitations
+Fourteen corpus seeds have not yet been replayed in hosted CI.
+### Remaining work
+Enable compile-and-replay for workflow dispatch and rerun.
+### Next exact action
+Push the manual-dispatch replay change and rerun the workflow.

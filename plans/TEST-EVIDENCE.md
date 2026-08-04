@@ -482,3 +482,22 @@ All tests passed, including the complete workspace test groups.
 Feature/rule/reputation goldens and schemas under `fixtures/golden/` and `schemas/`.
 ### Conclusion
 Local regression gate passed; hosted fuzz execution is still pending.
+## 2026-08-04 — Hosted fuzz smoke run 30931071619
+### Requirement verified
+Hosted nightly fuzz compilation and bounded smoke campaigns.
+### Commit tested
+a6d54ee
+### Environment
+GitHub Actions Ubuntu 24.04.4, runner 2.336.0, nightly Rust, cargo-fuzz 0.13.2.
+### Commands
+Workflow `reputation-fuzz` manual dispatch; `cargo fuzz build`; seven `cargo fuzz run` campaigns with `-max_total_time=15`.
+### Results
+Compile fuzz targets passed; all seven campaigns passed.
+### Expected result
+No crash, timeout, invariant failure, or memory failure.
+### Actual result
+Success; no artifacts uploaded, indicating no failure artifacts.
+### Artifacts or fixtures
+Workflow run: https://github.com/PasolSecurity/pasol-detection/actions/runs/30931071619
+### Conclusion
+Hosted smoke evidence is green. Compile/replay remained skipped and is being enabled for manual dispatch.

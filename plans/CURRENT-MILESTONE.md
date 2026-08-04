@@ -49,4 +49,4 @@ Do not mark H accepted until all mandatory H checklist items have evidence.
 Phase G and Phase H are accepted at the Stage 2 foundation level. J1–J4 core behavior and the first actual-binary J5 matrix are verified. Final J5/J6 evidence remains open. Phase I remains deferred.
 
 ## Next exact action
-Fix the hosted fuzz workflow to install and select the pinned nightly Rust toolchain required by cargo-fuzz, then rerun the manual hosted workflow and record compile/replay/smoke results.
+Enable compile-and-replay for manual dispatch, then rerun the hosted fuzz workflow and record seven-target compilation, fourteen-seed replay, and seven smoke-campaign results.
