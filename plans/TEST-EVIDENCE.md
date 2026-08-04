@@ -260,3 +260,23 @@ All assertions passed on Windows. Incremental-directory Access Denied cleanup wa
 `crates/pasol-reputation/src/lib.rs`, `crates/pasol-lab/tests/reputation_cli.rs`, import/export CLI commands, and updated store schema.
 ### Conclusion
 J1–J3 core behavior and the first J5 integration matrix are verified; J4 cache and J6 acceptance evidence remain open.
+
+## 2026-08-04 — Persistent reputation cache
+### Requirement verified
+Provider/version/query/hash cache keys, injected-clock expiration, state-specific TTLs, source-revision invalidation, bounded deterministic eviction, atomic persistence, runtime schema validation, corruption rejection, and CLI cache-hit behavior.
+### Commit tested
+`035c087`.
+### Environment
+Windows; rustc/cargo 1.97.1.
+### Commands
+`cargo fmt --all`; `cargo test -p pasol-reputation --all-features`; `cargo test -p pasol-lab --test reputation_cli`; `cargo clippy --workspace --all-targets --all-features -- -D warnings`.
+### Results
+Five reputation unit tests and two actual-binary CLI tests passed; Clippy passed.
+### Expected result
+Cache hits require matching provider/version/query/hash/source revision; expired and invalidated entries miss; temporary states never become benign.
+### Actual result
+All assertions passed. Cache reports `hit=false` on fresh provider results and `hit=true` on repeated cached lookup.
+### Artifacts or fixtures
+`schemas/reputation-cache-1.0.0.schema.json`, `ReputationCache`, `CachePolicy`, CLI `--cache` option.
+### Conclusion
+J4 cache core is verified; typed exits, goldens, schema-drift CI, property/fuzz tests, and final J6 evidence remain.

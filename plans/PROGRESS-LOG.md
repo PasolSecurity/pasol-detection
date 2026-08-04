@@ -154,6 +154,28 @@ Implement J4 cache semantics and complete J5/J6 evidence.
 ### Next exact action
 Implement the provider-scoped persistent cache with injected clock, state-specific TTLs, source-revision invalidation, bounded entries, and deterministic eviction.
 
+## 2026-08-04 — Persistent reputation cache
+### Planned work
+Implement the provider-scoped persistent cache and extend the actual-binary cache test.
+### Work completed
+Added versioned cache schema, provider/version/query/hash keys, source revision checks, fixed-clock TTL policies, bounded deterministic eviction, atomic reopen validation, corruption handling, and CLI cache integration.
+### Files changed
+`crates/pasol-reputation/src/lib.rs`, `crates/pasol-lab/src/main.rs`, `crates/pasol-lab/tests/reputation_cli.rs`, `schemas/reputation-cache-1.0.0.schema.json`.
+### Tests run
+`cargo fmt --all`; `cargo test -p pasol-reputation --all-features`; `cargo test -p pasol-lab --test reputation_cli`; `cargo clippy --workspace --all-targets --all-features -- -D warnings`.
+### Results
+Five reputation unit tests and two actual-binary CLI tests passed; Clippy passed on Windows.
+### Commit
+`035c087`.
+### Checklist changes
+J4 marked complete; final J5/J6 work remains.
+### Known limitations
+Typed CLI exit classes, structured JSON errors, reputation goldens, schema-drift CI, property/fuzz tests, and final acceptance remain.
+### Remaining work
+Complete CLI error semantics and regression evidence.
+### Next exact action
+Implement typed CLI exit classes and structured JSON errors, then extend reputation schema-drift and golden coverage.
+
 ## 2026-08-03 — Phase G acceptance closure
 ### Planned work
 Generate deterministic feature goldens and add catalog-driven state coverage.

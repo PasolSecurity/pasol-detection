@@ -15,7 +15,7 @@ No uploads by default; unknown/unavailable remain distinct; secrets redacted.
 - [x] J1 provider contract, descriptors, states, report types, and runtime schemas.
 - [x] J2 offline local provider.
 - [x] J3 persistent store.
-- [ ] J4 cache and expiration semantics.
+- [x] J4 cache and expiration semantics.
 - [ ] J5 CLI and integration tests.
 - [ ] J6 goldens, CI, documentation, and acceptance.
 ## Test checklist
@@ -25,8 +25,8 @@ No uploads by default; unknown/unavailable remain distinct; secrets redacted.
 ## Acceptance criteria
 All provider and offline tests pass.
 ## Current status
-J1–J3 are verified at the core level; J4 cache semantics and final J5/J6 evidence remain. No network or remote-provider implementation exists.
+J1–J4 are verified at the core level; final J5/J6 evidence remains. No network or remote-provider implementation exists.
 ## Completed commits
 None.
 ## Remaining work
-Implement J4 provider-scoped persistent cache and deterministic expiration tests.
+Implement typed CLI exit classes, structured JSON errors, and reputation schema-drift/golden coverage.
