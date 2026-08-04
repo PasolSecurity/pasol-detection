@@ -154,6 +154,28 @@ No mandatory G/H implementation work remains. Phase I remains deferred.
 ### Next exact action
 Do not begin Phase I without a new approved milestone and review of the full Stage 2 plan.
 
+## 2026-08-03 — J1/J2/J3 foundation
+### Planned work
+Implement the first offline reputation foundation slice.
+### Work completed
+Added the reputation crate, versioned report/store schemas, provider states, local lookup, expiration filtering, conflict handling, atomic store writes, and CLI lookup/list/add/remove/validate commands.
+### Files changed
+`crates/pasol-reputation/`, `crates/pasol-lab/`, `schemas/`, reputation documentation, and plans.
+### Tests run
+`cargo fmt --all`; `cargo test --workspace --all-features`; `cargo clippy --workspace --all-targets --all-features -- -D warnings`; manual offline CLI smoke test.
+### Results
+All automated checks passed; known-benign and unknown lookups returned schema-valid reports.
+### Commit
+`e4df109`.
+### Checklist changes
+J1 marked complete; J2/J3 marked in progress.
+### Known limitations
+Cache policy, import/export, full CLI integration tests, golden reputation reports, fuzzing, and complete documentation remain.
+### Remaining work
+Complete J2/J3 adversarial tests, then implement J4 cache semantics.
+### Next exact action
+Add actual-binary reputation CLI integration tests for known-benign, known-malicious, suspicious, unknown, expired, malformed, and corrupt-store cases.
+
 ## 2026-08-03 — Phase J1 activated
 ### Planned work
 Activate the explicitly approved Phase J offline reputation foundation, limited to J1 contracts and schemas.

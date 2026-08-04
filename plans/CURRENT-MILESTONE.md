@@ -1,15 +1,18 @@
 # Current Milestone
 
 ## Milestone
-Phase J1 — Reputation Contracts and Schemas
+Phase J — Offline Reputation Foundation (J1–J6)
 
 ## Objective
-Define the provider-independent reputation contract and versioned schemas while preserving the accepted G/H baseline.
+Implement the complete offline reputation foundation: contracts, local provider, persistent store, bounded cache semantics, CLI, goldens, documentation, and acceptance evidence.
 
 ## Approved scope
-- Add stable reputation states and provider descriptors.
-- Add reputation report and local-store schema definitions.
-- Add runtime validation and deterministic serialization tests.
+- Complete J1 contracts and schemas.
+- Complete J2 offline local provider.
+- Complete J3 persistent store and atomic updates.
+- Complete J4 cache and expiration semantics.
+- Complete J5 CLI and integration tests.
+- Complete J6 goldens, CI, documentation, and acceptance evidence.
 
 ## Explicit non-goals
 Do not add remote providers, network access, uploads, enforcement, Phase I pattern work, Phase K parsers, or ML work. Do not change accepted G/H behavior.
@@ -21,25 +24,29 @@ Accepted G/H implementation, SDK types, and schema-validation helpers.
 - [x] Close Phase G acceptance evidence.
 - [x] Close Phase H acceptance evidence.
 - [x] Approve Phase J offline reputation foundation.
-- [~] Implement J1 contracts and schemas.
+- [x] Implement J1 contracts and schemas.
+- [~] Implement J2 offline local provider and J3 persistent store.
+- [ ] Implement J4 cache semantics.
+- [ ] Implement J5 complete CLI integration matrix.
+- [ ] Implement J6 goldens, CI, documentation, and acceptance evidence.
 
 ## Files expected to change
-`crates/pasol-reputation/`, `crates/pasol-detection-sdk/`, `schemas/`, tests, docs, and `plans/`.
+`crates/pasol-reputation/`, `crates/pasol-lab/`, schemas, fixtures, docs, tests, and `plans/`.
 
 ## Tests required
-Formatting, Clippy warnings denied, workspace tests, schema tests, serialization round trips, and documentation tests.
+Formatting, Clippy warnings denied, workspace tests, schema/golden tests, provider/store/cache tests, CLI integration tests, and documentation tests.
 
 ## Security checks required
 Offline-only; no network calls, uploads, credentials, verdicts, or enforcement. Unknown and unavailable must remain distinct.
 
 ## Documentation required
-Document provider semantics, schema compatibility, and offline privacy behavior.
+Document provider semantics, schema compatibility, store safety, cache behavior, privacy, and threat model.
 
 ## Acceptance gate
 Do not mark H accepted until all mandatory H checklist items have evidence.
 
 ## Current status
-Phase G and Phase H are accepted at the Stage 2 foundation level. Phase J1 is active. Phase I remains deferred.
+Phase G and Phase H are accepted at the Stage 2 foundation level. J1 is verified; J2/J3 are partially implemented. Phase I remains deferred.
 
 ## Next exact action
-Define the Phase J reputation types and schema, including provider states, provenance, timestamps, cache metadata, and strict separation between unknown, unavailable, and known-benign results.
+Complete J2/J3 tests for conflicts, expiration, corruption, limits, and deterministic store behavior.

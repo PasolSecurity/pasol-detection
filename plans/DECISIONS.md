@@ -58,3 +58,23 @@ J1 introduces versioned reputation schemas independently from the accepted featu
 Pattern matching remains deferred; full local-provider and CLI work waits for J1 contracts.
 ### Revisit conditions
 Revisit when J1 acceptance evidence is complete or if the approved milestone changes.
+
+## DEC-J-002
+### Date
+2026-08-03
+### Decision
+Expand the active scope from J1 to the complete offline Phase J foundation (J1–J6).
+### Context
+The user explicitly requested implementation of the complete continuation plan after J1 activation.
+### Options considered
+Remain on J1 only; implement full J offline foundation; begin another phase.
+### Selected option
+Implement J1–J6 sequentially, preserving offline-only behavior and excluding remote providers, uploads, verdicts, and enforcement.
+### Security implications
+All provider failures and unknown states remain distinct; local store input is bounded and validated; no network dependency is introduced.
+### Compatibility implications
+New reputation schemas remain versioned independently from feature and rule schemas.
+### Alternatives rejected
+Remote reputation and Phase I pattern matching remain out of scope.
+### Revisit conditions
+Stop after Phase J acceptance and require explicit approval for the next phase.

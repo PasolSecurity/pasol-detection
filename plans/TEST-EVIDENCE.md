@@ -181,6 +181,26 @@ PE32/PE64 features, rule pack, four rule goldens, and generated reports validate
 ### Conclusion
 This slice is verified in `5627210`.
 
+## 2026-08-03 — Phase J1/J2 foundation
+### Requirement verified
+Provider-independent reputation states, report/store schemas, runtime validation, deterministic local lookup, expiration filtering, conflict handling, atomic persistence, and offline CLI lookup/add/remove/validate operations.
+### Commit tested
+`e4df109`.
+### Environment
+Windows; rustc/cargo 1.97.1.
+### Commands
+`cargo fmt --all`; `cargo test --workspace --all-features`; `cargo clippy --workspace --all-targets --all-features -- -D warnings`; manual `pasol-lab reputation add/lookup` smoke test.
+### Results
+Workspace tests and Clippy passed. Known-benign and unknown lookups produced schema-valid reports; no network access or uploads were added.
+### Expected result
+All reputation states remain distinct and unknown is not benign.
+### Actual result
+J1 contracts and schemas are verified; J2/J3 local provider/store foundation works offline.
+### Artifacts or fixtures
+`crates/pasol-reputation/`, `schemas/reputation-report-1.0.0.schema.json`, `schemas/local-reputation-store-1.0.0.schema.json`, reputation CLI, documentation.
+### Conclusion
+Foundation slice verified; cache semantics, complete integration matrix, goldens, and formal Phase J acceptance remain open.
+
 ## 2026-08-03 — Phase H acceptance
 ### Requirement verified
 Phase H deterministic evaluation, signed-pack trust, key lifecycle, bounded evaluation, schema contracts, adversarial CLI tests, starter fixtures, and schema-drift regression are complete at the Stage 2 foundation level.

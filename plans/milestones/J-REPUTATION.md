@@ -12,9 +12,9 @@ Provider trait, local store, mock provider, CLI.
 ## Security requirements
 No uploads by default; unknown/unavailable remain distinct; secrets redacted.
 ## Implementation checklist
-- [~] J1 provider contract, descriptors, states, report types, and runtime schemas.
-- [ ] J2 offline local provider.
-- [ ] J3 persistent store.
+- [x] J1 provider contract, descriptors, states, report types, and runtime schemas.
+- [~] J2 offline local provider.
+- [~] J3 persistent store.
 - [ ] J4 cache and expiration semantics.
 - [ ] J5 CLI and integration tests.
 - [ ] J6 goldens, CI, documentation, and acceptance.
@@ -25,7 +25,7 @@ No uploads by default; unknown/unavailable remain distinct; secrets redacted.
 ## Acceptance criteria
 All provider and offline tests pass.
 ## Current status
-J1 active; no network or remote-provider implementation is approved.
+J1 verified; J2/J3 foundational local lookup and atomic persistence are in progress. No network or remote-provider implementation exists.
 ## Completed commits
 None.
 ## Remaining work
