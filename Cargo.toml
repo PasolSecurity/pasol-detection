@@ -4,6 +4,7 @@ members = [
     "crates/pasol-features",
     "crates/pasol-rules",
     "crates/pasol-static-score",
+    "crates/pasol-reputation",
     "crates/pasol-lab",
 ]
 resolver = "3"

@@ -921,10 +921,22 @@ dependencies = [
  "ed25519-dalek",
  "pasol-detection-sdk",
  "pasol-features",
+ "pasol-reputation",
  "pasol-rules",
  "pasol-static-score",
  "rand_core",
  "serde_json",
+]
+
+[[package]]
+name = "pasol-reputation"
+version = "0.1.0"
+dependencies = [
+ "jsonschema",
+ "serde",
+ "serde_json",
+ "sha2",
+ "thiserror",
 ]
 
 [[package]]

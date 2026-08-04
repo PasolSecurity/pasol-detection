@@ -6,6 +6,10 @@ use clap::{Parser, Subcommand};
 use ed25519_dalek::SigningKey;
 use pasol_detection_sdk::{FeatureExtractor, ParserReport, validate_feature_report_json};
 use pasol_features::PeFeatureExtractor;
+use pasol_reputation::{
+    LocalStore, ReputationEntry, ReputationState, now_utc, report, validate_report_json,
+    validate_sha256, validate_store_json,
+};
 use pasol_rules::{
     KeyStatus, RuleLimits, SignedRulePack, TrustedKey, TrustedKeyStore, evaluate, load_pack,
     sign_pack, validate_rule_pack_json, validate_rule_report_json, verify_signed_pack,
@@ -37,6 +41,47 @@ enum Commands {
     },
     Score {
         feature_report: PathBuf,
+    },
+    Reputation {
+        #[command(subcommand)]
+        command: ReputationCommands,
+    },
+}
+
+#[derive(Debug, Subcommand)]
+enum ReputationCommands {
+    Lookup {
+        sha256: String,
+        #[arg(long)]
+        store: PathBuf,
+        #[arg(long)]
+        format: Option<String>,
+    },
+    List {
+        #[arg(long)]
+        store: PathBuf,
+        #[arg(long)]
+        format: Option<String>,
+    },
+    Add {
+        sha256: String,
+        #[arg(long)]
+        state: String,
+        #[arg(long)]
+        reason: Option<String>,
+        #[arg(long)]
+        source: Option<String>,
+        #[arg(long)]
+        store: PathBuf,
+    },
+    Remove {
+        sha256: String,
+        #[arg(long)]
+        store: PathBuf,
+    },
+    ValidateStore {
+        #[arg(long)]
+        store: PathBuf,
     },
 }
 
@@ -270,6 +315,63 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
             let report = serde_json::from_slice(&std::fs::read(feature_report)?)?;
             println!("{}", serde_json::to_string(&score(&report))?);
         }
+        Commands::Reputation { command } => match command {
+            ReputationCommands::Lookup { sha256, store, .. } => {
+                validate_sha256(&sha256)?;
+                let result = LocalStore::load(&store)?.lookup(&sha256)?;
+                let output = report(&sha256, result)?;
+                let value = serde_json::to_value(&output)?;
+                validate_report_json(&value)
+                    .map_err(|e| format!("reputation schema validation failed: {e}"))?;
+                println!("{}", serde_json::to_string(&output)?);
+            }
+            ReputationCommands::List { store, .. } => {
+                let value = serde_json::to_value(LocalStore::load(&store)?)?;
+                validate_store_json(&value)
+                    .map_err(|e| format!("store schema validation failed: {e}"))?;
+                println!("{}", serde_json::to_string(&value)?);
+            }
+            ReputationCommands::Add {
+                sha256,
+                state,
+                reason,
+                source,
+                store,
+            } => {
+                validate_sha256(&sha256)?;
+                let state = serde_json::from_str::<ReputationState>(&format!("\"{state}\""))?;
+                let mut local = if store.exists() {
+                    LocalStore::load(&store)?
+                } else {
+                    LocalStore::empty()
+                };
+                local.entries.push(ReputationEntry {
+                    sha256,
+                    state,
+                    reason,
+                    source,
+                    labels: Vec::new(),
+                    created_at: now_utc(),
+                    expires_at: None,
+                    enabled: true,
+                });
+                local.save_atomic(&store)?;
+                println!("ok");
+            }
+            ReputationCommands::Remove { sha256, store } => {
+                validate_sha256(&sha256)?;
+                let mut local = LocalStore::load(&store)?;
+                local.entries.retain(|entry| entry.sha256 != sha256);
+                local.save_atomic(&store)?;
+                println!("ok");
+            }
+            ReputationCommands::ValidateStore { store } => {
+                let value = serde_json::to_value(LocalStore::load(&store)?)?;
+                validate_store_json(&value)
+                    .map_err(|e| format!("store schema validation failed: {e}"))?;
+                println!("ok");
+            }
+        },
     }
     Ok(())
 }

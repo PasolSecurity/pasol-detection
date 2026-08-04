@@ -16,6 +16,7 @@ pasol-detection-sdk = { path = "../pasol-detection-sdk", version = "0.1.0" }
 pasol-features = { path = "../pasol-features", version = "0.1.0" }
 pasol-rules = { path = "../pasol-rules", version = "0.1.0" }
 pasol-static-score = { path = "../pasol-static-score", version = "0.1.0" }
+pasol-reputation = { path = "../pasol-reputation", version = "0.1.0" }
 ed25519-dalek.workspace = true
 rand_core.workspace = true
 serde_json.workspace = true
