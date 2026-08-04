@@ -570,6 +570,28 @@ Choose and record the next milestone before starting Phase I, K, or L.
 ### Next exact action
 Select and record the next implementation milestone in `CURRENT-MILESTONE.md` and `DECISIONS.md`.
 
+## 2026-08-04 — I0 MSRV closure and I1 contracts
+### Planned work
+Close the Rust 1.91 gate, add a permanent MSRV workflow, and implement I1 contract-only types and schemas.
+### Work completed
+Installed Rust 1.91, verified the full workspace and YARA-X compatibility test, added the MSRV workflow, created `pasol-patterns`, added four schemas, runtime validation, deterministic normalization, bounded types, and contract tests.
+### Files changed
+Workspace manifests/lockfile, `crates/pasol-patterns/`, pattern schemas, `.github/workflows/msrv.yml`, and planning files.
+### Tests run
+Rust 1.91 check, workspace tests, Clippy, formatting, dedicated YARA-X compatibility test, and `pasol-patterns` contract tests.
+### Results
+All commands passed. Eight report statuses are covered; no-match remains distinct from non-evaluated; path, size, ordering, schema, and serialization invariants pass.
+### Commit
+Pending focused I1 commit.
+### Checklist changes
+I0 marked accepted; I1 marked active.
+### Known limitations
+No signed packs, compiler adapter, worker, CLI, starter pack, or file scanning exists yet. Windows incremental cleanup warnings remain non-fatal.
+### Remaining work
+Complete I1 schema/golden coverage, then begin I2 signed pattern-pack validation.
+### Next exact action
+Add full runtime request/response schema validation and deterministic I1 golden reports.
+
 ## 2026-08-04 — Phase I0 compatibility slice
 ### Planned work
 Activate Phase I, record the YARA-X engine decision, pin YARA-X 1.19.0 with restricted features, and run a harmless Windows compatibility test.

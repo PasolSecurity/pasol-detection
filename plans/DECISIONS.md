@@ -98,3 +98,23 @@ YARA-X `1.19.0` declares Rust `1.91.0`; compatibility must be verified against t
 Launching an external CLI would add process and parser ambiguity; direct in-process scanning would weaken the isolation boundary; default YARA-X features would enable unnecessary modules.
 ### Revisit conditions
 Revisit only if the MSRV/Windows compatibility spike fails, an approved security review changes the module policy, or YARA-X releases a required security fix.
+
+## D-I-002
+### Date
+2026-08-04
+### Decision
+Implement I1 as a contract-only crate with schema version `1.0.0`, runtime validation, deterministic normalization, and explicit bounded statuses before adding signing, compilation, worker execution, or CLI behavior.
+### Context
+I0 compatibility is accepted under Rust 1.91 and Windows. The next approved slice must stabilize public interfaces before higher-risk engine and process-boundary code.
+### Options considered
+Add contracts alongside the worker; expose YARA-X types directly; establish independent Pasol-owned contracts first.
+### Selected option
+Use Pasol-owned serde/schemars types and checked-in JSON schemas for requests, reports, pack identity, limits, statuses, warnings, matches, and worker protocol envelopes. Keep worker envelopes contract-only in I1.
+### Security implications
+Unknown, timeout, worker-failure, and non-evaluated states cannot collapse into no-match. Bounds, deterministic ordering, path restrictions, and omission of raw matched bytes are enforced before later engine integration.
+### Compatibility implications
+Schema version `1.0.0` is independent from YARA-X versions. Breaking changes require a schema major version.
+### Alternatives rejected
+YARA-X internal types would couple public reports to an unstable dependency API; adding worker behavior now would combine unrelated trust and process-boundary changes.
+### Revisit conditions
+Revisit only for a schema compatibility decision or a proven I2/I3 requirement.

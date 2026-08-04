@@ -542,6 +542,26 @@ Windows compatibility and local quality checks passed. MSRV verification is bloc
 ### Conclusion
 I0 is partially verified: the dependency and Windows compatibility gate pass, while the Rust 1.91 check requires a CI runner or installed toolchain before I0 acceptance.
 
+## 2026-08-04 — Phase I0 MSRV and I1 contracts
+### Requirement verified
+Rust 1.91 compatibility and the I1 contract foundation.
+### Commit tested
+Working tree after `58e20ed`; I1 implementation commit pending.
+### Environment
+Windows MSVC; rustc/cargo `1.91.0`; YARA-X `1.19.0`; restricted default-disabled feature set with PE, hash, math, and string modules.
+### Commands
+`rustc +1.91.0 -Vv`; `cargo +1.91.0 -V`; `cargo +1.91.0 check --workspace --all-targets --all-features`; `cargo +1.91.0 test --workspace --all-features`; `cargo +1.91.0 clippy --workspace --all-targets --all-features -- -D warnings`; `cargo +1.91.0 fmt --all -- --check`; `cargo +1.91.0 test -p pasol-detection-sdk --test yara_x_compat -- --nocapture`; `cargo +1.91.0 test -p pasol-patterns --all-features`.
+### Results
+Rust 1.91 workspace check, tests, Clippy, formatting, and dedicated YARA-X compatibility test passed. I1 contract unit and integration tests passed: eight statuses, deterministic normalization, bounds, path rejection, schema document validation, runtime report validation, and byte-stable serialization. Windows incremental cleanup warnings were non-fatal.
+### Expected result
+I0 MSRV gate passes and I1 contracts validate deterministically under the declared MSRV.
+### Actual result
+Expected result achieved.
+### Artifacts or fixtures
+`crates/pasol-patterns/`, `schemas/pattern-*.schema.json`, `.github/workflows/msrv.yml`.
+### Conclusion
+I0 is accepted. I1 contract implementation is operational and remains in progress pending broader schema/golden evidence before I1 acceptance.
+
 ## 2026-08-04 — Final Windows workspace quality gate
 ### Requirement verified
 No regression in the accepted G/H/J implementation after planning reconciliation.

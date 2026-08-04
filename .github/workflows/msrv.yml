@@ -1,0 +1,23 @@
+name: msrv
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  rust-1-91:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Install Rust 1.91
+        shell: pwsh
+        run: |
+          rustup toolchain install 1.91.0 --profile minimal
+          rustup component add rustfmt clippy --toolchain 1.91.0
+      - name: Check workspace
+        run: cargo +1.91.0 check --workspace --all-targets --all-features
+      - name: Compatibility test
+        run: cargo +1.91.0 test -p pasol-detection-sdk --test yara_x_compat -- --nocapture

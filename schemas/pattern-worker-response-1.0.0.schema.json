@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"Pasol Pattern Worker Response 1.0.0","type":"object","additionalProperties":false,"required":["schema_version","report"],"properties":{"schema_version":{"const":"1.0.0"},"report":{"type":"object","required":["schema_version"],"properties":{"schema_version":{"const":"1.0.0"}}}}}

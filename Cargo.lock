@@ -1955,6 +1955,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "pasol-patterns"
+version = "0.1.0"
+dependencies = [
+ "jsonschema",
+ "schemars",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.19",
+]
+
+[[package]]
 name = "pasol-reputation"
 version = "0.1.0"
 dependencies = [

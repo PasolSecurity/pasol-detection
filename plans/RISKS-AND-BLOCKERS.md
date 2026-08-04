@@ -25,16 +25,16 @@
 - Resolution evidence: Pending
 
 ## Phase I MSRV toolchain unavailable
-- Status: Open
+- Status: Resolved
 - Severity: Medium
 - Area: Phase I compatibility
 - Description: The workspace declares Rust 1.91, and YARA-X 1.19.0 declares Rust 1.91.0, but the current Windows host has only 1.85.0, 1.97.1, and nightly toolchains installed.
-- Impact: The I0 compatibility spike cannot yet claim MSRV verification.
-- Mitigation: Run the exact compatibility test under Rust 1.91 in CI or install the pinned MSRV toolchain before accepting I0.
+- Impact: None after exact Windows verification; CI remains configured to prevent regressions.
+- Mitigation: Keep the pinned MSRV workflow running on pull requests.
 - Owner: Detection maintainers
 - Introduced: 2026-08-04
 - Target resolution: Before Phase I1 implementation
-- Resolution evidence: `TEST-EVIDENCE.md#2026-08-04-phase-i0-yara-x-compatibility-spike`.
+- Resolution evidence: `TEST-EVIDENCE.md#2026-08-04-phase-i0-msrv-and-i1-contracts`.
 
 ## Golden evidence and schema drift
 - Status: Open

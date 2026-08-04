@@ -1,45 +1,46 @@
 # Current Milestone
 
 ## Milestone
-Phase I — Bounded Pattern Matching (I0 compatibility and engine decision)
+Phase I — Bounded Pattern Matching (I1 contracts and schemas)
 
 ## Objective
-Preserve the accepted G/H/J foundation while selecting the next Stage 2 milestone explicitly.
+Stabilize the public pattern evidence contracts before signing, compilation, worker, or CLI implementation.
 
 ## Approved scope
-- G, H, and J acceptance evidence is complete and recorded.
-- I0 compatibility and engine-policy evidence is the only active scope.
+- I0 compatibility is accepted.
+- I1 contracts, schemas, runtime validation, deterministic normalization, and bounded evidence are active.
 
 ## Explicit non-goals
-Do not begin I1+ production functionality, Phase K, or Phase L work in this planning slice. Do not add execution, uploads, enforcement, verdicts, blocking, quarantine, or deletion.
+Do not begin I2+ production functionality, Phase K, or Phase L. Do not add signing, worker execution, CLI commands, file scanning, uploads, enforcement, verdicts, blocking, quarantine, or deletion.
 
 ## Dependencies
-Accepted G/H implementation and accepted offline J foundation.
+Accepted G/H/J foundation and accepted I0 YARA-X compatibility baseline.
 
 ## Tasks
 - [x] Close Phase G acceptance evidence.
 - [x] Close Phase H acceptance evidence.
 - [x] Complete J1–J8 offline reputation foundation and hosted evidence.
 - [x] Select and activate Phase I explicitly.
-- [~] Complete I0 YARA-X compatibility, ADR, and harmless in-memory test.
+- [x] Complete I0 YARA-X compatibility, ADR, and harmless in-memory test.
+- [~] Implement I1 pattern contracts, schemas, runtime validation, and deterministic serialization.
 
 ## Files expected to change
-`plans/`, `docs/adr/ADR-PATTERN-ENGINE.md`, workspace manifests, lockfile, and the temporary compatibility test.
+`crates/pasol-patterns/`, `schemas/pattern-*.schema.json`, `.github/workflows/msrv.yml`, and `plans/`.
 
 ## Tests required
-Rust 1.91 compatibility/build check, Windows build, harmless in-memory compile/scan, formatting, workspace tests, and Clippy with warnings denied.
+Rust 1.91 workspace and compatibility checks, contract tests, schema validation, deterministic serialization, formatting, workspace tests, and Clippy with warnings denied.
 
 ## Security checks required
-No secrets, private keys, credentials, or restricted dataset paths in planning files.
+No signing, worker execution, file scanning, uploads, credentials, verdicts, or enforcement.
 
 ## Documentation required
-Record YARA-X version, license, feature/module allowlist, MSRV result, and next exact action in the planning files.
+Record I1 contract semantics, schema versions, bounds, MSRV result, and next exact action.
 
 ## Acceptance gate
-Do not begin a new phase until its milestone file, checklist, dependencies, and next exact action are recorded.
+Do not begin I2 until I1 schemas and generated outputs validate deterministically with evidence.
 
 ## Current status
-Phase G, Phase H, and Phase J are accepted at the Stage 2 foundation level. Phase I is active for I0 only. Phases K and L remain open and unimplemented.
+Phase G, Phase H, and Phase J are accepted. I0 is accepted; I1 is active. Phases K and L remain open and unimplemented.
 
 ## Next exact action
-Add the pinned YARA-X compatibility dependency and one harmless in-memory compile-and-scan test, then run the I0 quality gate.
+Complete the I1 request/response schema validation and deterministic golden test matrix.
