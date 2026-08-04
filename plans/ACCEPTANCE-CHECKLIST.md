@@ -26,7 +26,7 @@
 - [x] J3 bounded persistent store, atomic writes, deterministic import/export, and duplicate rollback. Evidence: `TEST-EVIDENCE.md#2026-08-04-reputation-store-and-cli-hardening`.
 - [x] J4 provider-scoped persistent cache with TTL, revision invalidation, deterministic eviction, and corruption rejection. Evidence: `TEST-EVIDENCE.md#2026-08-04-persistent-reputation-cache`; Commit `035c087`.
 - [~] J5 typed CLI exit classes, JSON errors, full integration matrix, and offline privacy behavior. Evidence: `TEST-EVIDENCE.md#2026-08-04-typed-reputation-cli-errors`; Commit `210eeff`.
-- [ ] J6 deterministic goldens, schema-drift CI, property/fuzz coverage, documentation, and final acceptance evidence.
+- [~] J6 deterministic reputation/error goldens and schema-drift workflow coverage. Evidence: `TEST-EVIDENCE.md#2026-08-04-reputation-goldens-and-schema-drift-gate`; Commit `1253639`. Property/fuzz coverage, documentation, and final acceptance remain open.
 
 ## K — Additional Parsers
 - [ ] .NET, scripts, LNK, ZIP, Office, PDF, MSI/CAB, ISO, fixtures, fuzzing, and parser release.

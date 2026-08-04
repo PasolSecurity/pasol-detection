@@ -154,6 +154,28 @@ Add deterministic reputation goldens, extend schema-drift CI, add property/fuzz 
 ### Next exact action
 Add deterministic reputation report/store/cache golden fixtures and byte-for-byte regeneration tests with runtime schema validation.
 
+## 2026-08-04 — Reputation goldens and schema-drift gate
+### Planned work
+Generate deterministic reputation and CLI-error golden files with FixedClock, validate them at runtime, and extend schema-drift CI to Windows and Linux.
+### Work completed
+Added `report_at` for deterministic production report generation, FixedClock golden tests for five reputation states plus cache hit/miss, five schema-valid CLI-error goldens, and a schema-drift matrix covering Ubuntu and Windows.
+### Files changed
+`crates/pasol-reputation/src/lib.rs`, `crates/pasol-reputation/tests/goldens.rs`, `fixtures/golden/reputation/`, `.github/workflows/schema-drift.yml`.
+### Tests run
+`cargo test -p pasol-reputation --test goldens`; `cargo clippy --workspace --all-targets --all-features -- -D warnings`; `cargo test --workspace --all-features`.
+### Results
+Four golden tests, workspace tests, and Clippy passed on Windows. The 27 executable workspace tests and documentation tests completed successfully.
+### Commit
+`1253639`.
+### Checklist changes
+Deterministic reputation/error goldens and schema-drift workflow coverage are recorded in `TEST-EVIDENCE.md`; J6 remains open for property/fuzz, documentation, and final acceptance.
+### Known limitations
+CI has not been executed in this environment; workflow action pinning and scheduled fuzz campaigns remain open.
+### Remaining work
+Add property tests and fuzz targets for reputation parsing, timestamps, cache keys, eviction, conflicts, and error mapping; complete provider/privacy documentation and final J acceptance evidence.
+### Next exact action
+Add property-based tests for SHA-256 parsing, expiration boundaries, cache-key invalidation, deterministic eviction, conflict resolution, and CLI error-class mapping.
+
 ## 2026-08-04 — Reputation store and CLI hardening
 ### Planned work
 Add the clock abstraction, transactional import/export, deterministic store behavior, and actual-binary CLI coverage.
