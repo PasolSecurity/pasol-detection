@@ -280,3 +280,6 @@ All assertions passed. Cache reports `hit=false` on fresh provider results and `
 `schemas/reputation-cache-1.0.0.schema.json`, `ReputationCache`, `CachePolicy`, CLI `--cache` option.
 ### Conclusion
 J4 cache core is verified; typed exits, goldens, schema-drift CI, property/fuzz tests, and final J6 evidence remain.
+
+### Additional workspace verification
+`cargo test --workspace --all-features` passed after commit `035c087`; 25 tests and all doc tests completed successfully. Windows incremental cleanup warnings remained non-fatal.
