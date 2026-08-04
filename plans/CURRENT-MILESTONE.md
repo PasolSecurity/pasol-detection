@@ -25,7 +25,7 @@ Accepted G/H implementation, SDK types, and schema-validation helpers.
 - [x] Close Phase H acceptance evidence.
 - [x] Approve Phase J offline reputation foundation.
 - [x] Implement J1 contracts and schemas.
-- [~] Implement J2 offline local provider and J3 persistent store.
+- [x] Implement J2 offline local provider and J3 persistent store.
 - [ ] Implement J4 cache semantics.
 - [ ] Implement J5 complete CLI integration matrix.
 - [ ] Implement J6 goldens, CI, documentation, and acceptance evidence.
@@ -46,7 +46,7 @@ Document provider semantics, schema compatibility, store safety, cache behavior,
 Do not mark H accepted until all mandatory H checklist items have evidence.
 
 ## Current status
-Phase G and Phase H are accepted at the Stage 2 foundation level. J1 is verified; J2/J3 are partially implemented. Phase I remains deferred.
+Phase G and Phase H are accepted at the Stage 2 foundation level. J1–J3 core behavior and the first actual-binary J5 matrix are verified. J4 and final J5/J6 evidence remain open. Phase I remains deferred.
 
 ## Next exact action
-Complete J2/J3 tests for conflicts, expiration, corruption, limits, and deterministic store behavior.
+Implement the provider-scoped persistent cache with an injected clock, state-specific TTLs, source-revision invalidation, bounded entries, and deterministic eviction.

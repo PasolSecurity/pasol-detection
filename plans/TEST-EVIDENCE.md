@@ -240,3 +240,23 @@ PE32, PE64, and PE64-partial goldens matched regenerated output byte-for-byte; s
 `fixtures/golden/features/pe32.json`, `pe64.json`, `pe64-partial.json`, `fixtures/pe64-partial-parser-report.json`, `crates/pasol-lab/tests/features.rs`.
 ### Conclusion
 Phase G acceptance evidence is complete at the Stage 2 foundation level.
+
+## 2026-08-04 — Reputation store and CLI hardening
+### Requirement verified
+Injected clock, typed SHA-256/provider contract, bounded validated store input, atomic reopen-and-validate writes, transactional reject-duplicate import, deterministic export, and actual-binary reputation CLI coverage.
+### Commit tested
+`6c9f199`.
+### Environment
+Windows; rustc/cargo 1.97.1.
+### Commands
+`cargo fmt --all`; `cargo test -p pasol-reputation --all-features`; `cargo test -p pasol-lab --test reputation_cli`; `cargo clippy --workspace --all-targets --all-features -- -D warnings`.
+### Results
+All passed. Three reputation unit tests and two actual-binary CLI tests passed; no network or upload behavior exists.
+### Expected result
+Expired entries are ignored under a fixed clock, conflicts remain suspicious, import failures preserve original bytes, exports are deterministic, and invalid CLI input exits 4.
+### Actual result
+All assertions passed on Windows. Incremental-directory Access Denied cleanup warnings remain non-fatal.
+### Artifacts or fixtures
+`crates/pasol-reputation/src/lib.rs`, `crates/pasol-lab/tests/reputation_cli.rs`, import/export CLI commands, and updated store schema.
+### Conclusion
+J1–J3 core behavior and the first J5 integration matrix are verified; J4 cache and J6 acceptance evidence remain open.

@@ -132,6 +132,28 @@ Validate golden reports and add operator/state tests.
 ### Next exact action
 Add the operator/state matrix tests and validate each golden rule report against the rule-report schema.
 
+## 2026-08-04 — Reputation store and CLI hardening
+### Planned work
+Add the clock abstraction, transactional import/export, deterministic store behavior, and actual-binary CLI coverage.
+### Work completed
+Added typed SHA-256/provider contracts, fixed UTC clock handling, bounded store loading, atomic reopen-and-validate writes, reject-duplicate import, deterministic export, format validation, and two actual-binary CLI tests.
+### Files changed
+`crates/pasol-reputation/`, `crates/pasol-lab/src/main.rs`, `crates/pasol-lab/tests/reputation_cli.rs`, schemas, and plans.
+### Tests run
+`cargo fmt --all`; `cargo test -p pasol-reputation --all-features`; `cargo test -p pasol-lab --test reputation_cli`; `cargo clippy --workspace --all-targets --all-features -- -D warnings`.
+### Results
+All passed on Windows.
+### Commit
+`6c9f199`.
+### Checklist changes
+J1–J3 core marked complete; J5 marked in progress; J4/J6 remain open.
+### Known limitations
+Persistent cache, golden reputation reports, fuzz/property tests, schema-drift extension, typed exit classes, and final acceptance are incomplete.
+### Remaining work
+Implement J4 cache semantics and complete J5/J6 evidence.
+### Next exact action
+Implement the provider-scoped persistent cache with injected clock, state-specific TTLs, source-revision invalidation, bounded entries, and deterministic eviction.
+
 ## 2026-08-03 — Phase G acceptance closure
 ### Planned work
 Generate deterministic feature goldens and add catalog-driven state coverage.
