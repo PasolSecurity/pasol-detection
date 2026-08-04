@@ -443,3 +443,42 @@ Hosted Linux execution remains required for campaign evidence. Phase J is not ac
 
 ### Additional workspace verification
 `cargo test --workspace --all-features` passed after commit `035c087`; 25 tests and all doc tests completed successfully. Windows incremental cleanup warnings remained non-fatal.
+## 2026-08-04 — Hosted fuzz workflow run 30930784059
+### Requirement verified
+Hosted Phase J fuzz workflow execution.
+### Commit tested
+e816fddd4b87adf00da0aa52689790c10eeb96da
+### Environment
+GitHub Actions Ubuntu 24.04.4, runner 2.336.0, cargo-fuzz 0.13.2.
+### Commands
+`cargo install cargo-fuzz --locked`; `cargo fuzz build`.
+### Results
+Workflow dispatched successfully, but `scheduled-smoke` failed before target compilation.
+### Expected result
+Nightly Rust selected and seven targets compile.
+### Actual result
+Stable Rust was selected; cargo-fuzz passed nightly-only `-Zsanitizer` flags and rustc exited 1. Compile/replay job was skipped for manual dispatch.
+### Artifacts or fixtures
+Workflow run: https://github.com/PasolSecurity/pasol-detection/actions/runs/30930784059
+### Conclusion
+Hosted acceptance remains open. Workflow corrected to install/select nightly before rerun.
+
+## 2026-08-04 — Windows workspace regression validation
+### Requirement verified
+Detection workspace tests and formatting after hosted workflow correction.
+### Commit tested
+Working tree before workflow-fix commit.
+### Environment
+Windows PowerShell, Rust stable toolchain.
+### Commands
+`cargo fmt --check`; `cargo test --workspace --all-features`
+### Results
+Formatting passed; all workspace tests passed.
+### Expected result
+No regression in G/H/J behavior.
+### Actual result
+All tests passed, including the complete workspace test groups.
+### Artifacts or fixtures
+Feature/rule/reputation goldens and schemas under `fixtures/golden/` and `schemas/`.
+### Conclusion
+Local regression gate passed; hosted fuzz execution is still pending.

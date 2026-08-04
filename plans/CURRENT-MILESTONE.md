@@ -49,4 +49,4 @@ Do not mark H accepted until all mandatory H checklist items have evidence.
 Phase G and Phase H are accepted at the Stage 2 foundation level. J1–J4 core behavior and the first actual-binary J5 matrix are verified. Final J5/J6 evidence remains open. Phase I remains deferred.
 
 ## Next exact action
-Create or grant access to `PasolSecurity/pasol-detection`, push the current branch, run the hosted Linux fuzz workflow, and record the actual compile/replay/smoke results.
+Fix the hosted fuzz workflow to install and select the pinned nightly Rust toolchain required by cargo-fuzz, then rerun the manual hosted workflow and record compile/replay/smoke results.

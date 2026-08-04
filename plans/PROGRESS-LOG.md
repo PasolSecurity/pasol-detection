@@ -505,3 +505,24 @@ Golden schema/byte comparison and operator/state matrix are not yet implemented.
 Validate goldens and complete operator matrix.
 ### Next exact action
 Add the operator/state matrix tests and validate each golden rule report against the rule-report schema.
+## 2026-08-04 — Hosted fuzz toolchain correction
+### Planned work
+Run hosted Phase J fuzz verification.
+### Work completed
+Created the public detection repository, pushed `main`, enabled GitHub Actions, dispatched run 30930784059, and diagnosed a stable/nightly mismatch. Updated the workflow to install and select nightly Rust. Local formatting and workspace tests passed.
+### Files changed
+`.github/workflows/reputation-fuzz.yml`, `plans/CURRENT-MILESTONE.md`, `plans/RISKS-AND-BLOCKERS.md`, `plans/TEST-EVIDENCE.md`.
+### Tests run
+`cargo fmt --check`; `cargo test --workspace --all-features`.
+### Results
+Local checks passed. Hosted run failed before compilation because stable rustc rejected `-Zsanitizer`.
+### Commit
+Pending focused workflow-fix commit.
+### Checklist changes
+Detection repository blocker resolved; hosted fuzz acceptance remains unchecked.
+### Known limitations
+No hosted compile, replay, or smoke campaign evidence yet.
+### Remaining work
+Commit and push the workflow correction, rerun hosted workflow, capture job logs and artifact counts.
+### Next exact action
+Push the nightly-toolchain workflow correction and rerun `reputation-fuzz` from `main`.

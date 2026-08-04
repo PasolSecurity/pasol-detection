@@ -49,7 +49,7 @@
 - Resolution evidence: Pending
 
 ## Detection repository unavailable
-- Status: Open
+- Status: Resolved
 - Severity: High
 - Area: Hosted CI and release
 - Description: GitHub API and authenticated Git push both report `PasolSecurity/pasol-detection` as not found; only `PasolSecurity/pasol-parser` is visible.
@@ -58,6 +58,18 @@
 - Owner: Repository administrator
 - Introduced: 2026-08-04
 - Target resolution: Before Phase J acceptance
+- Resolution evidence: Public repository created and `main` pushed; hosted run 30930784059.
+
+## Hosted fuzz workflow stable-toolchain mismatch
+- Status: Open
+- Severity: High
+- Area: J hosted fuzzing
+- Description: Hosted `cargo fuzz build` used stable Rust while cargo-fuzz passed nightly-only `-Zsanitizer` flags.
+- Impact: Manual run 30930784059 failed before compiling fuzz targets.
+- Mitigation: Pin and select nightly Rust in the workflow before rerunning.
+- Owner: Detection maintainers
+- Introduced: 2026-08-04
+- Target resolution: Next hosted fuzz run
 - Resolution evidence: Pending
 
 ## Windows sanitizer runtime limitation

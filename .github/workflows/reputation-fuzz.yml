@@ -9,12 +9,17 @@ on:
 permissions:
   contents: read
 
+env:
+  RUSTUP_TOOLCHAIN: nightly
+
 jobs:
   compile-and-replay:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Install nightly Rust
+        run: rustup toolchain install nightly --profile minimal
       - name: Install cargo-fuzz
         run: cargo install cargo-fuzz --locked
       - name: Compile fuzz targets
@@ -35,6 +40,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Install nightly Rust
+        run: rustup toolchain install nightly --profile minimal
       - name: Install cargo-fuzz
         run: cargo install cargo-fuzz --locked
       - name: Compile fuzz targets
