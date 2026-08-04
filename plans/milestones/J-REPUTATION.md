@@ -30,4 +30,4 @@ J1–J4 are verified at the core level; final J5/J6 evidence remains. No network
 ## Completed commits
 None.
 ## Remaining work
-Add property-based tests for SHA-256 parsing, expiration boundaries, cache-key invalidation, deterministic eviction, conflict resolution, and CLI error-class mapping.
+Create the Phase J fuzz workspace and add bounded targets for reputation reports, CLI errors, local stores, caches, imports, hashes, timestamps, conflicts, and cache keys.

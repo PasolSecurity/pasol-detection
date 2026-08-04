@@ -176,6 +176,28 @@ Add property tests and fuzz targets for reputation parsing, timestamps, cache ke
 ### Next exact action
 Add property-based tests for SHA-256 parsing, expiration boundaries, cache-key invalidation, deterministic eviction, conflict resolution, and CLI error-class mapping.
 
+## 2026-08-04 — Reputation property invariants
+### Planned work
+Add bounded property tests for the Phase J invariants identified in the current milestone.
+### Work completed
+Added `proptest`-backed SHA-256, cache-key, and store round-trip properties, plus deterministic tests for ordering independence, conflict resolution, source-revision invalidation, and expiration misses.
+### Files changed
+`Cargo.toml`, `Cargo.lock`, `crates/pasol-reputation/Cargo.toml`, `crates/pasol-reputation/tests/properties.rs`.
+### Tests run
+`cargo fmt --all`; `cargo test -p pasol-reputation --test properties --all-features`; `cargo clippy --workspace --all-targets --all-features -- -D warnings`.
+### Results
+Five property/invariant tests passed on Windows; Clippy passed with warnings denied.
+### Commit
+`31e24f1`.
+### Checklist changes
+J7 property validation is recorded in `TEST-EVIDENCE.md`; fuzzing, documentation, and J8 acceptance remain open.
+### Known limitations
+Fuzz targets are not yet present in this repository; deterministic eviction and error-class mapping need broader dedicated properties.
+### Remaining work
+Add bounded fuzz targets and compile them, then complete reputation documentation and final acceptance evidence.
+### Next exact action
+Create the Phase J fuzz workspace and add bounded targets for reputation reports, CLI errors, local stores, caches, imports, hashes, timestamps, conflicts, and cache keys.
+
 ## 2026-08-04 — Reputation store and CLI hardening
 ### Planned work
 Add the clock abstraction, transactional import/export, deterministic store behavior, and actual-binary CLI coverage.

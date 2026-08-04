@@ -49,4 +49,4 @@ Do not mark H accepted until all mandatory H checklist items have evidence.
 Phase G and Phase H are accepted at the Stage 2 foundation level. J1–J4 core behavior and the first actual-binary J5 matrix are verified. Final J5/J6 evidence remains open. Phase I remains deferred.
 
 ## Next exact action
-Add property-based tests for SHA-256 parsing, expiration boundaries, cache-key invalidation, deterministic eviction, conflict resolution, and CLI error-class mapping.
+Create the Phase J fuzz workspace and add bounded targets for reputation reports, CLI errors, local stores, caches, imports, hashes, timestamps, conflicts, and cache keys.
