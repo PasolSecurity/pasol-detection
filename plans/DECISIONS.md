@@ -39,3 +39,22 @@ Signed envelope is versioned independently from rule schema.
 Runtime code or embedded scripts.
 ### Revisit conditions
 Only for a documented key-management or algorithm migration.
+## DEC-J-001
+### Date
+2026-08-03
+### Decision
+Activate Phase J1 for offline reputation contracts and schemas; keep Phase I deferred.
+### Context
+Phases G and H are accepted at the Stage 2 foundation level. The continuation plan explicitly approves J as the next candidate and restricts the first slice to provider-independent types and schemas.
+### Options considered
+Begin J1; begin pattern matching; begin the full J phase; leave the project idle.
+### Selected option
+Begin J1 only, with no network access, remote provider, upload, verdict, or enforcement behavior.
+### Security implications
+The reputation layer must preserve unknown, unavailable, rate-limited, unauthorized, and provider-error states without converting them to benign results.
+### Compatibility implications
+J1 introduces versioned reputation schemas independently from the accepted feature and rule schemas.
+### Alternatives rejected
+Pattern matching remains deferred; full local-provider and CLI work waits for J1 contracts.
+### Revisit conditions
+Revisit when J1 acceptance evidence is complete or if the approved milestone changes.

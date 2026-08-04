@@ -21,6 +21,7 @@
 - [ ] YARA-X worker, packs, limits, schemas, CLI, and tests.
 
 ## J — Reputation
+- [~] J1 contracts and schemas active; implementation evidence pending.
 - [ ] Offline provider, cache, mock provider, privacy, schema, CLI, and tests.
 
 ## K — Additional Parsers

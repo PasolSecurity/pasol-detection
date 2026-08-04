@@ -1,43 +1,45 @@
 # Current Milestone
 
 ## Milestone
-No active implementation milestone.
+Phase J1 — Reputation Contracts and Schemas
 
 ## Objective
-G and H are accepted at the Stage 2 foundation level. Preserve the verified baseline while awaiting explicit approval of the next milestone.
+Define the provider-independent reputation contract and versioned schemas while preserving the accepted G/H baseline.
 
 ## Approved scope
-- No implementation tasks are active.
-- Candidate next milestone: Phase J offline reputation foundation, pending approval.
+- Add stable reputation states and provider descriptors.
+- Add reputation report and local-store schema definitions.
+- Add runtime validation and deterministic serialization tests.
 
 ## Explicit non-goals
-Do not begin Phase I, J, K, or L implementation until a milestone is explicitly approved. Do not change accepted G/H behavior, commit private keys, or add enforcement.
+Do not add remote providers, network access, uploads, enforcement, Phase I pattern work, Phase K parsers, or ML work. Do not change accepted G/H behavior.
 
 ## Dependencies
-Accepted G/H implementation and planning evidence.
+Accepted G/H implementation, SDK types, and schema-validation helpers.
 
 ## Tasks
 - [x] Close Phase G acceptance evidence.
 - [x] Close Phase H acceptance evidence.
-- [ ] Approve the next implementation milestone.
+- [x] Approve Phase J offline reputation foundation.
+- [~] Implement J1 contracts and schemas.
 
 ## Files expected to change
-Planning files only until the next milestone is approved.
+`crates/pasol-reputation/`, `crates/pasol-detection-sdk/`, `schemas/`, tests, docs, and `plans/`.
 
 ## Tests required
-No implementation tests are scheduled while no milestone is active.
+Formatting, Clippy warnings denied, workspace tests, schema tests, serialization round trips, and documentation tests.
 
 ## Security checks required
-Preserve the accepted security boundaries and do not add enforcement.
+Offline-only; no network calls, uploads, credentials, verdicts, or enforcement. Unknown and unavailable must remain distinct.
 
 ## Documentation required
-Record milestone approval before implementation resumes.
+Document provider semantics, schema compatibility, and offline privacy behavior.
 
 ## Acceptance gate
 Do not mark H accepted until all mandatory H checklist items have evidence.
 
 ## Current status
-Phase G and Phase H are accepted at the Stage 2 foundation level. Phase I remains deferred. No active implementation milestone is selected.
+Phase G and Phase H are accepted at the Stage 2 foundation level. Phase J1 is active. Phase I remains deferred.
 
 ## Next exact action
-Approve Phase J offline reputation foundation, or explicitly select another milestone, before modifying implementation code.
+Define the Phase J reputation types and schema, including provider states, provenance, timestamps, cache metadata, and strict separation between unknown, unavailable, and known-benign results.

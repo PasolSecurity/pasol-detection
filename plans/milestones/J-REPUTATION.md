@@ -8,11 +8,16 @@ Reputation schema `1.0.0`.
 ## Interfaces
 Provider trait, local store, mock provider, CLI.
 ## Schemas
-Reputation schema pending.
+`reputation-report-1.0.0.schema.json` and `local-reputation-store-1.0.0.schema.json` are the J1 targets.
 ## Security requirements
 No uploads by default; unknown/unavailable remain distinct; secrets redacted.
 ## Implementation checklist
-- [ ] Local provider, cache, mock, privacy controls.
+- [~] J1 provider contract, descriptors, states, report types, and runtime schemas.
+- [ ] J2 offline local provider.
+- [ ] J3 persistent store.
+- [ ] J4 cache and expiration semantics.
+- [ ] J5 CLI and integration tests.
+- [ ] J6 goldens, CI, documentation, and acceptance.
 ## Test checklist
 - [ ] Offline, conflict, expiry, failure, schema tests.
 ## Documentation checklist
@@ -20,8 +25,8 @@ No uploads by default; unknown/unavailable remain distinct; secrets redacted.
 ## Acceptance criteria
 All provider and offline tests pass.
 ## Current status
-Not started.
+J1 active; no network or remote-provider implementation is approved.
 ## Completed commits
 None.
 ## Remaining work
-Entire phase.
+Complete J1 contracts and schemas, then obtain the next-slice approval for J2.

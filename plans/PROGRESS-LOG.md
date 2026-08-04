@@ -154,6 +154,28 @@ No mandatory G/H implementation work remains. Phase I remains deferred.
 ### Next exact action
 Do not begin Phase I without a new approved milestone and review of the full Stage 2 plan.
 
+## 2026-08-03 — Phase J1 activated
+### Planned work
+Activate the explicitly approved Phase J offline reputation foundation, limited to J1 contracts and schemas.
+### Work completed
+Updated the authoritative milestone, acceptance checklist, J milestone, and scope controls. No implementation code changed.
+### Files changed
+`plans/CURRENT-MILESTONE.md`, `plans/ACCEPTANCE-CHECKLIST.md`, `plans/milestones/J-REPUTATION.md`.
+### Tests run
+Planning reconciliation only; no code tests were run.
+### Results
+J1 is active with explicit offline-only non-goals; Phase I remains deferred.
+### Commit
+Pending planning-only commit.
+### Checklist changes
+Phase J1 marked in progress; full J remains incomplete.
+### Known limitations
+No reputation types, schemas, local provider, cache, or CLI have been implemented yet.
+### Remaining work
+Implement only J1 contracts, descriptors, states, report/store schemas, runtime validation, and serialization tests.
+### Next exact action
+Define the Phase J reputation types and schema, preserving unknown, unavailable, rate-limited, unauthorized, and provider-error distinctions.
+
 ## 2026-08-03 — G/H foundation accepted
 ### Planned work
 Reconcile the accepted Phase G/H status with the authoritative planning system.
