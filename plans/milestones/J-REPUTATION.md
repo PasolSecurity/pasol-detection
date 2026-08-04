@@ -30,4 +30,4 @@ J1–J4 are verified at the core level; final J5/J6 evidence remains. No network
 ## Completed commits
 None.
 ## Remaining work
-Reconcile the Phase J acceptance checklist, risks, deferred work, and final evidence without marking scheduled fuzzing or CI execution complete.
+Run and inspect the hosted reputation-fuzz workflow, record its compile/replay/smoke results, and prepare the final Phase J acceptance evidence.

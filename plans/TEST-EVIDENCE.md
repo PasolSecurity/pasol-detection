@@ -401,5 +401,25 @@ The four reputation documentation files listed above.
 ### Conclusion
 Documentation closure is verified. Scheduled fuzzing, regression corpus, and final acceptance reconciliation remain open.
 
+## 2026-08-04 — Hosted fuzz workflow and regression corpus
+### Requirement verified
+A dedicated least-privilege workflow now separates pull-request compile/corpus replay from scheduled smoke campaigns. Seven corpus directories contain 14 deterministic harmless seeds covering valid, invalid, conflict, expiration, and corrupt inputs.
+### Commit tested
+`f983b1c`.
+### Environment
+Windows repository inspection; hosted workflow not executed in this local environment.
+### Commands
+Corpus inventory and workflow review; local `cargo check --manifest-path fuzz/Cargo.toml --bins` remains the available compile evidence.
+### Results
+The workflow is structurally configured with pinned checkout/upload actions, `cargo fuzz build`, bounded corpus replay, 15-second scheduled campaigns, safe failure-artifact upload, and read-only contents permissions.
+### Expected result
+Pull requests compile and replay every target corpus; scheduled runs execute bounded smoke campaigns and preserve only failure artifacts.
+### Actual result
+Workflow and corpus are checked in. No hosted run link, crash count, timeout count, or campaign result is claimed yet.
+### Artifacts or fixtures
+`.github/workflows/reputation-fuzz.yml`, `fuzz/corpus/`, 14 seed files across seven targets.
+### Conclusion
+Hosted fuzz infrastructure and initial corpus are implemented. Hosted execution, regression replay evidence, and final acceptance remain open.
+
 ### Additional workspace verification
 `cargo test --workspace --all-features` passed after commit `035c087`; 25 tests and all doc tests completed successfully. Windows incremental cleanup warnings remained non-fatal.

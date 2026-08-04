@@ -40,9 +40,9 @@
 - Status: Open
 - Severity: Medium
 - Area: J7 validation
-- Description: Seven fuzz targets compile, but `cargo-fuzz` is not installed in the current Windows environment and no scheduled campaign or regression corpus has run.
+- Description: Seven fuzz targets compile and a hosted workflow plus initial corpus are checked in, but `cargo-fuzz` is not installed in the current Windows environment and no hosted campaign or replay has run.
 - Impact: Compile coverage exists without campaign-level crash, hang, or allocation evidence.
-- Mitigation: Keep the compile gate active; run bounded scheduled campaigns in CI and preserve minimized regressions.
+- Mitigation: Keep the compile/replay gate active; run bounded scheduled campaigns in CI and preserve minimized regressions.
 - Owner: Detection maintainers
 - Introduced: 2026-08-04
 - Target resolution: First scheduled fuzz campaign and corpus check-in

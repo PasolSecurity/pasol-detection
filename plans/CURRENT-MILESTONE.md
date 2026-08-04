@@ -49,4 +49,4 @@ Do not mark H accepted until all mandatory H checklist items have evidence.
 Phase G and Phase H are accepted at the Stage 2 foundation level. J1–J4 core behavior and the first actual-binary J5 matrix are verified. Final J5/J6 evidence remains open. Phase I remains deferred.
 
 ## Next exact action
-Reconcile the Phase J acceptance checklist, risks, deferred work, and final evidence without marking scheduled fuzzing or CI execution complete.
+Run and inspect the hosted reputation-fuzz workflow, record its compile/replay/smoke results, and prepare the final Phase J acceptance evidence.

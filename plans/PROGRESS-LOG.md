@@ -242,6 +242,28 @@ Reconcile final Phase J acceptance checkboxes and record unresolved risks/deferr
 ### Next exact action
 Reconcile the Phase J acceptance checklist, risks, deferred work, and final evidence without marking scheduled fuzzing or CI execution complete.
 
+## 2026-08-04 — Hosted fuzz workflow and regression corpus
+### Planned work
+Add hosted compile/replay and scheduled smoke workflows with deterministic initial corpora for all seven fuzz targets.
+### Work completed
+Added a pull-request workflow that compiles and replays all targets, a scheduled bounded smoke workflow with pinned actions and safe artifact handling, and 14 harmless corpus seeds across seven target directories.
+### Files changed
+`.github/workflows/reputation-fuzz.yml`, `fuzz/corpus/`.
+### Tests run
+Workflow and corpus structural review; local fuzz-target compile evidence from `cargo check --manifest-path fuzz/Cargo.toml --bins`.
+### Results
+All target names and corpus paths align. Hosted execution was not available locally and is not claimed.
+### Commit
+`f983b1c`.
+### Checklist changes
+Fuzz workflow and initial corpus implementation are recorded in `TEST-EVIDENCE.md`; hosted smoke, corpus replay, and final acceptance remain open.
+### Known limitations
+No hosted workflow run, campaign duration result, crash/timeout count, or regression replay result is available yet.
+### Remaining work
+Run the workflow in GitHub, record links and results, then finalize Phase J acceptance without activating Phase I.
+### Next exact action
+Run and inspect the hosted reputation-fuzz workflow, record its compile/replay/smoke results, and prepare the final Phase J acceptance evidence.
+
 ## 2026-08-04 — Reputation store and CLI hardening
 ### Planned work
 Add the clock abstraction, transactional import/export, deterministic store behavior, and actual-binary CLI coverage.
