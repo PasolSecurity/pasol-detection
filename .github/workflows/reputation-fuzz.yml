@@ -1,0 +1,58 @@
+name: reputation-fuzz
+
+on:
+  pull_request:
+  schedule:
+    - cron: "17 3 * * 0"
+
+permissions:
+  contents: read
+
+jobs:
+  compile-and-replay:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Install cargo-fuzz
+        run: cargo install cargo-fuzz --locked
+      - name: Compile fuzz targets
+        working-directory: fuzz
+        run: cargo fuzz build
+      - name: Replay regression corpus
+        shell: bash
+        run: |
+          set -euo pipefail
+          targets=(reputation_report local_store reputation_cache reputation_import conflict_resolution expiration store_cache_roundtrip)
+          for target in "${targets[@]}"; do
+            cargo fuzz run "$target" "corpus/$target" -runs=20 -artifact_prefix="artifacts/$target/"
+          done
+        working-directory: fuzz
+
+  scheduled-smoke:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Install cargo-fuzz
+        run: cargo install cargo-fuzz --locked
+      - name: Compile fuzz targets
+        working-directory: fuzz
+        run: cargo fuzz build
+      - name: Run bounded smoke campaigns
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts
+          targets=(reputation_report local_store reputation_cache reputation_import conflict_resolution expiration store_cache_roundtrip)
+          for target in "${targets[@]}"; do
+            cargo fuzz run "$target" "corpus/$target" -max_total_time=15 -artifact_prefix="artifacts/$target/"
+          done
+        working-directory: fuzz
+      - name: Upload safe fuzz artifacts
+        if: failure()
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
+        with:
+          name: reputation-fuzz-artifacts
+          path: fuzz/artifacts/
+          if-no-files-found: ignore
