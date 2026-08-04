@@ -421,5 +421,25 @@ Workflow and corpus are checked in. No hosted run link, crash count, timeout cou
 ### Conclusion
 Hosted fuzz infrastructure and initial corpus are implemented. Hosted execution, regression replay evidence, and final acceptance remain open.
 
+## 2026-08-04 — Local cargo-fuzz feasibility check
+### Requirement verified
+The corrected cargo-fuzz manifest metadata and libFuzzer argument forwarding were tested locally. The fuzz package builds with nightly Rust, but Windows execution is unavailable with the installed MSVC toolchain.
+### Commit tested
+Working tree after `6c80194`; implementation correction pending commit.
+### Environment
+Windows MSVC; Rust stable 1.97.1 and nightly 1.99.0-nightly; cargo-fuzz 0.13.2.
+### Commands
+`cargo install cargo-fuzz --locked`; `RUSTUP_TOOLCHAIN=nightly cargo fuzz build`; `RUSTUP_TOOLCHAIN=nightly cargo fuzz run reputation_report fuzz/corpus/reputation_report -- -runs=20`.
+### Results
+Cargo-fuzz installed successfully and all seven targets compiled under nightly. The first execution failed at MSVC link time with unresolved sanitizer-coverage symbols and exit code `0xc0000135`/LNK1120.
+### Expected result
+Local smoke execution should run the corpus without crashes or invariant failures.
+### Actual result
+Compilation succeeded; Windows execution could not start because the MSVC sanitizer runtime symbols are unavailable. No product crash or invariant failure was observed.
+### Artifacts or fixtures
+Fuzz package metadata, workflow argument forwarding, and local toolchain installation.
+### Conclusion
+Hosted Linux execution remains required for campaign evidence. Phase J is not accepted.
+
 ### Additional workspace verification
 `cargo test --workspace --all-features` passed after commit `035c087`; 25 tests and all doc tests completed successfully. Windows incremental cleanup warnings remained non-fatal.

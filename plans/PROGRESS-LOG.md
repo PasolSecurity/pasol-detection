@@ -132,6 +132,28 @@ Validate golden reports and add operator/state tests.
 ### Next exact action
 Add the operator/state matrix tests and validate each golden rule report against the rule-report schema.
 
+## 2026-08-04 — Local cargo-fuzz feasibility check
+### Planned work
+Validate the corrected fuzz workflow contract locally before relying on hosted execution.
+### Work completed
+Installed cargo-fuzz 0.13.2, added cargo-fuzz package metadata and corrected libFuzzer argument forwarding, and compiled all seven targets with nightly Rust.
+### Files changed
+`fuzz/Cargo.toml`, `.github/workflows/reputation-fuzz.yml`.
+### Tests run
+`cargo install cargo-fuzz --locked`; `RUSTUP_TOOLCHAIN=nightly cargo fuzz build`; `RUSTUP_TOOLCHAIN=nightly cargo fuzz run reputation_report fuzz/corpus/reputation_report -- -runs=20`.
+### Results
+Build passed. Windows execution failed at MSVC sanitizer-coverage linking with unresolved `__start___sancov_pcs`/`__stop___sancov_pcs` symbols.
+### Commit
+Pending implementation correction commit.
+### Checklist changes
+Hosted execution remains unchecked; Windows build and the blocker are recorded in `TEST-EVIDENCE.md` and `RISKS-AND-BLOCKERS.md`.
+### Known limitations
+The detection repository is not available through the authenticated GitHub account, so hosted Linux execution cannot yet be triggered.
+### Remaining work
+Push to an available detection repository or obtain access, run hosted Linux fuzz jobs, and record workflow evidence.
+### Next exact action
+Resolve repository access, push the current branch, and run the pull-request and manually dispatched fuzz workflows.
+
 ## 2026-08-04 — Typed reputation CLI errors
 ### Planned work
 Add stable reputation CLI exit classes and structured JSON errors before beginning reputation goldens and final J6 evidence.

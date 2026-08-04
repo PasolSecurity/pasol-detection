@@ -47,3 +47,27 @@
 - Introduced: 2026-08-04
 - Target resolution: First scheduled fuzz campaign and corpus check-in
 - Resolution evidence: Pending
+
+## Detection repository unavailable
+- Status: Open
+- Severity: High
+- Area: Hosted CI and release
+- Description: GitHub API and authenticated Git push both report `PasolSecurity/pasol-detection` as not found; only `PasolSecurity/pasol-parser` is visible.
+- Impact: Hosted fuzz workflows cannot run and no pull-request or release evidence can be recorded.
+- Mitigation: Create the detection repository under the PasolSecurity organization or grant the authenticated account access, then push the current branch.
+- Owner: Repository administrator
+- Introduced: 2026-08-04
+- Target resolution: Before Phase J acceptance
+- Resolution evidence: Pending
+
+## Windows sanitizer runtime limitation
+- Status: Open
+- Severity: Medium
+- Area: J fuzz execution
+- Description: cargo-fuzz targets compile with nightly but Windows MSVC linking fails on sanitizer-coverage symbols.
+- Impact: Local Windows smoke campaigns cannot provide execution evidence.
+- Mitigation: Use hosted Ubuntu fuzz jobs for execution; retain Windows as a compile/schema platform.
+- Owner: Detection maintainers
+- Introduced: 2026-08-04
+- Target resolution: Hosted Linux fuzz run
+- Resolution evidence: Pending
