@@ -154,6 +154,28 @@ No mandatory G/H implementation work remains. Phase I remains deferred.
 ### Next exact action
 Do not begin Phase I without a new approved milestone and review of the full Stage 2 plan.
 
+## 2026-08-03 — G/H foundation accepted
+### Planned work
+Reconcile the accepted Phase G/H status with the authoritative planning system.
+### Work completed
+Recorded G and H as accepted at the Stage 2 foundation level and cleared the active implementation milestone. Phase I remains deferred.
+### Files changed
+`plans/CURRENT-MILESTONE.md` and planning records.
+### Tests run
+No code changes; relied on verified evidence in commits `ffa4442` and `fbd78af`.
+### Results
+Planning now shows no active milestone and preserves the next-step approval boundary.
+### Commit
+Pending planning-only commit.
+### Checklist changes
+G/H accepted; next milestone approval remains open.
+### Known limitations
+Pattern matching, reputation, additional parsers, and ML remain unimplemented.
+### Remaining work
+Select and approve the next milestone.
+### Next exact action
+Approve Phase J offline reputation foundation before implementation begins.
+
 ## 2026-08-03 — Schema drift and starter fixtures
 ### Planned work
 Add a checked-in schema validation gate and positive/negative fixtures for the starter rule.

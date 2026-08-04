@@ -1,46 +1,43 @@
 # Current Milestone
 
 ## Milestone
-Phase G acceptance closure: deterministic feature goldens and catalog coverage.
+No active implementation milestone.
 
 ## Objective
-Close the remaining Phase G evidence gaps without beginning Phase I or changing the accepted H scope.
+G and H are accepted at the Stage 2 foundation level. Preserve the verified baseline while awaiting explicit approval of the next milestone.
 
 ## Approved scope
-- Generate checked-in PE32, PE64, and partial feature-report goldens.
-- Compare regenerated feature reports byte-for-byte after schema validation.
-- Add catalog-driven positive, negative, unavailable, and truncated coverage.
-- Record final G acceptance evidence.
+- No implementation tasks are active.
+- Candidate next milestone: Phase J offline reputation foundation, pending approval.
 
 ## Explicit non-goals
-Do not start I, J, K, or ML. Do not change accepted H behavior, commit private keys, or add enforcement.
+Do not begin Phase I, J, K, or L implementation until a milestone is explicitly approved. Do not change accepted G/H behavior, commit private keys, or add enforcement.
 
 ## Dependencies
-Existing PE parser fixtures, feature schema, `PeFeatureExtractor`, and feature validation helpers.
+Accepted G/H implementation and planning evidence.
 
 ## Tasks
-- [x] Generate PE32, PE64, and partial feature goldens.
-- [x] Add byte-for-byte golden regeneration tests.
-- [x] Add catalog-driven feature state/value coverage.
-- [x] Update G acceptance evidence and formal status.
+- [x] Close Phase G acceptance evidence.
+- [x] Close Phase H acceptance evidence.
+- [ ] Approve the next implementation milestone.
 
 ## Files expected to change
-`fixtures/golden/features/`, `crates/pasol-lab/tests/`, feature tests, docs, and `plans/`.
+Planning files only until the next milestone is approved.
 
 ## Tests required
-Formatting, feature extraction tests, schema validation, byte-for-byte golden comparison, state coverage, and Clippy warnings denied.
+No implementation tests are scheduled while no milestone is active.
 
 ## Security checks required
-No local paths or timestamps in normalized reports; preserve unknown, truncated, and unsupported semantics; do not add enforcement.
+Preserve the accepted security boundaries and do not add enforcement.
 
 ## Documentation required
-Feature catalog coverage and acceptance evidence updates.
+Record milestone approval before implementation resumes.
 
 ## Acceptance gate
 Do not mark H accepted until all mandatory H checklist items have evidence.
 
 ## Current status
-Phase H and Phase G are accepted at the Stage 2 foundation level. Goldens, schema validation, deterministic regeneration, and catalog-driven state coverage are verified.
+Phase G and Phase H are accepted at the Stage 2 foundation level. Phase I remains deferred. No active implementation milestone is selected.
 
 ## Next exact action
-Keep Phase I deferred; any future work must begin with a new approved milestone after reviewing the remaining Stage 2 scope.
+Approve Phase J offline reputation foundation, or explicitly select another milestone, before modifying implementation code.
