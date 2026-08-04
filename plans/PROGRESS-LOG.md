@@ -547,3 +547,25 @@ Fourteen corpus seeds have not yet been replayed in hosted CI.
 Enable compile-and-replay for workflow dispatch and rerun.
 ### Next exact action
 Push the manual-dispatch replay change and rerun the workflow.
+
+## 2026-08-04 — Hosted Phase J acceptance
+### Planned work
+Run the corrected hosted fuzz workflow with compile/replay enabled for manual dispatch and record complete Phase J execution evidence.
+### Work completed
+Verified the hosted workflow on the pushed `main` commit. Both compile/replay and scheduled-smoke jobs completed successfully.
+### Files changed
+Planning evidence and acceptance records only.
+### Tests run
+GitHub Actions workflow `reputation-fuzz` run 30931536513: `cargo fuzz build`; seven target replays with `-runs=20`; seven smoke campaigns with `-max_total_time=15`.
+### Results
+Seven targets compiled; fourteen corpus seeds replayed; seven campaigns completed; crash count 0; timeout count 0; invariant-failure count 0; no failure artifacts uploaded. Ubuntu 24.04.4, nightly Rust 1.99.0-nightly, cargo-fuzz 0.13.2.
+### Commit
+`5565e13b41a29d33b208420cf26a481d276e1380` tested; evidence update pending commit.
+### Checklist changes
+J5, J6, scheduled fuzz, hosted replay/smoke, and J8 acceptance items marked complete with evidence anchors. J is accepted at the offline foundation level.
+### Known limitations
+Windows MSVC sanitizer execution remains unavailable; hosted Ubuntu execution is the acceptance environment. Release signing infrastructure and broader Stage 2 phases remain open.
+### Remaining work
+Choose and record the next milestone before starting Phase I, K, or L.
+### Next exact action
+Select and record the next implementation milestone in `CURRENT-MILESTONE.md` and `DECISIONS.md`.

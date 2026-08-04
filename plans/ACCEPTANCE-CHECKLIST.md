@@ -25,13 +25,13 @@
 - [x] J2 offline local provider with allowlist/blocklist semantics and conflict preservation. Evidence: `TEST-EVIDENCE.md#2026-08-04-reputation-store-and-cli-hardening`.
 - [x] J3 bounded persistent store, atomic writes, deterministic import/export, and duplicate rollback. Evidence: `TEST-EVIDENCE.md#2026-08-04-reputation-store-and-cli-hardening`.
 - [x] J4 provider-scoped persistent cache with TTL, revision invalidation, deterministic eviction, and corruption rejection. Evidence: `TEST-EVIDENCE.md#2026-08-04-persistent-reputation-cache`; Commit `035c087`.
-- [~] J5 typed CLI exit classes, JSON errors, full integration matrix, and offline privacy behavior. Evidence: `TEST-EVIDENCE.md#2026-08-04-typed-reputation-cli-errors`; Commit `210eeff`.
-- [~] J6 deterministic reputation/error goldens and schema-drift workflow coverage. Evidence: `TEST-EVIDENCE.md#2026-08-04-reputation-goldens-and-schema-drift-gate`; Commit `1253639`. Property/fuzz coverage, documentation, and final acceptance remain open.
+- [x] J5 typed CLI exit classes, JSON errors, full integration matrix, and offline privacy behavior. Evidence: `TEST-EVIDENCE.md#2026-08-04-typed-reputation-cli-errors`; Commit `210eeff`.
+- [x] J6 deterministic reputation/error goldens and schema-drift workflow coverage. Evidence: `TEST-EVIDENCE.md#2026-08-04-reputation-goldens-and-schema-drift-gate`; Commit `1253639`.
 - [x] J7 bounded property tests and seven fuzz targets implemented and compile-verified. Evidence: `TEST-EVIDENCE.md#2026-08-04-reputation-property-invariants`, `TEST-EVIDENCE.md#2026-08-04-reputation-fuzz-target-compilation`; Commits `31e24f1`, `d770c90`, `585b0cf`.
-- [ ] Scheduled fuzz campaign and regression corpus.
+- [x] Scheduled fuzz campaign and regression corpus. Evidence: `TEST-EVIDENCE.md#2026-08-04-hosted-fuzz-acceptance-run`; Workflow `30931536513`.
 - [x] Deterministic initial regression corpus for all seven targets. Evidence: `TEST-EVIDENCE.md#2026-08-04-hosted-fuzz-workflow-and-regression-corpus`; Commit `f983b1c`.
-- [ ] Hosted compile/replay workflow execution and scheduled smoke result.
-- [ ] J8 documentation review and final Phase J acceptance evidence.
+- [x] Hosted compile/replay workflow execution and scheduled smoke result. Evidence: `TEST-EVIDENCE.md#2026-08-04-hosted-fuzz-acceptance-run`; Workflow `30931536513`.
+- [x] J8 documentation review and final Phase J acceptance evidence. Evidence: `TEST-EVIDENCE.md#2026-08-04-reputation-documentation-closure`, `TEST-EVIDENCE.md#2026-08-04-hosted-fuzz-acceptance-run`.
 - [x] J8 reputation provider, store, privacy, and threat-model documentation reviewed. Evidence: `TEST-EVIDENCE.md#2026-08-04-reputation-documentation-closure`; Commit `14d9849`.
 
 ## K — Additional Parsers

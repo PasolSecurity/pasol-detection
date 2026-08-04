@@ -1,52 +1,44 @@
 # Current Milestone
 
 ## Milestone
-Phase J — Offline Reputation Foundation (J1–J6)
+No active implementation milestone
 
 ## Objective
-Implement the complete offline reputation foundation: contracts, local provider, persistent store, bounded cache semantics, CLI, goldens, documentation, and acceptance evidence.
+Preserve the accepted G/H/J foundation while selecting the next Stage 2 milestone explicitly.
 
 ## Approved scope
-- Complete J1 contracts and schemas.
-- Complete J2 offline local provider.
-- Complete J3 persistent store and atomic updates.
-- Complete J4 cache and expiration semantics.
-- Complete J5 CLI and integration tests.
-- Complete J6 goldens, CI, documentation, and acceptance evidence.
+- G, H, and J acceptance evidence is complete and recorded.
+- No new implementation begins until the next milestone is selected.
 
 ## Explicit non-goals
-Do not add remote providers, network access, uploads, enforcement, Phase I pattern work, Phase K parsers, or ML work. Do not change accepted G/H behavior.
+Do not begin Phase I, K, or L work in this planning slice. Do not add execution, uploads, enforcement, verdicts, blocking, quarantine, or deletion.
 
 ## Dependencies
-Accepted G/H implementation, SDK types, and schema-validation helpers.
+Accepted G/H implementation and accepted offline J foundation.
 
 ## Tasks
 - [x] Close Phase G acceptance evidence.
 - [x] Close Phase H acceptance evidence.
-- [x] Approve Phase J offline reputation foundation.
-- [x] Implement J1 contracts and schemas.
-- [x] Implement J2 offline local provider and J3 persistent store.
-- [x] Implement J4 cache semantics.
-- [ ] Implement J5 complete CLI integration matrix.
-- [ ] Implement J6 goldens, CI, documentation, and acceptance evidence.
+- [x] Complete J1–J8 offline reputation foundation and hosted evidence.
+- [ ] Select and activate the next milestone explicitly.
 
 ## Files expected to change
-`crates/pasol-reputation/`, `crates/pasol-lab/`, schemas, fixtures, docs, tests, and `plans/`.
+`plans/` only until a new milestone is approved.
 
 ## Tests required
-Formatting, Clippy warnings denied, workspace tests, schema/golden tests, provider/store/cache tests, CLI integration tests, and documentation tests.
+Planning consistency review and repository status inspection.
 
 ## Security checks required
-Offline-only; no network calls, uploads, credentials, verdicts, or enforcement. Unknown and unavailable must remain distinct.
+No secrets, private keys, credentials, or restricted dataset paths in planning files.
 
 ## Documentation required
-Document provider semantics, schema compatibility, store safety, cache behavior, privacy, and threat model.
+Record the next milestone and its security boundaries in `DECISIONS.md` before implementation.
 
 ## Acceptance gate
-Do not mark H accepted until all mandatory H checklist items have evidence.
+Do not begin a new phase until its milestone file, checklist, dependencies, and next exact action are recorded.
 
 ## Current status
-Phase G and Phase H are accepted at the Stage 2 foundation level. J1–J4 core behavior and the first actual-binary J5 matrix are verified. Final J5/J6 evidence remains open. Phase I remains deferred.
+Phase G, Phase H, and Phase J are accepted at the Stage 2 foundation level. Phase I remains deferred pending an explicit milestone decision. Phases K and L remain open and unimplemented.
 
 ## Next exact action
-Enable compile-and-replay for manual dispatch, then rerun the hosted fuzz workflow and record seven-target compilation, fourteen-seed replay, and seven smoke-campaign results.
+Select and record the next implementation milestone in this file and `DECISIONS.md` before changing code.

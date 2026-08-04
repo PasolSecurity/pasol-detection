@@ -37,16 +37,16 @@
 - Resolution evidence: Pending
 
 ## Fuzz campaign availability
-- Status: Open
+- Status: Resolved
 - Severity: Medium
 - Area: J7 validation
-- Description: Seven fuzz targets compile and a hosted workflow plus initial corpus are checked in, but `cargo-fuzz` is not installed in the current Windows environment and no hosted campaign or replay has run.
-- Impact: Compile coverage exists without campaign-level crash, hang, or allocation evidence.
-- Mitigation: Keep the compile/replay gate active; run bounded scheduled campaigns in CI and preserve minimized regressions.
+- Description: Seven fuzz targets and fourteen harmless seeds now compile, replay, and execute in hosted Linux CI.
+- Impact: Local Windows sanitizer execution remains unavailable, but hosted campaign evidence is available.
+- Mitigation: Keep the compile/replay gate active and preserve minimized regressions.
 - Owner: Detection maintainers
 - Introduced: 2026-08-04
-- Target resolution: First scheduled fuzz campaign and corpus check-in
-- Resolution evidence: Pending
+- Target resolution: Resolved 2026-08-04
+- Resolution evidence: `TEST-EVIDENCE.md#2026-08-04-hosted-fuzz-acceptance-run`; workflow run 30931536513.
 
 ## Detection repository unavailable
 - Status: Resolved
@@ -61,7 +61,7 @@
 - Resolution evidence: Public repository created and `main` pushed; hosted run 30930784059.
 
 ## Hosted fuzz workflow stable-toolchain mismatch
-- Status: Open
+- Status: Resolved
 - Severity: High
 - Area: J hosted fuzzing
 - Description: Hosted `cargo fuzz build` used stable Rust while cargo-fuzz passed nightly-only `-Zsanitizer` flags.
@@ -70,7 +70,7 @@
 - Owner: Detection maintainers
 - Introduced: 2026-08-04
 - Target resolution: Next hosted fuzz run
-- Resolution evidence: Pending
+- Resolution evidence: `TEST-EVIDENCE.md#2026-08-04-hosted-fuzz-acceptance-run`; workflow run 30931536513.
 
 ## Windows sanitizer runtime limitation
 - Status: Open

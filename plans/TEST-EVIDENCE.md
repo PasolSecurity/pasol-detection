@@ -501,3 +501,43 @@ Success; no artifacts uploaded, indicating no failure artifacts.
 Workflow run: https://github.com/PasolSecurity/pasol-detection/actions/runs/30931071619
 ### Conclusion
 Hosted smoke evidence is green. Compile/replay remained skipped and is being enabled for manual dispatch.
+
+## 2026-08-04 — Hosted fuzz acceptance run
+### Requirement verified
+Phase J hosted fuzz compilation, deterministic corpus replay, and bounded smoke campaigns.
+### Commit tested
+`5565e13b41a29d33b208420cf26a481d276e1380`.
+### Environment
+GitHub Actions Ubuntu 24.04.4, runner 2.336.0, nightly Rust `1.99.0-nightly` (`504869653`, 2026-08-03), cargo-fuzz `0.13.2`.
+### Commands
+Workflow `reputation-fuzz` manual dispatch: `cargo fuzz build`; each of the seven targets replayed with `-runs=20`; each of the seven smoke campaigns run with `-max_total_time=15`.
+### Results
+Both workflow jobs completed successfully. Seven fuzz targets compiled, fourteen corpus seeds replayed, and seven bounded campaigns completed. Crash count: 0. Timeout count: 0. Invariant-failure count: 0. No failure artifacts were uploaded.
+### Expected result
+All targets compile and replay without panic, timeout, invariant failure, or memory failure; smoke campaigns complete successfully.
+### Actual result
+The expected result was achieved on both compile/replay and scheduled-smoke jobs.
+### Artifacts or fixtures
+Workflow run: https://github.com/PasolSecurity/pasol-detection/actions/runs/30931536513; corpus under `fuzz/corpus/`.
+### Conclusion
+Hosted Phase J fuzz execution is verified. Windows sanitizer execution remains unavailable locally and is mitigated by hosted Linux execution.
+
+## 2026-08-04 — Final Windows workspace quality gate
+### Requirement verified
+No regression in the accepted G/H/J implementation after planning reconciliation.
+### Commit tested
+Working tree containing the hosted-evidence planning update.
+### Environment
+Windows PowerShell, Rust stable toolchain.
+### Commands
+`cargo fmt --check`; `cargo test --workspace --all-features`; `cargo clippy --workspace --all-targets --all-features -- -D warnings`.
+### Results
+Formatting, all workspace tests, and Clippy with warnings denied passed. The workspace test run completed all unit, integration, golden, property, schema, and documentation tests successfully.
+### Expected result
+Exit code 0 for every command and no warnings denied by Clippy.
+### Actual result
+All commands exited 0.
+### Artifacts or fixtures
+Feature, rule, and reputation fixtures/goldens and schemas under `fixtures/` and `schemas/`.
+### Conclusion
+The local regression gate is green; hosted Linux fuzz execution is recorded separately above.
