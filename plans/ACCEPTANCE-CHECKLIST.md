@@ -18,7 +18,8 @@
 - [x] Golden rule reports and full operator/state matrix — Evidence: `TEST-EVIDENCE.md#2026-08-03-golden-and-operator-matrix`; Commit `ff39e83`.
 
 ## I — Pattern Matching
-- [ ] YARA-X worker, packs, limits, schemas, CLI, and tests.
+- [~] I0 YARA-X engine decision, pinned dependency, compatibility evidence, and harmless in-memory test. Evidence pending.
+- [ ] I1–I9 worker, packs, limits, schemas, CLI, goldens, fuzzing, hosted CI, and acceptance.
 
 ## J — Reputation
 - [x] J1 provider contract, versioned records, states, and schema validation. Evidence: `TEST-EVIDENCE.md#2026-08-04-reputation-store-and-cli-hardening`; Commits `6c9f199`, `3574c22`.

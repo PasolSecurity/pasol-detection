@@ -13,5 +13,8 @@ serde_json.workspace = true
 thiserror.workspace = true
 jsonschema.workspace = true
 
+[dev-dependencies]
+yara-x.workspace = true
+
 [lints]
 workspace = true

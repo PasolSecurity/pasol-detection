@@ -30,6 +30,7 @@ rand_core = { version = "0.6", features = ["getrandom"] }
 time = { version = "0.3", features = ["formatting", "parsing", "macros"] }
 atomic-write-file = "0.3"
 proptest = "1.6"
+yara-x = { version = "=1.19.0", default-features = false, features = ["constant-folding", "exact-atoms", "fast-regexp", "generate-proto-code", "pe-module", "hash-module", "math-module", "string-module"] }
 
 [workspace.lints.rust]
 unsafe_code = "forbid"

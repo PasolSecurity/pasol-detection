@@ -569,3 +569,25 @@ Windows MSVC sanitizer execution remains unavailable; hosted Ubuntu execution is
 Choose and record the next milestone before starting Phase I, K, or L.
 ### Next exact action
 Select and record the next implementation milestone in `CURRENT-MILESTONE.md` and `DECISIONS.md`.
+
+## 2026-08-04 — Phase I0 compatibility slice
+### Planned work
+Activate Phase I, record the YARA-X engine decision, pin YARA-X 1.19.0 with restricted features, and run a harmless Windows compatibility test.
+### Work completed
+Activated I0, added the YARA-X ADR and dependency pin, restricted enabled modules, and added a temporary in-memory compile-and-scan test.
+### Files changed
+`Cargo.toml`, `Cargo.lock`, `crates/pasol-detection-sdk/Cargo.toml`, `crates/pasol-detection-sdk/tests/yara_x_compat.rs`, `docs/adr/ADR-PATTERN-ENGINE.md`, and Phase I planning files.
+### Tests run
+`cargo test -p pasol-detection-sdk --test yara_x_compat -- --nocapture`; `cargo fmt --check`; `cargo test --workspace --all-features`; `cargo clippy --workspace --all-targets --all-features -- -D warnings`; `rustup run 1.91.0 rustc --version`.
+### Results
+YARA-X 1.19.0 compiled and the harmless rule matched on Windows Rust 1.97.1. Formatting, workspace tests, and Clippy passed. Rust 1.91.0 is not installed, so MSRV verification is blocked and not claimed.
+### Commit
+Pending focused I0 commit.
+### Checklist changes
+Phase I marked active; I0 compatibility remains in progress pending MSRV evidence.
+### Known limitations
+No worker, schemas, CLI, production pattern packs, or scanning functionality was added. K and L remain inactive.
+### Remaining work
+Verify the exact Rust 1.91 toolchain, then begin I1 contracts and schemas.
+### Next exact action
+Run the I0 compatibility test under Rust 1.91 on Windows or an equivalent CI runner and record the result.

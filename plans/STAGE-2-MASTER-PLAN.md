@@ -37,7 +37,7 @@ Stage 2 converts bounded parser facts into versioned, explainable evidence witho
 
 ## I — Pattern matching
 
-- [ ] Select and document YARA-X engine.
+- [~] Select and document YARA-X engine; I0 compatibility slice active.
 - [ ] Add isolated worker, timeout/memory/input/rule/output limits, signed packs, schema, starter patterns, CLI, and crash/hang tests.
 
 ## J — Reputation

@@ -522,6 +522,26 @@ Workflow run: https://github.com/PasolSecurity/pasol-detection/actions/runs/3093
 ### Conclusion
 Hosted Phase J fuzz execution is verified. Windows sanitizer execution remains unavailable locally and is mitigated by hosted Linux execution.
 
+## 2026-08-04 — Phase I0 YARA-X compatibility spike
+### Requirement verified
+Pinned YARA-X `1.19.0` resolves with the selected restricted feature set and compiles/scans harmless in-memory bytes on Windows.
+### Commit tested
+Working tree for the I0 compatibility slice; commit pending.
+### Environment
+Windows MSVC, Rust `1.97.1`, cargo `1.97.1`; YARA-X `1.19.0` (BSD-3-Clause). Rust `1.91.0` is not installed locally.
+### Commands
+`cargo test -p pasol-detection-sdk --test yara_x_compat -- --nocapture`; `cargo fmt --check`; `cargo test --workspace --all-features`; `cargo clippy --workspace --all-targets --all-features -- -D warnings`; `rustup run 1.91.0 rustc --version`.
+### Results
+The harmless compatibility test passed. Formatting, all workspace tests, and Clippy with warnings denied passed. The MSRV command reported that toolchain `1.91.0-x86_64-pc-windows-msvc` is not installed.
+### Expected result
+YARA-X builds with the pinned features, the harmless rule matches deterministically, and all local quality checks pass; MSRV is either verified or explicitly recorded as blocked.
+### Actual result
+Windows compatibility and local quality checks passed. MSRV verification is blocked by the unavailable local toolchain and remains unchecked.
+### Artifacts or fixtures
+`docs/adr/ADR-PATTERN-ENGINE.md`, `Cargo.toml`, `Cargo.lock`, and `crates/pasol-detection-sdk/tests/yara_x_compat.rs`.
+### Conclusion
+I0 is partially verified: the dependency and Windows compatibility gate pass, while the Rust 1.91 check requires a CI runner or installed toolchain before I0 acceptance.
+
 ## 2026-08-04 — Final Windows workspace quality gate
 ### Requirement verified
 No regression in the accepted G/H/J implementation after planning reconciliation.

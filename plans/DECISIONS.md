@@ -78,3 +78,23 @@ New reputation schemas remain versioned independently from feature and rule sche
 Remote reputation and Phase I pattern matching remain out of scope.
 ### Revisit conditions
 Stop after Phase J acceptance and require explicit approval for the next phase.
+
+## D-I-001
+### Date
+2026-08-04
+### Decision
+Activate Phase I I0 and use YARA-X `1.19.0` through a dedicated Pasol adapter, with production scanning deferred to a one-shot isolated worker.
+### Context
+G, H, and J are accepted. The approved Phase I plan selects YARA-X and requires a compatibility-only first slice before schemas, worker, CLI, or packs.
+### Options considered
+External YARA-X CLI; direct in-process scanning; Rust `yara-x` adapter with later worker isolation.
+### Selected option
+Pin `yara-x = 1.19.0`, disable default features, enable only constant folding, exact atoms, fast regexp, generated protobuf code, and the PE, hash, math, and string modules. Disable includes and reject all unapproved modules. Use a one-request-per-process worker for production scans.
+### Security implications
+No inspected content is executed, loaded, uploaded, or read by path. Includes, callbacks, network-capable or unnecessary modules, and environment-dependent output are prohibited. Parent hard timeouts remain mandatory because engine timeouts are advisory.
+### Compatibility implications
+YARA-X `1.19.0` declares Rust `1.91.0`; compatibility must be verified against the workspace MSRV and Windows before I0 is accepted. The dependency is pinned in the lockfile and upgrades require a new decision.
+### Alternatives rejected
+Launching an external CLI would add process and parser ambiguity; direct in-process scanning would weaken the isolation boundary; default YARA-X features would enable unnecessary modules.
+### Revisit conditions
+Revisit only if the MSRV/Windows compatibility spike fails, an approved security review changes the module policy, or YARA-X releases a required security fix.
