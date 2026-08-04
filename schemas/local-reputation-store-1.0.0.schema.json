@@ -1,6 +1,6 @@
 {
   "$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","additionalProperties":false,
   "required":["schema_version","entries"],"properties":{"schema_version":{"const":"1.0.0"},"entries":{"type":"array","maxItems":10000,"items":{"type":"object","additionalProperties":false,"required":["sha256","state","reason","source","labels","created_at","expires_at","enabled"],"properties":{
-    "sha256":{"type":"string","pattern":"^[0-9a-f]{64}$"},"state":{"enum":["known_benign","known_malicious","suspicious","unknown","unavailable","rate_limited","unauthorized","provider_error"]},"reason":{"type":["string","null"],"maxLength":4096},"source":{"type":["string","null"],"maxLength":1024},"labels":{"type":"array","maxItems":32,"items":{"type":"string","maxLength":128}},"created_at":{"type":"string","pattern":"^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"},"expires_at":{"type":["string","null"]},"enabled":{"type":"boolean"}
+    "sha256":{"type":"string","pattern":"^[0-9a-f]{64}$"},"state":{"enum":["known_benign","known_malicious","suspicious"]},"reason":{"type":["string","null"],"maxLength":4096},"source":{"type":["string","null"],"maxLength":1024},"labels":{"type":"array","maxItems":32,"items":{"type":"string","maxLength":128}},"created_at":{"type":"string","pattern":"^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"},"expires_at":{"type":["string","null"],"pattern":"^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"},"enabled":{"type":"boolean"}
   }}}}
 }

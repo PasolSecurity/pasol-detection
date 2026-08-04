@@ -72,16 +72,42 @@ enum ReputationCommands {
         #[arg(long)]
         source: Option<String>,
         #[arg(long)]
+        label: Vec<String>,
+        #[arg(long)]
+        expires_at: Option<String>,
+        #[arg(long)]
         store: PathBuf,
+        #[arg(long)]
+        format: Option<String>,
     },
     Remove {
         sha256: String,
         #[arg(long)]
         store: PathBuf,
+        #[arg(long)]
+        format: Option<String>,
     },
     ValidateStore {
         #[arg(long)]
         store: PathBuf,
+        #[arg(long)]
+        format: Option<String>,
+    },
+    Import {
+        input: PathBuf,
+        #[arg(long)]
+        store: PathBuf,
+        #[arg(long, default_value = "reject-duplicates")]
+        mode: String,
+        #[arg(long)]
+        format: Option<String>,
+    },
+    Export {
+        output: PathBuf,
+        #[arg(long)]
+        store: PathBuf,
+        #[arg(long)]
+        format: Option<String>,
     },
 }
 
@@ -316,7 +342,17 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
             println!("{}", serde_json::to_string(&score(&report))?);
         }
         Commands::Reputation { command } => match command {
-            ReputationCommands::Lookup { sha256, store, .. } => {
+            ReputationCommands::Lookup {
+                sha256,
+                store,
+                format,
+            } => {
+                if format
+                    .as_deref()
+                    .is_some_and(|value| value != "json" && value != "human")
+                {
+                    return Err("format must be human or json".into());
+                }
                 validate_sha256(&sha256)?;
                 let result = LocalStore::load(&store)?.lookup(&sha256)?;
                 let output = report(&sha256, result)?;
@@ -325,7 +361,13 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
                     .map_err(|e| format!("reputation schema validation failed: {e}"))?;
                 println!("{}", serde_json::to_string(&output)?);
             }
-            ReputationCommands::List { store, .. } => {
+            ReputationCommands::List { store, format } => {
+                if format
+                    .as_deref()
+                    .is_some_and(|value| value != "json" && value != "human")
+                {
+                    return Err("format must be human or json".into());
+                }
                 let value = serde_json::to_value(LocalStore::load(&store)?)?;
                 validate_store_json(&value)
                     .map_err(|e| format!("store schema validation failed: {e}"))?;
@@ -336,8 +378,17 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
                 state,
                 reason,
                 source,
+                label,
+                expires_at,
                 store,
+                format,
             } => {
+                if format
+                    .as_deref()
+                    .is_some_and(|value| value != "json" && value != "human")
+                {
+                    return Err("format must be human or json".into());
+                }
                 validate_sha256(&sha256)?;
                 let state = serde_json::from_str::<ReputationState>(&format!("\"{state}\""))?;
                 let mut local = if store.exists() {
@@ -350,26 +401,116 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
                     state,
                     reason,
                     source,
-                    labels: Vec::new(),
+                    labels: label,
                     created_at: now_utc(),
-                    expires_at: None,
+                    expires_at,
                     enabled: true,
                 });
                 local.save_atomic(&store)?;
-                println!("ok");
+                println!(
+                    "{}",
+                    if format.as_deref() == Some("json") {
+                        "{\"status\":\"added\"}"
+                    } else {
+                        "ok"
+                    }
+                );
             }
-            ReputationCommands::Remove { sha256, store } => {
+            ReputationCommands::Remove {
+                sha256,
+                store,
+                format,
+            } => {
+                if format
+                    .as_deref()
+                    .is_some_and(|value| value != "json" && value != "human")
+                {
+                    return Err("format must be human or json".into());
+                }
                 validate_sha256(&sha256)?;
                 let mut local = LocalStore::load(&store)?;
                 local.entries.retain(|entry| entry.sha256 != sha256);
                 local.save_atomic(&store)?;
-                println!("ok");
+                println!(
+                    "{}",
+                    if format.as_deref() == Some("json") {
+                        "{\"status\":\"removed\"}"
+                    } else {
+                        "ok"
+                    }
+                );
             }
-            ReputationCommands::ValidateStore { store } => {
+            ReputationCommands::ValidateStore { store, format } => {
+                if format
+                    .as_deref()
+                    .is_some_and(|value| value != "json" && value != "human")
+                {
+                    return Err("format must be human or json".into());
+                }
                 let value = serde_json::to_value(LocalStore::load(&store)?)?;
                 validate_store_json(&value)
                     .map_err(|e| format!("store schema validation failed: {e}"))?;
-                println!("ok");
+                println!(
+                    "{}",
+                    if format.as_deref() == Some("json") {
+                        "{\"status\":\"valid\"}"
+                    } else {
+                        "ok"
+                    }
+                );
+            }
+            ReputationCommands::Import {
+                input,
+                store,
+                mode,
+                format,
+            } => {
+                if mode != "reject-duplicates" {
+                    return Err("only --mode reject-duplicates is supported".into());
+                }
+                if format
+                    .as_deref()
+                    .is_some_and(|value| value != "json" && value != "human")
+                {
+                    return Err("format must be human or json".into());
+                }
+                let mut local = if store.exists() {
+                    LocalStore::load(&store)?
+                } else {
+                    LocalStore::empty()
+                };
+                local.import_merge(&input)?;
+                local.save_atomic(&store)?;
+                println!(
+                    "{}",
+                    if format.as_deref() == Some("json") {
+                        "{\"status\":\"imported\"}"
+                    } else {
+                        "imported"
+                    }
+                );
+            }
+            ReputationCommands::Export {
+                output,
+                store,
+                format,
+            } => {
+                if format
+                    .as_deref()
+                    .is_some_and(|value| value != "json" && value != "human")
+                {
+                    return Err("format must be human or json".into());
+                }
+                let local = LocalStore::load(&store)?;
+                local.export(&output)?;
+                println!(
+                    "{}",
+                    if format.as_deref() == Some("json") {
+                        "{\"status\":\"exported\"}"
+                    } else {
+                        "exported"
+                    }
+                );
             }
         },
     }
