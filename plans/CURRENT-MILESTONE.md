@@ -1,48 +1,46 @@
 # Current Milestone
 
 ## Milestone
-Final G/H acceptance slice: signing/verification CLI and trusted-key operational workflow.
+Phase G acceptance closure: deterministic feature goldens and catalog coverage.
 
 ## Objective
-Make the existing Ed25519 trust library usable through deterministic CLI commands while preserving production/development separation.
+Close the remaining Phase G evidence gaps without beginning Phase I or changing the accepted H scope.
 
 ## Approved scope
-- Add `pasol-lab rules pack sign` and `pack verify`.
-- Use existing signed-pack structure and trusted-key store.
-- Validate schemas before signing/verifying and validate generated reports.
-- Add generated-key integration tests and deterministic manifest tests.
-- Update trust documentation and planning evidence.
+- Generate checked-in PE32, PE64, and partial feature-report goldens.
+- Compare regenerated feature reports byte-for-byte after schema validation.
+- Add catalog-driven positive, negative, unavailable, and truncated coverage.
+- Record final G acceptance evidence.
 
 ## Explicit non-goals
-Do not start I, J, K, or ML. Do not commit private keys or add enforcement.
+Do not start I, J, K, or ML. Do not change accepted H behavior, commit private keys, or add enforcement.
 
 ## Dependencies
-Existing rule schemas, Ed25519 library, `TrustedKeyStore`, and current rule CLI.
+Existing PE parser fixtures, feature schema, `PeFeatureExtractor`, and feature validation helpers.
 
 ## Tasks
-- [x] Implement pack sign CLI.
-- [x] Implement pack verify CLI against trusted store.
-- [x] Add tamper and deterministic-manifest integration tests.
-- [x] Add golden rule evidence and update acceptance records.
-- [x] Add schema-drift CI enforcement and starter-rule positive/negative fixture coverage.
+- [ ] Generate PE32, PE64, and partial feature goldens.
+- [ ] Add byte-for-byte golden regeneration tests.
+- [ ] Add catalog-driven feature state/value coverage.
+- [ ] Update G acceptance evidence and formal status.
 
 ## Files expected to change
-`crates/pasol-lab/src/main.rs`, `crates/pasol-rules/src/lib.rs`, schemas, tests, docs, and `plans/`.
+`fixtures/golden/features/`, `crates/pasol-lab/tests/`, feature tests, docs, and `plans/`.
 
 ## Tests required
-Formatting, workspace tests, Clippy warnings denied, schema validation, valid/tampered/wrong-key/unknown-key/unsigned CLI cases, deterministic output inspection.
+Formatting, feature extraction tests, schema validation, byte-for-byte golden comparison, state coverage, and Clippy warnings denied.
 
 ## Security checks required
-No private keys in repository or logs; production verify must require a trusted active key; revoked keys must fail; writes must be atomic.
+No local paths or timestamps in normalized reports; preserve unknown, truncated, and unsupported semantics; do not add enforcement.
 
 ## Documentation required
-Trust lifecycle, CLI usage, rotation/revocation, and evidence updates.
+Feature catalog coverage and acceptance evidence updates.
 
 ## Acceptance gate
 Do not mark H accepted until all mandatory H checklist items have evidence.
 
 ## Current status
-Pack signing, CLI integration, golden rule reports, operator/state semantics, schema validation, and starter fixtures are verified. G/H formal acceptance evidence remains under review.
+Phase H is accepted at the Stage 2 foundation level. Phase G golden outputs and catalog-wide coverage are active.
 
 ## Next exact action
-Complete Phase G golden feature reports and comprehensive per-feature positive/negative coverage before any Phase I work.
+Generate `fixtures/golden/features/pe32.json`, `pe64.json`, and `pe64-partial.json` from the production extractor, validate them, and add byte-for-byte regeneration tests.

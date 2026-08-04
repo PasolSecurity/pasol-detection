@@ -154,6 +154,28 @@ Complete Phase G golden feature reports and per-feature coverage, then formal G/
 ### Next exact action
 Generate and check in deterministic PE32, PE64, and partial feature golden reports with schema validation.
 
+## 2026-08-03 — Phase H acceptance recorded
+### Planned work
+Reconcile the final hardening assessment with local planning records.
+### Work completed
+Recorded Phase H as accepted at the Stage 2 foundation level and moved the current milestone to Phase G acceptance closure.
+### Files changed
+`plans/CURRENT-MILESTONE.md`, `plans/ACCEPTANCE-CHECKLIST.md`, `plans/TEST-EVIDENCE.md`.
+### Tests run
+Reviewed existing evidence for `5627210` and `6fa0e1c`; no code changes made.
+### Results
+The local plan now identifies H as accepted and keeps G golden/per-feature evidence open.
+### Commit
+Pending planning-only commit.
+### Checklist changes
+H acceptance is recorded; G remains unchecked for golden outputs and catalog-wide coverage.
+### Known limitations
+Phase G has not been accepted; Phase I remains deferred.
+### Remaining work
+Generate and validate PE32, PE64, and partial feature goldens and complete catalog-driven coverage.
+### Next exact action
+Implement deterministic feature golden generation and byte-for-byte regeneration tests.
+
 ## 2026-08-03 — Golden reports and operator matrix
 ### Planned work
 Validate all four rule goldens and cover operators across uncertain states, missing features, and wrong types.

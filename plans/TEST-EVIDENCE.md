@@ -180,3 +180,23 @@ PE32/PE64 features, rule pack, four rule goldens, and generated reports validate
 `crates/pasol-lab/tests/schema.rs`, `fixtures/rules/starter-positive-feature.json`, `fixtures/rules/starter-negative-feature.json`, `.github/workflows/schema-drift.yml`.
 ### Conclusion
 This slice is verified in `5627210`.
+
+## 2026-08-03 — Phase H acceptance
+### Requirement verified
+Phase H deterministic evaluation, signed-pack trust, key lifecycle, bounded evaluation, schema contracts, adversarial CLI tests, starter fixtures, and schema-drift regression are complete at the Stage 2 foundation level.
+### Commit tested
+`5627210`, with planning evidence in `6fa0e1c`.
+### Environment
+Windows; rustc/cargo 1.97.1.
+### Commands
+`cargo test --workspace --all-features`; `cargo test --workspace schema`; `cargo clippy --workspace --all-targets --all-features -- -D warnings`.
+### Results
+All workspace, schema, and Clippy checks passed; Windows incremental cleanup warnings only.
+### Expected result
+No mandatory H implementation or verification requirement remains open.
+### Actual result
+H evidence is complete; Phase I remains unstarted and deferred.
+### Artifacts or fixtures
+Signed-pack CLI integration tests, rule goldens, starter fixtures, schema-drift workflow, and planning records.
+### Conclusion
+Phase H is accepted at the Stage 2 foundation level; this is not a final antivirus verdict or enforcement system.

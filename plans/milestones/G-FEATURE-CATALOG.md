@@ -23,8 +23,8 @@ No execution; preserve unknown/truncated/unsupported distinctions.
 ## Acceptance criteria
 All mandatory checklist items must be verified.
 ## Current status
-Functionally complete; acceptance evidence pending.
+Functionally complete; golden outputs and catalog-wide acceptance evidence pending.
 ## Completed commits
 `00b24b8`, `588b349`, `03d4f93`.
 ## Remaining work
-Golden outputs, coverage, drift CI.
+Checked-in PE32/PE64/partial goldens, byte-for-byte regeneration tests, and comprehensive per-feature positive/negative/unavailable/truncated coverage.

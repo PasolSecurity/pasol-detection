@@ -26,8 +26,8 @@ No arbitrary code; depth, count, output, and evidence limits; unknown/truncated 
 ## Acceptance criteria
 All mandatory checklist items must be verified.
 ## Current status
-Core, trust library, operational tooling, schema gate, and starter fixtures verified; formal acceptance review pending.
+Accepted at the Stage 2 foundation level: core evaluator, trust library, operational tooling, schema gate, starter fixtures, and adversarial evidence are verified.
 ## Completed commits
 `00b24b8`, `588b349`, `03d4f93`, `66b4e42`, `a251ba2`, `fe225e4`.
 ## Remaining work
-Formal acceptance review and CI supply-chain hardening (including pinned action SHAs).
+No mandatory H implementation work remains. Broader CI supply-chain hardening, release governance, and later detection phases remain outside H acceptance.
