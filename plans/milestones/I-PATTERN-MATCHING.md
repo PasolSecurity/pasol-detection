@@ -28,4 +28,4 @@ I0 is accepted. I1 contracts and schemas are active; compiler, signing, worker, 
 ## Completed commits
 `58e20ed` (I0 compatibility baseline).
 ## Remaining work
-Complete I1 schema/golden evidence, then begin I2 signed pattern-pack validation.
+Add the complete checked-in golden corpus and negative regeneration tests, then begin I2 signed pattern-pack validation.

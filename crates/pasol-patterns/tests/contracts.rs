@@ -1,4 +1,9 @@
-use pasol_patterns::{PATTERN_ENGINE, PATTERN_SCHEMA_VERSION, PatternReport, PatternScanStatus};
+use pasol_patterns::{
+    PATTERN_ENGINE, PATTERN_SCHEMA_VERSION, PatternInput, PatternLimits, PatternPackIdentity,
+    PatternPackReference, PatternReport, PatternScanRequest, PatternScanStatus,
+    PatternSignatureState, PatternWorkerRequest, VerifiedPatternPack,
+};
+use sha2::Digest;
 
 fn report() -> PatternReport {
     serde_json::from_value(serde_json::json!({
@@ -9,7 +14,7 @@ fn report() -> PatternReport {
         "status": "completed",
         "matches": [],
         "warnings": [],
-        "limits": {"input_bytes": 1, "report_bytes": 1, "matching_rules": 1, "evidence_entries": 1},
+        "limits": {"input_bytes": 1, "report_bytes": 4096, "matching_rules": 1, "evidence_entries": 1, "matches_per_pattern": 1, "compiler_warnings": 1, "locations_per_rule": 1},
         "timing": {"compile_time_ms": 0, "scan_time_ms": 0}
     })).expect("report fixture")
 }
@@ -61,4 +66,44 @@ fn reports_validate_deterministically_for_every_status() {
         assert_eq!(value.engine.id, PATTERN_ENGINE);
         value.to_validated_json().expect("schema-valid report");
     }
+}
+
+#[test]
+fn worker_payload_identity_and_source_bounds_are_enforced() {
+    let payload = b"hello";
+    let input_sha = hex::encode(sha2::Sha256::digest(payload));
+    let reference = PatternPackReference {
+        identity: PatternPackIdentity {
+            id: "pasol.test".into(),
+            version: "0.1.0".into(),
+            sha256: "a".repeat(64),
+            signature_state: PatternSignatureState::Development,
+        },
+    };
+    let request = PatternScanRequest {
+        schema_version: PATTERN_SCHEMA_VERSION.into(),
+        input: PatternInput {
+            sha256: input_sha.clone(),
+            size_bytes: payload.len() as u64,
+            file_type: None,
+        },
+        pack: VerifiedPatternPack::development(reference),
+        limits: PatternLimits::default(),
+    };
+    let worker = PatternWorkerRequest {
+        schema_version: PATTERN_SCHEMA_VERSION.into(),
+        request,
+        input_size: payload.len() as u64,
+        input_sha256: input_sha,
+        payload_length: payload.len() as u64,
+        rule_sources: [(
+            "rules/test.yar".into(),
+            "rule test { condition: true }".into(),
+        )]
+        .into_iter()
+        .collect(),
+    };
+    assert!(worker.validate().is_ok());
+    assert!(worker.bind_payload(payload).is_ok());
+    assert!(worker.bind_payload(b"bad").is_err());
 }

@@ -118,3 +118,23 @@ Schema version `1.0.0` is independent from YARA-X versions. Breaking changes req
 YARA-X internal types would couple public reports to an unstable dependency API; adding worker behavior now would combine unrelated trust and process-boundary changes.
 ### Revisit conditions
 Revisit only for a schema compatibility decision or a proven I2/I3 requirement.
+
+## D-I-003
+### Date
+2026-08-04
+### Decision
+Harden I1 contracts with framed payload metadata, typed scalar metadata, non-forgeable verified-pack construction, applied-limit validation, explicit status/evidence rules, and canonical source-path checks before I2.
+### Context
+The initial I1 slice validated reports but allowed unconstrained metadata, forged verified identities, incomplete request/response validation, and no binding between declared input identity and worker payloads.
+### Options considered
+Keep JSON byte arrays and permissive values; defer validation to the worker; enforce all contract invariants before worker implementation.
+### Selected option
+Keep raw bytes outside the JSON control envelope, bind payload length and SHA-256 in `PatternWorkerRequest`, restrict metadata to scalar values, and reject invalid paths, limits, schemas, and status combinations at the contract boundary.
+### Security implications
+Prevents identity/payload disagreement, output amplification, path traversal, nested metadata expansion, and uncertain states being represented as clean no-match results.
+### Compatibility implications
+The I1 JSON shape changes before public production release; schema remains `1.0.0` for this pre-acceptance milestone and must be frozen only after golden review.
+### Alternatives rejected
+Allowing arbitrary JSON metadata or treating the worker as the sole validator would expand attack surface and complicate deterministic reports.
+### Revisit conditions
+Revisit only if I2 framing integration requires a protocol-compatible adjustment or a schema review identifies a breaking issue.

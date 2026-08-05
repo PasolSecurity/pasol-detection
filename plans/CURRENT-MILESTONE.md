@@ -43,4 +43,4 @@ Do not begin I2 until I1 schemas and generated outputs validate deterministicall
 Phase G, Phase H, and Phase J are accepted. I0 is accepted; I1 is active. Phases K and L remain open and unimplemented.
 
 ## Next exact action
-Complete the I1 request/response schema validation and deterministic golden test matrix.
+Add the checked-in I1 golden corpus and negative regeneration tests for every report status, request, worker request, and worker response.

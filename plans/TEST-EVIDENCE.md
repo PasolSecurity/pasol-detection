@@ -562,6 +562,26 @@ Expected result achieved.
 ### Conclusion
 I0 is accepted. I1 contract implementation is operational and remains in progress pending broader schema/golden evidence before I1 acceptance.
 
+## 2026-08-04 — I1 contract hardening
+### Requirement verified
+I1 semantic and schema contract hardening for requests, reports, worker envelopes, payload identity, metadata, limits, statuses, and source paths.
+### Commit tested
+Working tree after `8f827cf`; hardening commit pending.
+### Environment
+Windows MSVC, Rust `1.97.1` local focused run; Rust `1.91.0` compatibility was verified in the preceding I0 gate.
+### Commands
+`cargo fmt`; `cargo test -p pasol-patterns --all-features`.
+### Results
+Six focused tests passed: three unit tests and three integration tests. Tests cover all eight statuses, deterministic ordering, checked-in schema documents, runtime report validation, payload SHA-256/length binding, typed metadata, source-path checks, and schema-version rejection.
+### Expected result
+Contract-level validation rejects identity mismatches, unsupported schemas, invalid paths, unbounded metadata, invalid statuses, and output-limit violations.
+### Actual result
+Expected contract behavior passed. The required checked-in golden corpus is not yet present.
+### Artifacts or fixtures
+`crates/pasol-patterns/`, `schemas/pattern-*.schema.json`.
+### Conclusion
+I1 hardening is implemented but remains incomplete until the deterministic golden corpus and negative regeneration tests are checked in and verified.
+
 ## 2026-08-04 — Final Windows workspace quality gate
 ### Requirement verified
 No regression in the accepted G/H/J implementation after planning reconciliation.

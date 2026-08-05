@@ -592,6 +592,28 @@ Complete I1 schema/golden coverage, then begin I2 signed pattern-pack validation
 ### Next exact action
 Add full runtime request/response schema validation and deterministic I1 golden reports.
 
+## 2026-08-04 — I1 contract hardening
+### Planned work
+Complete request/response validation, payload binding, typed metadata, applied limits, status semantics, path checks, and negative contract tests.
+### Work completed
+Added validated JSON methods for all public contracts, framed worker header fields, SHA-256/length binding, typed scalar metadata, typed signature state and verified-pack wrapper, source-path and source-size checks, status/evidence rules, and expanded applied limits.
+### Files changed
+`crates/pasol-patterns/`, pattern schemas, workspace dependency manifest, and planning files.
+### Tests run
+`cargo fmt`; `cargo test -p pasol-patterns --all-features`.
+### Results
+All six focused tests passed.
+### Commit
+Pending focused I1 hardening commit.
+### Checklist changes
+I1 remains in progress; contract hardening evidence recorded.
+### Known limitations
+The checked-in twelve-file golden corpus and full negative regeneration suite remain outstanding. No I2+ functionality was added.
+### Remaining work
+Add and validate deterministic report/request/worker goldens.
+### Next exact action
+Create the complete I1 golden corpus through production serialization and add byte-for-byte regeneration tests.
+
 ## 2026-08-04 — Phase I0 compatibility slice
 ### Planned work
 Activate Phase I, record the YARA-X engine decision, pin YARA-X 1.19.0 with restricted features, and run a harmless Windows compatibility test.

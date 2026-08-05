@@ -5,11 +5,15 @@ use std::collections::BTreeMap;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
+use sha2::{Digest, Sha256};
 use thiserror::Error;
 
 pub const PATTERN_SCHEMA_VERSION: &str = "1.0.0";
 pub const PATTERN_ENGINE: &str = "yara-x";
 pub const MAX_STRING_LENGTH: usize = 4096;
+pub const MAX_METADATA_KEYS: usize = 64;
+pub const MAX_SOURCE_FILES: usize = 256;
+pub const MAX_SOURCE_BYTES: usize = 16 * 1024 * 1024;
 
 #[derive(Debug, Error, PartialEq, Eq)]
 pub enum PatternContractError {
@@ -51,11 +55,34 @@ pub struct PatternPackIdentity {
     pub id: String,
     pub version: String,
     pub sha256: String,
-    #[serde(default)]
-    pub signature_state: String,
+    pub signature_state: PatternSignatureState,
 }
 
-pub type VerifiedPatternPack = PatternPackIdentity;
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum PatternSignatureState {
+    Verified,
+    Development,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq, Eq)]
+pub struct PatternPackReference {
+    pub identity: PatternPackIdentity,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq, Eq)]
+pub struct VerifiedPatternPack {
+    reference: PatternPackReference,
+}
+
+impl VerifiedPatternPack {
+    pub fn development(reference: PatternPackReference) -> Self {
+        Self { reference }
+    }
+    pub fn identity(&self) -> &PatternPackIdentity {
+        &self.reference.identity
+    }
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq, Eq)]
 pub struct PatternLocation {
@@ -73,11 +100,19 @@ pub struct PatternRuleMatch {
     #[serde(default)]
     pub tags: Vec<String>,
     #[serde(default)]
-    pub metadata: BTreeMap<String, Value>,
+    pub metadata: BTreeMap<String, PatternMetadataValue>,
     #[serde(default)]
     pub locations: Vec<PatternLocation>,
     #[serde(default)]
     pub evidence_truncated: bool,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq)]
+#[serde(untagged)]
+pub enum PatternMetadataValue {
+    String(String),
+    Integer(i64),
+    Boolean(bool),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq, Eq)]
@@ -131,6 +166,9 @@ pub struct AppliedPatternLimits {
     pub report_bytes: u64,
     pub matching_rules: u32,
     pub evidence_entries: u32,
+    pub matches_per_pattern: u32,
+    pub compiler_warnings: u32,
+    pub locations_per_rule: u32,
 }
 
 impl From<&PatternLimits> for AppliedPatternLimits {
@@ -140,6 +178,9 @@ impl From<&PatternLimits> for AppliedPatternLimits {
             report_bytes: value.report_bytes,
             matching_rules: value.matching_rules,
             evidence_entries: value.evidence_entries,
+            matches_per_pattern: value.matches_per_pattern,
+            compiler_warnings: value.compiler_warnings,
+            locations_per_rule: value.matches_per_pattern,
         }
     }
 }
@@ -177,8 +218,10 @@ pub struct PatternScanRequest {
 pub struct PatternWorkerRequest {
     pub schema_version: String,
     pub request: PatternScanRequest,
+    pub input_size: u64,
+    pub input_sha256: String,
+    pub payload_length: u64,
     pub rule_sources: BTreeMap<String, String>,
-    pub input_bytes: Vec<u8>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq)]
@@ -200,6 +243,150 @@ impl PatternInput {
             ));
         }
         validate_string(self.file_type.as_deref(), "file_type")
+    }
+}
+
+impl PatternScanRequest {
+    pub fn validate(&self) -> Result<(), PatternContractError> {
+        if self.schema_version != PATTERN_SCHEMA_VERSION {
+            return Err(PatternContractError::UnsupportedSchema(
+                self.schema_version.clone(),
+            ));
+        }
+        self.limits.validate()?;
+        self.input.validate(&self.limits)?;
+        validate_pack_identity(self.pack.identity())
+    }
+    pub fn to_validated_json(&self) -> Result<Value, PatternContractError> {
+        self.validate()?;
+        let value =
+            serde_json::to_value(self).map_err(|e| PatternContractError::Invalid(e.to_string()))?;
+        validate_schema("pattern-scan-request-1.0.0.schema.json", &value)?;
+        Ok(value)
+    }
+    pub fn from_validated_json(value: &Value) -> Result<Self, PatternContractError> {
+        let out: Self = serde_json::from_value(value.clone())
+            .map_err(|e| PatternContractError::Invalid(e.to_string()))?;
+        out.validate()?;
+        validate_schema("pattern-scan-request-1.0.0.schema.json", value)?;
+        Ok(out)
+    }
+}
+
+impl PatternWorkerRequest {
+    pub fn validate(&self) -> Result<(), PatternContractError> {
+        if self.schema_version != PATTERN_SCHEMA_VERSION {
+            return Err(PatternContractError::UnsupportedSchema(
+                self.schema_version.clone(),
+            ));
+        }
+        self.request.validate()?;
+        if self.input_size != self.request.input.size_bytes
+            || self.payload_length != self.input_size
+        {
+            return Err(PatternContractError::Invalid(
+                "input size and payload length mismatch".into(),
+            ));
+        }
+        if self.input_sha256 != self.request.input.sha256 {
+            return Err(PatternContractError::Invalid("input hash mismatch".into()));
+        }
+        if self.rule_sources.len() > self.request.limits.source_files as usize {
+            return Err(PatternContractError::Invalid(
+                "too many rule sources".into(),
+            ));
+        }
+        let mut total = 0usize;
+        let mut normalized = std::collections::BTreeSet::new();
+        for (path, source) in &self.rule_sources {
+            if normalize_canonical_path(path).is_err() || !normalized.insert(path) {
+                return Err(PatternContractError::Invalid(
+                    "invalid or colliding rule source path".into(),
+                ));
+            }
+            if source.chars().any(|c| c.is_control()) {
+                return Err(PatternContractError::Invalid(
+                    "control character in rule source".into(),
+                ));
+            }
+            if source.len() > self.request.limits.pack_source_bytes as usize {
+                return Err(PatternContractError::Invalid(
+                    "rule source too large".into(),
+                ));
+            }
+            total = total
+                .checked_add(source.len())
+                .ok_or_else(|| PatternContractError::Invalid("rule source size overflow".into()))?;
+        }
+        if total > self.request.limits.pack_source_bytes as usize {
+            return Err(PatternContractError::Invalid(
+                "aggregate rule source too large".into(),
+            ));
+        }
+        if self.payload_length > self.request.limits.input_bytes {
+            return Err(PatternContractError::Invalid(
+                "payload exceeds input limit".into(),
+            ));
+        }
+        Ok(())
+    }
+    pub fn bind_payload(&self, payload: &[u8]) -> Result<(), PatternContractError> {
+        if payload.len() as u64 != self.payload_length {
+            return Err(PatternContractError::Invalid(
+                "payload length mismatch".into(),
+            ));
+        }
+        let hash = hex::encode(Sha256::digest(payload));
+        if hash != self.input_sha256 {
+            return Err(PatternContractError::Invalid(
+                "payload sha256 mismatch".into(),
+            ));
+        }
+        Ok(())
+    }
+    pub fn to_validated_json(&self) -> Result<Value, PatternContractError> {
+        self.validate()?;
+        let value =
+            serde_json::to_value(self).map_err(|e| PatternContractError::Invalid(e.to_string()))?;
+        validate_schema("pattern-worker-request-1.0.0.schema.json", &value)?;
+        Ok(value)
+    }
+    pub fn from_validated_json(value: &Value) -> Result<Self, PatternContractError> {
+        let out: Self = serde_json::from_value(value.clone())
+            .map_err(|e| PatternContractError::Invalid(e.to_string()))?;
+        out.validate()?;
+        validate_schema("pattern-worker-request-1.0.0.schema.json", value)?;
+        Ok(out)
+    }
+}
+
+impl PatternWorkerResponse {
+    pub fn validate(&self) -> Result<(), PatternContractError> {
+        if self.schema_version != PATTERN_SCHEMA_VERSION {
+            return Err(PatternContractError::UnsupportedSchema(
+                self.schema_version.clone(),
+            ));
+        }
+        if self.report.schema_version != self.schema_version {
+            return Err(PatternContractError::Invalid(
+                "nested report schema mismatch".into(),
+            ));
+        }
+        self.report.validate()
+    }
+    pub fn to_validated_json(&self) -> Result<Value, PatternContractError> {
+        self.validate()?;
+        let value =
+            serde_json::to_value(self).map_err(|e| PatternContractError::Invalid(e.to_string()))?;
+        validate_schema("pattern-worker-response-1.0.0.schema.json", &value)?;
+        Ok(value)
+    }
+    pub fn from_validated_json(value: &Value) -> Result<Self, PatternContractError> {
+        let out: Self = serde_json::from_value(value.clone())
+            .map_err(|e| PatternContractError::Invalid(e.to_string()))?;
+        out.validate()?;
+        validate_schema("pattern-worker-response-1.0.0.schema.json", value)?;
+        Ok(out)
     }
 }
 
@@ -322,6 +509,24 @@ impl PatternReport {
         validate_string(Some(&self.engine.version), "engine_version")?;
         validate_string(Some(&self.pattern_pack.id), "pack_id")?;
         validate_string(Some(&self.pattern_pack.version), "pack_version")?;
+        if !matches!(self.status, PatternScanStatus::Completed) && !self.matches.is_empty() {
+            return Err(PatternContractError::Invalid(
+                "non-completed report cannot contain matches".into(),
+            ));
+        }
+        if self.matches.len() as u32 > self.limits.matching_rules
+            || self.warnings.len() as u32 > self.limits.compiler_warnings
+        {
+            return Err(PatternContractError::Invalid(
+                "applied output limit exceeded".into(),
+            ));
+        }
+        let locations: usize = self.matches.iter().map(|m| m.locations.len()).sum();
+        if locations as u32 > self.limits.evidence_entries {
+            return Err(PatternContractError::Invalid(
+                "evidence limit exceeded".into(),
+            ));
+        }
         if self.matches.len() > 1_024 || self.warnings.len() > 256 {
             return Err(PatternContractError::Invalid(
                 "report collection limit exceeded".into(),
@@ -330,13 +535,22 @@ impl PatternReport {
         for item in &self.matches {
             validate_string(Some(&item.namespace), "namespace")?;
             validate_string(Some(&item.rule), "rule")?;
-            if item.tags.len() > 64 || item.metadata.len() > 64 || item.locations.len() > 256 {
+            if item.tags.len() > 64
+                || item.metadata.len() > MAX_METADATA_KEYS
+                || item.locations.len() as u32 > self.limits.locations_per_rule
+            {
                 return Err(PatternContractError::Invalid(
                     "match evidence limit exceeded".into(),
                 ));
             }
             for tag in &item.tags {
                 validate_string(Some(tag), "tag")?;
+            }
+            for (key, value) in &item.metadata {
+                validate_string(Some(key), "metadata key")?;
+                if let PatternMetadataValue::String(value) = value {
+                    validate_string(Some(value), "metadata value")?;
+                }
             }
             for location in &item.locations {
                 validate_string(Some(&location.identifier), "pattern identifier")?;
@@ -345,6 +559,13 @@ impl PatternReport {
         for warning in &self.warnings {
             validate_string(Some(&warning.code), "warning code")?;
             validate_string(Some(&warning.message), "warning message")?;
+        }
+        let bytes =
+            serde_json::to_vec(self).map_err(|e| PatternContractError::Invalid(e.to_string()))?;
+        if bytes.len() as u64 > self.limits.report_bytes {
+            return Err(PatternContractError::Invalid(
+                "report size limit exceeded".into(),
+            ));
         }
         Ok(())
     }
@@ -356,6 +577,38 @@ impl PatternReport {
         validate_schema("pattern-report-1.0.0.schema.json", &value)?;
         Ok(value)
     }
+    pub fn from_validated_json(value: &Value) -> Result<Self, PatternContractError> {
+        let out: Self = serde_json::from_value(value.clone())
+            .map_err(|e| PatternContractError::Invalid(e.to_string()))?;
+        out.validate()?;
+        validate_schema("pattern-report-1.0.0.schema.json", value)?;
+        Ok(out)
+    }
+}
+
+fn validate_pack_identity(identity: &PatternPackIdentity) -> Result<(), PatternContractError> {
+    if !is_sha256(&identity.sha256) {
+        return Err(PatternContractError::Invalid("invalid pack sha256".into()));
+    }
+    validate_string(Some(&identity.id), "pack id")?;
+    validate_string(Some(&identity.version), "pack version")?;
+    Ok(())
+}
+
+fn normalize_canonical_path(path: &str) -> Result<(), PatternContractError> {
+    if path.is_empty()
+        || path.contains('\\')
+        || path.starts_with('/')
+        || path.contains(':')
+        || path
+            .split('/')
+            .any(|p| p.is_empty() || p == "." || p == ".." || p.chars().any(|c| c.is_control()))
+    {
+        return Err(PatternContractError::Invalid(
+            "path is not canonical".into(),
+        ));
+    }
+    Ok(())
 }
 
 pub fn normalize_relative_path(path: &str) -> Result<String, PatternContractError> {
@@ -391,6 +644,9 @@ fn validate_schema(name: &str, value: &Value) -> Result<(), PatternContractError
     let schema: Value = match name {
         "pattern-report-1.0.0.schema.json" => serde_json::from_str(include_str!(
             "../../../schemas/pattern-report-1.0.0.schema.json"
+        )),
+        "pattern-scan-request-1.0.0.schema.json" => serde_json::from_str(include_str!(
+            "../../../schemas/pattern-scan-request-1.0.0.schema.json"
         )),
         _ => return Err(PatternContractError::Invalid("unknown schema".into())),
     }
@@ -431,7 +687,7 @@ mod tests {
                 id: "pasol.test".into(),
                 version: "0.1.0".into(),
                 sha256: "a".repeat(64),
-                signature_state: "development".into(),
+                signature_state: PatternSignatureState::Development,
             },
             input: PatternInput {
                 sha256: "b".repeat(64),
