@@ -606,7 +606,7 @@ The local regression gate is green; hosted Linux fuzz execution is recorded sepa
 ### Requirement verified
 I1 proof-boundary corrections, source-line-ending policy, twelve deterministic pattern goldens, schema validation, semantic validation, and negative contract coverage.
 ### Commit tested
-`3e10d43`.
+`53ad196` locally; published remote `main` verified at `53ad196c9d4033b88441f60bae7f1e74721ca87a`.
 ### Environment
 Windows MSVC, `rustc 1.91.0 (f8297e351 2025-10-28)`, Cargo `1.91.0`, YARA-X `1.19.0` with restricted features.
 ### Commands

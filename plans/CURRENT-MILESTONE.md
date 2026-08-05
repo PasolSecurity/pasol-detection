@@ -1,14 +1,14 @@
 # Current Milestone
 
 ## Milestone
-Phase I — Bounded Pattern Matching (I1 contracts and schemas)
+No active implementation milestone
 
 ## Objective
-Stabilize the public pattern evidence contracts before signing, compilation, worker, or CLI implementation.
+Preserve the accepted I1 foundation while preparing a separately approved I2 activation.
 
 ## Approved scope
 - I0 compatibility is accepted.
-- I1 contracts, schemas, runtime validation, deterministic normalization, and bounded evidence are active.
+- I1 contracts, schemas, runtime validation, deterministic normalization, and bounded evidence are accepted.
 
 ## Explicit non-goals
 Do not begin I2+ production functionality, Phase K, or Phase L. Do not add signing, worker execution, CLI commands, file scanning, uploads, enforcement, verdicts, blocking, quarantine, or deletion.
@@ -25,7 +25,7 @@ Accepted G/H/J foundation and accepted I0 YARA-X compatibility baseline.
 - [x] Implement I1 pattern contracts, schemas, runtime validation, deterministic serialization, proof-boundary checks, and the twelve-file golden corpus.
 
 ## Files expected to change
-`crates/pasol-patterns/`, `schemas/pattern-*.schema.json`, `.github/workflows/msrv.yml`, and `plans/`.
+Planning files only until I2 is explicitly activated.
 
 ## Tests required
 Rust 1.91 workspace and compatibility checks, contract tests, schema validation, deterministic serialization, formatting, workspace tests, and Clippy with warnings denied.
@@ -40,7 +40,7 @@ Record I1 contract semantics, schema versions, bounds, MSRV result, and next exa
 Do not begin I2 until I1 schemas and generated outputs validate deterministically with evidence.
 
 ## Current status
-Phase G, Phase H, and Phase J are accepted. I0 and I1 are accepted at the contract-foundation level. Phases K and L remain open and unimplemented.
+Phase G, Phase H, Phase J, I0, and I1 are accepted. I2 is ready for explicit planning activation. Phases K and L remain open and unimplemented.
 
 ## Next exact action
 Activate I2 signed pattern-pack validation in planning before changing implementation code.

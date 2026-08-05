@@ -648,7 +648,7 @@ Changed scan requests to use unverified `PatternPackReference`, restricted verif
 ### Results
 All commands exited 0. Workspace tests and pattern contract tests passed; all checked-in goldens validated and round-tripped deterministically.
 ### Commit
-`3e10d43`.
+`53ad196` (published to remote `main`; full SHA `53ad196c9d4033b88441f60bae7f1e74721ca87a`).
 ### Checklist changes
 I1 marked complete in the milestone and consolidated acceptance checklist; next action is I2 activation only.
 ### Known limitations

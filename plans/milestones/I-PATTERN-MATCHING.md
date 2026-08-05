@@ -26,6 +26,6 @@ All implementation and security tests pass with deterministic schema-valid evide
 ## Current status
 I0 and I1 are accepted at the contract-foundation level; compiler, signing, worker, CLI, and file scanning remain unstarted.
 ## Completed commits
-`58e20ed` (I0 compatibility baseline), `8f827cf` (I1 contracts), `179ee7f` (I1 hardening), and the I1 proof/golden closure commit.
+`58e20ed` (I0 compatibility baseline), `8f827cf` (I1 contracts), `179ee7f` (I1 hardening), and `53ad196` (I1 proof/golden closure).
 ## Remaining work
 Activate I2 signed pattern-pack validation through a new planning milestone; do not implement I2 in the I1 closure commit.
