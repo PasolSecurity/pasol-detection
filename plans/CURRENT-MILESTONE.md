@@ -44,4 +44,4 @@ Do not begin I2 until I1 schemas and generated outputs validate deterministicall
 Phase G, Phase H, Phase J, I0, and I1 are accepted. I2 implementation, local gates, and hosted Ubuntu/Windows contract verification are complete; final I2 acceptance remains open for hosted fuzz-campaign evidence and checklist reconciliation. Phases K and L remain inactive.
 
 ## Next exact action
-Add a bounded hosted I2 fuzz-smoke job for the three pattern-pack fuzz targets, record target/corpus/duration/crash/timeout evidence, and then review every remaining I2 checkbox before acceptance.
+Push the dedicated `pattern-pack-fuzz` workflow trigger, then record target/corpus/duration/crash/timeout evidence from its current-commit run before reviewing every remaining I2 checkbox.

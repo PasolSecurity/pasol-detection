@@ -1,0 +1,55 @@
+name: pattern-pack-fuzz
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "41 3 * * 0"
+
+permissions:
+  contents: read
+
+env:
+  RUSTUP_TOOLCHAIN: nightly
+
+jobs:
+  pattern-fuzz:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Install nightly Rust
+        run: rustup toolchain install nightly --profile minimal
+      - name: Install cargo-fuzz
+        run: cargo install cargo-fuzz --locked
+      - name: Compile pattern targets
+        working-directory: fuzz
+        run: cargo fuzz build
+      - name: Replay pattern corpus
+        working-directory: fuzz
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts
+          targets=(pattern_pack_manifest pattern_pack_signature pattern_pack_bundle_verify)
+          for target in "${targets[@]}"; do
+            cargo fuzz run "$target" "corpus/$target" -- -runs=20 -artifact_prefix="artifacts/$target/"
+          done
+      - name: Run bounded pattern smoke campaigns
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        working-directory: fuzz
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts
+          targets=(pattern_pack_manifest pattern_pack_signature pattern_pack_bundle_verify)
+          for target in "${targets[@]}"; do
+            cargo fuzz run "$target" "corpus/$target" -- -max_total_time=15 -artifact_prefix="artifacts/$target/"
+          done
+      - name: Upload safe fuzz artifacts
+        if: failure()
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
+        with:
+          name: pattern-pack-fuzz-artifacts
+          path: fuzz/artifacts/
+          if-no-files-found: ignore

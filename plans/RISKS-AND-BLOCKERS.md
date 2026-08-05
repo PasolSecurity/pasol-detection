@@ -137,7 +137,7 @@
 - Area: I2 fuzz evidence
 - Description: The hosted I2 workflow compiles ten fuzz binaries but does not execute bounded fuzz campaigns.
 - Impact: Campaign crash, timeout, invariant, and corpus-replay evidence is not available for formal acceptance.
-- Mitigation: Keep I2 acceptance unchecked until a bounded hosted smoke workflow is added or the requirement is explicitly deferred with approval.
+- Mitigation: Added `.github/workflows/pattern-pack-fuzz.yml`; its push trigger will execute corpus replay on the current commit and its manual/scheduled modes run bounded smoke campaigns.
 - Owner: PasolSecurity maintainers
 - Introduced: 2026-08-05
 - Target resolution: Before I2 acceptance

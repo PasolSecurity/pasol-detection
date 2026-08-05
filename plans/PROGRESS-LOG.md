@@ -876,3 +876,25 @@ The workflow does not run fuzz campaigns, and I2 acceptance must not claim campa
 Reconcile the I2 checklist, decide whether hosted campaign execution is required for this milestone, and record any remaining blockers.
 ### Next exact action
 Commit the hosted evidence update and review every open I2 checkbox before any I3 activation.
+
+## 2026-08-05 — Add current-commit pattern fuzz campaign workflow
+### Planned work
+Provide hosted replay and bounded smoke evidence for the three I2 pattern-pack fuzz targets.
+### Work completed
+Added a pinned Ubuntu workflow with push-triggered corpus replay, manual/scheduled 15-second smoke campaigns, and failure-only artifact upload.
+### Files changed
+`.github/workflows/pattern-pack-fuzz.yml`, planning files.
+### Tests run
+Workflow definition inspection; hosted execution pending after push.
+### Results
+The workflow is bounded and read-only; no current-commit campaign result exists yet.
+### Commit
+Pending.
+### Checklist changes
+I2 fuzz evidence remains unchecked.
+### Known limitations
+No worker or compiler execution is introduced; fuzz targets only exercise manifest, signature, and bundle-validation code.
+### Remaining work
+Push and inspect the current-commit workflow run, then record counts and outcomes.
+### Next exact action
+Commit and push the dedicated fuzz workflow and wait for its replay result.

@@ -783,3 +783,23 @@ Expected result achieved on both runners; no test, Clippy, formatting, schema, o
 Workflow run URL above; jobs `92281197538` and `92281197472`.
 ### Conclusion
 Hosted cross-platform contract evidence is complete. I2 remains open for any acceptance items requiring actual hosted fuzz campaigns and final planning reconciliation.
+
+## 2026-08-05 — Dedicated current-commit pattern fuzz workflow
+### Requirement verified
+Hosted corpus replay and bounded smoke execution are defined specifically for the three I2 pattern-pack fuzz targets.
+### Commit tested
+Pending push of the workflow and planning update.
+### Environment
+GitHub Actions Ubuntu latest, nightly Rust, cargo-fuzz 0.13.2.
+### Commands
+`cargo fuzz build`; replay with `-runs=20`; manual/scheduled smoke with `-max_total_time=15` for `pattern_pack_manifest`, `pattern_pack_signature`, and `pattern_pack_bundle_verify`.
+### Results
+Workflow definition is present and pinned; current-commit hosted execution is pending.
+### Expected result
+Three targets compile, checked-in seeds replay without failures, and bounded smoke runs produce no crashes, timeouts, or invariant failures.
+### Actual result
+Not yet verified for the current commit.
+### Artifacts or fixtures
+`.github/workflows/pattern-pack-fuzz.yml`; three `fuzz/corpus/pattern_pack_*` directories.
+### Conclusion
+I2 remains open until this workflow produces current-commit evidence.
