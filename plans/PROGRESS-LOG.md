@@ -789,3 +789,25 @@ No hosted I2 workflow run has been executed; no pattern matching or worker code 
 Run hosted I2 workflow, record evidence, and close or retain blockers honestly.
 ### Next exact action
 Push the schema-drift workflow update and dispatch the hosted I2 verification workflow.
+
+## 2026-08-05 — I2 hosted workflow activation
+### Planned work
+Enable the pinned I2 workflow for manual, pull-request, and main-branch execution so hosted Windows/Ubuntu evidence can be collected.
+### Work completed
+Added main-branch triggering to the read-only `pattern-pack-i2` workflow; it runs Rust 1.91 workspace checks, tests, Clippy, formatting, and fuzz-target compilation on both operating systems.
+### Files changed
+`.github/workflows/pattern-pack-i2.yml`.
+### Tests run
+Local workflow/YAML inspection; local equivalents are recorded in the prior workspace-gate entry.
+### Results
+Workflow is committed and will execute on the next push.
+### Commit
+Pending hosted-workflow trigger commit.
+### Checklist changes
+Hosted I2 evidence remains unchecked until a real workflow run completes.
+### Known limitations
+This environment does not expose a workflow-dispatch API; push-triggered execution is used instead.
+### Remaining work
+Inspect the hosted run, record runner/toolchain/test/fuzz results, and resolve any failures.
+### Next exact action
+Push the workflow trigger and retrieve the resulting GitHub Actions run evidence.
