@@ -120,13 +120,25 @@
 - Target resolution: Hosted Linux fuzz run
 - Resolution evidence: Pending
 ## Risk or blocker
-- Status: Open
+- Status: Resolved
 - Severity: Medium
 - Area: Hosted I2 verification
-- Description: The first hosted pattern-pack workflow run (`30997918594`) remained in progress with no completed matrix jobs, so hosted Windows/Ubuntu evidence is not yet available.
-- Impact: I2 cannot be formally accepted until a replacement run completes successfully.
-- Mitigation: Corrected the workflow to use a shell portable across both runners and will verify the replacement run.
+- Description: The first hosted pattern-pack workflow run (`30997918594`) failed on Windows because checked-in LF goldens were read as CRLF.
+- Impact: Cross-platform byte-for-byte golden evidence was initially unavailable.
+- Mitigation: Added `.gitattributes` with LF checkout policy and reran the complete matrix.
 - Owner: PasolSecurity maintainers
 - Introduced: 2026-08-05
-- Target resolution: Next hosted workflow run
+- Target resolution: 2026-08-05
+- Resolution evidence: `plans/TEST-EVIDENCE.md#2026-08-05--hosted-i2-contract-verification`; workflow run `30998466615`.
+
+## Risk or blocker
+- Status: Open
+- Severity: Medium
+- Area: I2 fuzz evidence
+- Description: The hosted I2 workflow compiles ten fuzz binaries but does not execute bounded fuzz campaigns.
+- Impact: Campaign crash, timeout, invariant, and corpus-replay evidence is not available for formal acceptance.
+- Mitigation: Keep I2 acceptance unchecked until a bounded hosted smoke workflow is added or the requirement is explicitly deferred with approval.
+- Owner: PasolSecurity maintainers
+- Introduced: 2026-08-05
+- Target resolution: Before I2 acceptance
 - Resolution evidence: Pending

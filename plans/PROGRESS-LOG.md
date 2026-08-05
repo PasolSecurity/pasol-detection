@@ -854,3 +854,25 @@ Hosted runs are still compiling on both runner families.
 Push the newline policy and wait for the latest workflow run.
 ### Next exact action
 Commit and push the cross-platform golden fix, then record the replacement run’s matrix results.
+
+## 2026-08-05 — Hosted I2 matrix passed
+### Planned work
+Verify the corrected I2 workflow on Ubuntu and Windows.
+### Work completed
+The hosted matrix completed workspace check, tests, Clippy, formatting, and fuzz-target compilation successfully on both runners.
+### Files changed
+Planning evidence only.
+### Tests run
+Workflow `pattern-pack-i2.yml`, run `30998466615`, commit `b9a53f5`.
+### Results
+Ubuntu job `92281197538` and Windows job `92281197472` both passed. Ten fuzz binaries compiled; no campaigns were executed by this contract workflow.
+### Commit
+Pending evidence commit.
+### Checklist changes
+Cross-platform hosted contract evidence can be marked complete; campaign-execution evidence remains open.
+### Known limitations
+The workflow does not run fuzz campaigns, and I2 acceptance must not claim campaign results from compilation alone.
+### Remaining work
+Reconcile the I2 checklist, decide whether hosted campaign execution is required for this milestone, and record any remaining blockers.
+### Next exact action
+Commit the hosted evidence update and review every open I2 checkbox before any I3 activation.

@@ -763,3 +763,23 @@ Failure was limited to line-ending conversion, not product semantics.
 Workflow run `https://github.com/PasolSecurity/pasol-detection/actions/runs/30997918594`; Windows job `92279409473`.
 ### Conclusion
 Added repository-wide LF attributes so checked-in JSON goldens remain byte-stable across platforms. A replacement hosted run is required.
+
+## 2026-08-05 — Hosted I2 contract verification
+### Requirement verified
+Cross-platform I2 workspace and contract gates on the pushed implementation.
+### Commit tested
+`b9a53f56cf989a4fdd39c63b0787ad55c0d12290`.
+### Environment
+GitHub Actions Ubuntu latest and Windows Server 2025 runners; Rust 1.91.0; YARA-X 1.19.0 pinned with restricted features.
+### Commands
+Workflow `pattern-pack-i2.yml`: `cargo +1.91.0 check --workspace --all-targets --all-features`; `cargo +1.91.0 test --workspace --all-features`; `cargo +1.91.0 clippy --workspace --all-targets --all-features -- -D warnings`; `cargo +1.91.0 fmt --all -- --check`; `cargo +1.91.0 check --manifest-path fuzz/Cargo.toml --bins`.
+### Results
+Workflow run `https://github.com/PasolSecurity/pasol-detection/actions/runs/30998466615` completed successfully. Ubuntu job `92281197538` passed at 10:45:47Z; Windows job `92281197472` passed at 10:49:06Z. All seven pattern/trust fuzz targets plus the existing three reputation targets (ten binaries total) compiled; hosted campaign execution was not part of this workflow.
+### Expected result
+Both operating systems pass the I2 contract and build gates with deterministic reports and no trust/schema regressions.
+### Actual result
+Expected result achieved on both runners; no test, Clippy, formatting, schema, or fuzz-compilation failures.
+### Artifacts or fixtures
+Workflow run URL above; jobs `92281197538` and `92281197472`.
+### Conclusion
+Hosted cross-platform contract evidence is complete. I2 remains open for any acceptance items requiring actual hosted fuzz campaigns and final planning reconciliation.
