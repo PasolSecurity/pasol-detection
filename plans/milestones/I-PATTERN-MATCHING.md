@@ -31,8 +31,8 @@ Isolation, time/memory/input/rule/match/output limits; no execution.
 ## Acceptance criteria
 All implementation and security tests pass with deterministic schema-valid evidence.
 ## Current status
-I0 and I1 are accepted. I2 implementation is complete and hosted contract verification is green on Ubuntu and Windows; I2 formal acceptance remains pending bounded hosted fuzz-campaign evidence. I3 compiler, worker, CLI, and file scanning remain unstarted.
+I0, I1, and I2 are accepted at the contract/trust foundation level. I3 compiler, worker, CLI, and file scanning remain unstarted.
 ## Completed commits
 `58e20ed` (I0 compatibility baseline), `8f827cf` (I1 contracts), `179ee7f` (I1 hardening), `53ad196` (I1 proof/golden closure), `df80c50` (I2 activation), `07546b3` (shared trust), `57aa637` (manifest/signing), `dc38558` (fixtures/goldens), and `b4aa3e7` (hosted contract evidence).
 ## Remaining work
-Complete bounded hosted fuzz-smoke evidence and reconcile the I2 acceptance checklist without beginning I3.
+Activate I3 only through a planning-only decision; do not begin compiler implementation in this milestone.

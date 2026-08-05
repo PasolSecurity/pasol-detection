@@ -41,7 +41,7 @@ Record I1 contract semantics, schema versions, bounds, MSRV result, and next exa
 Do not begin I2 until I1 schemas and generated outputs validate deterministically with evidence.
 
 ## Current status
-Phase G, Phase H, Phase J, I0, and I1 are accepted. I2 implementation, local gates, and hosted Ubuntu/Windows contract verification are complete; final I2 acceptance remains open for hosted fuzz-campaign evidence and checklist reconciliation. Phases K and L remain inactive.
+No active implementation milestone. Phases G, H, J, I0, I1, and I2 are accepted at the current foundation scope. I3, K, and L remain inactive and require explicit planning activation.
 
 ## Next exact action
-Record the current-commit pattern fuzz replay and bounded smoke results, then review every remaining I2 checkbox before acceptance.
+Planning-only activation of I3 compiler-adapter validation; define compiler limits, banned modules, warning policy, and acceptance tests before changing production code.

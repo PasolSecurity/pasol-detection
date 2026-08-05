@@ -1,7 +1,7 @@
 # Risks and blockers
 
 ## Windows incremental-directory locking
-- Status: Open
+- Status: Resolved
 - Severity: Low
 - Area: Build tooling
 - Description: Rust sometimes reports Access Denied while finalizing incremental directories.
@@ -109,7 +109,7 @@
 - Resolution evidence: `TEST-EVIDENCE.md#2026-08-04-hosted-fuzz-acceptance-run`; workflow run 30931536513.
 
 ## Windows sanitizer runtime limitation
-- Status: Open
+- Status: Resolved
 - Severity: Medium
 - Area: J fuzz execution
 - Description: cargo-fuzz targets compile with nightly but Windows MSVC linking fails on sanitizer-coverage symbols.
@@ -117,8 +117,8 @@
 - Mitigation: Use hosted Ubuntu fuzz jobs for execution; retain Windows as a compile/schema platform.
 - Owner: Detection maintainers
 - Introduced: 2026-08-04
-- Target resolution: Hosted Linux fuzz run
-- Resolution evidence: Pending
+- Target resolution: 2026-08-04
+- Resolution evidence: `TEST-EVIDENCE.md#2026-08-04-hosted-fuzz-acceptance-run`; workflow run 30931536513.
 ## Risk or blocker
 - Status: Resolved
 - Severity: Medium
@@ -132,13 +132,13 @@
 - Resolution evidence: `plans/TEST-EVIDENCE.md#2026-08-05--hosted-i2-contract-verification`; workflow run `30998466615`.
 
 ## Risk or blocker
-- Status: Open
+- Status: Resolved
 - Severity: Medium
 - Area: I2 fuzz evidence
 - Description: The hosted I2 workflow compiles ten fuzz binaries but does not execute bounded fuzz campaigns.
-- Impact: Campaign crash, timeout, invariant, and corpus-replay evidence is not available for formal acceptance.
-- Mitigation: Added `.github/workflows/pattern-pack-fuzz.yml`; its push trigger will execute corpus replay on the current commit and its manual/scheduled modes run bounded smoke campaigns.
+- Impact: Campaign crash, timeout, invariant, and corpus-replay evidence was initially unavailable for formal acceptance.
+- Mitigation: Added `.github/workflows/pattern-pack-fuzz.yml`; current-commit replay and bounded smoke campaigns passed.
 - Owner: PasolSecurity maintainers
 - Introduced: 2026-08-05
-- Target resolution: Before I2 acceptance
-- Resolution evidence: Pending
+- Target resolution: 2026-08-05
+- Resolution evidence: `plans/TEST-EVIDENCE.md#2026-08-05--current-commit-pattern-fuzz-smoke-passed`; workflow run `30999489110`.
