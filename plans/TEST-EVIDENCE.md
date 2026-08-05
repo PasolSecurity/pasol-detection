@@ -743,3 +743,23 @@ Passed. The hosted workflow was corrected after its first run remained queued wi
 `schemas/trusted-key-store-1.0.0.schema.json`; `.github/workflows/pattern-pack-i2.yml`.
 ### Conclusion
 Local trust and pattern contract gates are green. Hosted evidence remains pending for the replacement workflow run.
+
+## 2026-08-05 — Hosted Windows newline regression identified
+### Requirement verified
+The initial Windows hosted matrix exposed a deterministic-golden portability issue.
+### Commit tested
+`8f33c75`.
+### Environment
+GitHub Actions Windows Server 2025, Rust 1.91.0.
+### Commands
+`cargo +1.91.0 test --workspace --all-features`
+### Results
+The workspace reached the feature golden test; 2 feature tests passed and the golden test failed because the checked-in LF fixture was read as CRLF.
+### Expected result
+Byte-for-byte golden tests must be identical on Windows and Ubuntu.
+### Actual result
+Failure was limited to line-ending conversion, not product semantics.
+### Artifacts or fixtures
+Workflow run `https://github.com/PasolSecurity/pasol-detection/actions/runs/30997918594`; Windows job `92279409473`.
+### Conclusion
+Added repository-wide LF attributes so checked-in JSON goldens remain byte-stable across platforms. A replacement hosted run is required.

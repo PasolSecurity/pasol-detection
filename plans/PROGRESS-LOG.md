@@ -832,3 +832,25 @@ The earlier hosted run `30997918594` remained in progress with 0/2 jobs complete
 Push the correction, verify the replacement workflow on Ubuntu and Windows, and record its URL and matrix results.
 ### Next exact action
 Commit and push this focused correction, then inspect the replacement `pattern-pack-i2` workflow run.
+
+## 2026-08-05 — Make deterministic goldens cross-platform
+### Planned work
+Resolve the Windows hosted golden mismatch without weakening byte-for-byte assertions.
+### Work completed
+Added `.gitattributes` with repository-wide LF checkout policy and recorded the observed Windows-only newline failure.
+### Files changed
+`.gitattributes`, planning evidence files.
+### Tests run
+The failing hosted job log was inspected; local Windows tests already pass.
+### Results
+The portability correction is ready for hosted verification.
+### Commit
+Pending.
+### Checklist changes
+Cross-platform golden portability remains open pending a successful replacement run.
+### Known limitations
+Hosted runs are still compiling on both runner families.
+### Remaining work
+Push the newline policy and wait for the latest workflow run.
+### Next exact action
+Commit and push the cross-platform golden fix, then record the replacement run’s matrix results.
