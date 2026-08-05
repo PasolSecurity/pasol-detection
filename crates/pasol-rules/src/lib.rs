@@ -2,6 +2,7 @@
 
 use ed25519_dalek::{Signature, Verifier, VerifyingKey};
 use pasol_detection_sdk::{Feature, FeatureReport, FeatureState};
+pub use pasol_trust::{KeyStatus, TrustError, TrustedKey, TrustedKeyStore};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use sha2::{Digest, Sha256};
@@ -137,109 +138,6 @@ pub struct SignedRulePack {
     pub key_id: String,
     pub manifest_sha256: String,
     pub signature_hex: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct TrustedKeyStore {
-    pub schema_version: String,
-    pub keys: Vec<TrustedKey>,
-}
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct TrustedKey {
-    pub key_id: String,
-    pub algorithm: String,
-    pub public_key_hex: String,
-    pub status: KeyStatus,
-    pub trusted_from: String,
-    pub revoked_at: Option<String>,
-    pub replacement_key_id: Option<String>,
-}
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-#[serde(rename_all = "lowercase")]
-pub enum KeyStatus {
-    Active,
-    Retired,
-    Revoked,
-}
-
-impl TrustedKeyStore {
-    pub fn empty() -> Self {
-        Self {
-            schema_version: "1.0.0".into(),
-            keys: Vec::new(),
-        }
-    }
-    pub fn verifying_keys(
-        &self,
-    ) -> Result<std::collections::BTreeMap<String, VerifyingKey>, RuleError> {
-        let mut result = std::collections::BTreeMap::new();
-        for key in &self.keys {
-            if key.status == KeyStatus::Revoked {
-                continue;
-            }
-            let bytes = decode_hex::<32>(&key.public_key_hex)
-                .ok_or_else(|| RuleError::Trust(format!("invalid public key {}", key.key_id)))?;
-            result.insert(
-                key.key_id.clone(),
-                VerifyingKey::from_bytes(&bytes)
-                    .map_err(|_| RuleError::Trust(format!("invalid public key {}", key.key_id)))?,
-            );
-        }
-        Ok(result)
-    }
-    pub fn add(&mut self, key: TrustedKey) -> Result<(), RuleError> {
-        if self.keys.iter().any(|item| item.key_id == key.key_id) {
-            return Err(RuleError::Trust("duplicate key id".into()));
-        }
-        if key.algorithm != "ed25519" {
-            return Err(RuleError::Trust("unsupported key algorithm".into()));
-        }
-        self.keys.push(key);
-        Ok(())
-    }
-    pub fn revoke(&mut self, key_id: &str, timestamp: String) -> Result<(), RuleError> {
-        let key = self
-            .keys
-            .iter_mut()
-            .find(|item| item.key_id == key_id)
-            .ok_or_else(|| RuleError::Trust("key not found".into()))?;
-        key.status = KeyStatus::Revoked;
-        key.revoked_at = Some(timestamp);
-        Ok(())
-    }
-    pub fn remove(&mut self, key_id: &str) -> Result<(), RuleError> {
-        let before = self.keys.len();
-        self.keys.retain(|item| item.key_id != key_id);
-        if before == self.keys.len() {
-            return Err(RuleError::Trust("key not found".into()));
-        }
-        Ok(())
-    }
-    pub fn load(path: &std::path::Path) -> Result<Self, RuleError> {
-        let value: Self = serde_json::from_slice(
-            &std::fs::read(path).map_err(|error| RuleError::Trust(error.to_string()))?,
-        )?;
-        if value.schema_version != "1.0.0" {
-            return Err(RuleError::Schema(value.schema_version));
-        }
-        let mut ids = std::collections::BTreeSet::new();
-        for key in &value.keys {
-            if !ids.insert(&key.key_id) {
-                return Err(RuleError::Trust("duplicate key id".into()));
-            }
-        }
-        Ok(value)
-    }
-    pub fn save_atomic(&self, path: &std::path::Path) -> Result<(), RuleError> {
-        let parent = path
-            .parent()
-            .ok_or_else(|| RuleError::Trust("key-store path has no parent".into()))?;
-        std::fs::create_dir_all(parent).map_err(|error| RuleError::Trust(error.to_string()))?;
-        let temp = path.with_extension("tmp");
-        let data = serde_json::to_vec_pretty(self)?;
-        std::fs::write(&temp, data).map_err(|error| RuleError::Trust(error.to_string()))?;
-        std::fs::rename(&temp, path).map_err(|error| RuleError::Trust(error.to_string()))
-    }
 }
 
 pub fn load_pack(bytes: &[u8]) -> Result<RulePack, RuleError> {

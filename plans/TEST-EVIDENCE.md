@@ -621,3 +621,23 @@ All expected checks passed. No worker, compiler, signing, CLI, file scanning, up
 `fixtures/golden/patterns/` contains nine report goldens plus valid scan, worker-request, and worker-response goldens. Schemas are under `schemas/pattern-*.schema.json`.
 ### Conclusion
 I1 contract foundation is accepted. I2 signed pattern-pack validation remains the next planned milestone and is not implemented.
+
+## 2026-08-05 — I2 shared trust extraction
+### Requirement verified
+Initial I2 shared Ed25519 trust layer with Phase H compatibility re-exports.
+### Commit tested
+Working tree after `df80c50`; trust extraction commit pending.
+### Environment
+Windows MSVC, Rust `1.91.0`.
+### Commands
+`cargo +1.91.0 fmt --all`; `cargo +1.91.0 test -p pasol-trust -p pasol-rules --all-features`; `cargo +1.91.0 clippy -p pasol-trust -p pasol-rules --all-targets --all-features -- -D warnings`.
+### Results
+Formatting passed; three `pasol-trust` tests and six existing `pasol-rules` tests passed; Clippy passed with warnings denied.
+### Expected result
+Trust-store schema validation, atomic persistence, active/retired resolution, revoked/unknown/invalid-key rejection, and unchanged Phase H behavior.
+### Actual result
+Expected result achieved for the extracted library slice. Pattern integration and full workspace gates remain pending.
+### Artifacts or fixtures
+`crates/pasol-trust/tests/store.rs` and existing rule-pack tests.
+### Conclusion
+I2.1 trust extraction is locally verified but not yet formally complete until pattern integration and full workspace evidence pass.

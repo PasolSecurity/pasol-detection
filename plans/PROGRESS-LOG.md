@@ -679,3 +679,25 @@ Trust extraction and all pattern-pack implementation work remain outstanding.
 Extract `pasol-trust` while preserving Phase H behavior.
 ### Next exact action
 Create `pasol-trust` and migrate the existing rules trust implementation without changing Phase H schemas or behavior.
+
+## 2026-08-05 — Shared trust extraction
+### Planned work
+Move generic Ed25519 trusted-key storage and verification primitives from `pasol-rules` into `pasol-trust` while preserving Phase H behavior.
+### Work completed
+Added `pasol-trust` with versioned key-store types, active/retired/revoked resolution, unknown/invalid-key rejection, atomic persistence, and compatibility re-exports from `pasol-rules`.
+### Files changed
+Workspace manifest, `crates/pasol-trust/`, and `crates/pasol-rules/`.
+### Tests run
+`cargo +1.91.0 fmt --all`; `cargo +1.91.0 test -p pasol-trust -p pasol-rules --all-features`; `cargo +1.91.0 clippy -p pasol-trust -p pasol-rules --all-targets --all-features -- -D warnings`.
+### Results
+Three trust tests and six existing rules tests passed; formatting and Clippy passed.
+### Commit
+Pending focused trust extraction commit.
+### Checklist changes
+I2 shared trust work remains in progress pending integration into `pasol-patterns` and full workspace evidence.
+### Known limitations
+Pattern manifests, detached signatures, canonical signing, and bundle verification are not yet implemented.
+### Remaining work
+Add pattern manifest and detached-signature contracts.
+### Next exact action
+Implement versioned pattern manifest and detached signature types with schema and semantic validation.
