@@ -1,0 +1,9 @@
+{
+  "sources": [
+    {
+      "path": "marker.yar",
+      "namespace": "pasol",
+      "sha256": "2c1684ea3624f69165b4f8771d6460bed7b0d21fb50556b94beae010c907c7a1"
+    }
+  ]
+}

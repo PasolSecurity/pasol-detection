@@ -745,3 +745,25 @@ Hosted I2 workflow has not run; no production key or private key is committed; f
 Add deterministic signed-pack fixtures/goldens, complete schema-drift coverage, run hosted workflow, and reconcile final acceptance evidence.
 ### Next exact action
 Add signed-valid, multi-source, and development fixture bundles plus deterministic manifest/signature/identity verification goldens.
+
+## 2026-08-05 — I2 signed fixtures and trust goldens
+### Planned work
+Add harmless signed, multi-source, and development bundles plus deterministic manifest, detached-signature, identity, source-index, and verification-summary goldens.
+### Work completed
+Added fixed test-key fixture bundles, six trust goldens, and production verification tests covering signed success, development rejection through the production API, exact source hashes, and trusted-key identity.
+### Files changed
+`fixtures/pattern-packs/`, `fixtures/golden/pattern-packs/`, and pattern contract tests.
+### Tests run
+`cargo +1.91.0 fmt --all`; `cargo +1.91.0 test -p pasol-patterns --all-features`; `cargo +1.91.0 clippy -p pasol-patterns --all-targets --all-features -- -D warnings`.
+### Results
+Three unit and eleven integration tests passed; formatting and Clippy passed.
+### Commit
+Pending focused fixture/golden commit.
+### Checklist changes
+I2 fixture, golden, and production/development proof-boundary coverage advanced; hosted and full-workspace evidence remain open.
+### Known limitations
+The fixed key is test-only and no private key is stored. Full hosted I2 workflow has not run.
+### Remaining work
+Add schema-drift checks for trust schemas, run full Rust 1.91 workspace gates, and obtain hosted fuzz evidence.
+### Next exact action
+Extend schema-drift and CI workflow coverage for trust/pattern schemas, then run all workspace gates.

@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "pack_id": "pasol.test.patterns",
+  "pack_version": "1.0.0",
+  "engine": "yara-x",
+  "engine_version_requirement": "=1.19.0",
+  "created_at": "2026-08-05T00:00:00Z",
+  "limits_profile": "phase-i-default",
+  "metadata_policy": "pasol-pattern-metadata-1",
+  "sources": [
+    {
+      "namespace": "pasol",
+      "path": "marker.yar",
+      "sha256": "2c1684ea3624f69165b4f8771d6460bed7b0d21fb50556b94beae010c907c7a1"
+    }
+  ]
+}

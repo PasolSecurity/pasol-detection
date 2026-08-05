@@ -1,0 +1,7 @@
+{
+  "schema_version": "1.0.0",
+  "algorithm": "ed25519",
+  "key_id": "test-key",
+  "manifest_sha256": "25a644b7c56947bd9916d001cc9947e843b95aed728005c3ea0cd7fa3e1f93d9",
+  "signature_hex": "2a37b59f286643c55166b44c91efa8cc58bf2eca36aa6da1dc2df0f07b272457ede72efb2603d3a79ccadefb586281674728cc3a7cbc51e5b69a602dd2bd450c"
+}

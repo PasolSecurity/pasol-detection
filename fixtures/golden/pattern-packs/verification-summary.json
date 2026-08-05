@@ -1,0 +1,8 @@
+{
+  "status": "verified",
+  "pack_id": "pasol.test.patterns",
+  "key_id": "test-key",
+  "source_count": 1,
+  "engine": "yara-x",
+  "engine_version": "1.19.0"
+}

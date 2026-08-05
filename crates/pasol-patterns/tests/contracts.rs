@@ -383,7 +383,7 @@ fn manifest_mutations_are_rejected_before_verification() {
 
 proptest::proptest! {
     #[test]
-    fn canonicalization_is_independent_of_source_order(seed in 0u8..=255) {
+fn canonicalization_is_independent_of_source_order(seed in 0u8..=255) {
         let mut first = signed_manifest_fixture().0;
         let mut second = first.clone();
         first.sources.push(PatternSourceManifest { namespace: "z".into(), path: format!("rules/{seed}.yar"), sha256: "b".repeat(64) });
@@ -393,6 +393,67 @@ proptest::proptest! {
             canonical_manifest_bytes(&second).expect("canonical second")
         );
     }
+}
+
+#[test]
+fn checked_in_signed_and_development_fixtures_verify_with_fixed_identity() {
+    let manifest_json =
+        include_bytes!("../../../fixtures/pattern-packs/signed-valid/manifest.json").to_vec();
+    let signature_json =
+        include_bytes!("../../../fixtures/pattern-packs/signed-valid/manifest.sig.json").to_vec();
+    let source =
+        include_bytes!("../../../fixtures/pattern-packs/signed-valid/rules/marker.yar").to_vec();
+    let mut sources = BTreeMap::new();
+    sources.insert("marker.yar".into(), source);
+    let signing_key = ed25519_dalek::SigningKey::from_bytes(&[7; 32]);
+    let mut store = pasol_trust::TrustedKeyStore::empty();
+    store
+        .add(pasol_trust::TrustedKey {
+            key_id: "test-key".into(),
+            algorithm: "ed25519".into(),
+            public_key_hex: hex::encode(signing_key.verifying_key().to_bytes()),
+            status: pasol_trust::KeyStatus::Active,
+            trusted_from: "2026-08-05T00:00:00Z".into(),
+            revoked_at: None,
+            replacement_key_id: None,
+        })
+        .expect("trust fixture key");
+    let verified = verify_signed_pattern_pack(
+        &PatternPackBundleInput {
+            manifest_json,
+            signature_json: Some(signature_json),
+            sources,
+        },
+        &store,
+        &semver::Version::new(1, 19, 0),
+        &PatternPackVerificationLimits::default(),
+    )
+    .expect("fixture verifies");
+    assert_eq!(verified.signing_key_id(), Some("test-key"));
+    assert_eq!(verified.sources().len(), 1);
+    let development = PatternPackBundleInput {
+        manifest_json: include_bytes!(
+            "../../../fixtures/pattern-packs/development-valid/manifest.json"
+        )
+        .to_vec(),
+        signature_json: None,
+        sources: [(
+            "marker.yar".into(),
+            include_bytes!("../../../fixtures/pattern-packs/development-valid/rules/marker.yar")
+                .to_vec(),
+        )]
+        .into_iter()
+        .collect(),
+    };
+    assert!(
+        verify_signed_pattern_pack(
+            &development,
+            &store,
+            &semver::Version::new(1, 19, 0),
+            &PatternPackVerificationLimits::default()
+        )
+        .is_err()
+    );
 }
 
 fn canonical_json<T: serde::Serialize>(value: &T) -> Vec<u8> {

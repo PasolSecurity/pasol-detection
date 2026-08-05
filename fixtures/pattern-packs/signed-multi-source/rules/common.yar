@@ -1,0 +1,1 @@
+rule common { condition: true }
