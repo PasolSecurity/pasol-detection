@@ -1955,6 +1955,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "pasol-pattern-compiler"
+version = "0.1.0"
+dependencies = [
+ "jsonschema",
+ "pasol-patterns",
+ "proptest",
+ "schemars",
+ "semver",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.19",
+ "yara-x",
+]
+
+[[package]]
 name = "pasol-patterns"
 version = "0.1.0"
 dependencies = [

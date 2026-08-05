@@ -843,3 +843,23 @@ Passed.
 Three pattern fuzz targets and their checked-in corpus directories; failure-only artifact upload configured.
 ### Conclusion
 Hosted I2 fuzz evidence is complete for the current implementation commit.
+
+## 2026-08-05 — I3.1 compiler contracts
+### Requirement verified
+I3.1 crate, policy, limits, report, diagnostic, error, failure, and compiled proof contracts with runtime schema validation, deterministic normalization, and report-size checks. No YARA-X compilation is invoked.
+### Commit tested
+Recorded on push with this slice.
+### Environment
+Windows 11, Rust 1.91.0 (`rustc 1.91.0 (f8297e351 2025-10-28)`), YARA-X 1.19.0 pinned with restricted features.
+### Commands
+`cargo +1.91.0 check --workspace --all-targets --all-features`; `cargo +1.91.0 test --workspace --all-features`; `cargo +1.91.0 test -p pasol-pattern-compiler --all-features`; `cargo +1.91.0 test -p pasol-patterns --all-features`; `cargo +1.91.0 clippy --workspace --all-targets --all-features -- -D warnings`; `cargo +1.91.0 fmt --all -- --check`.
+### Results
+Workspace 71 passed, 0 failed, up from 51 before this slice. `pasol-pattern-compiler` 20 passed, 0 failed. `pasol-patterns` 14 passed, 0 failed, unchanged, confirming no I1/I2 regression. Clippy and formatting exited 0. Working tree clean.
+### Expected result
+Contracts compile and validate under the pinned MSRV with deterministic reports and an enforced proof boundary, without invoking the compiler.
+### Actual result
+Expected result achieved. Coverage includes policy identity and engine-pin drift, exact module-allowlist matching with representative prohibited modules, zero and above-ceiling limit rejection, compiled-report rejection of errors/warnings/global rules, rejected-report rejection of claimed rules, rule-count summation, limit monotonicity, non-allowlisted import rejection, idempotent order-independent normalization, error-before-warning diagnostic ordering with deterministic truncation and explicit truncation recording, ANSI/control sanitization with UTF-8-safe byte-bounded truncation, canonical pack-relative origin enforcement, serialized-size rejection, and the compiled proof boundary.
+### Artifacts or fixtures
+`schemas/pattern-compiler-report-1.0.0.schema.json`; `crates/pasol-pattern-compiler/`; `crates/pasol-pattern-compiler/tests/contracts.rs`.
+### Conclusion
+I3.1 is complete locally. Two open blockers recorded in `RISKS-AND-BLOCKERS.md` must be resolved before I3.3: the absent I2 development-pack API, and the unreferenced I2 pattern-pack goldens. Hosted cross-platform evidence for this slice is pending its first workflow run.

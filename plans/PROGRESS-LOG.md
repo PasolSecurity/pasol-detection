@@ -964,3 +964,25 @@ Hosted CI runs referenced in the I2 evidence were not independently re-confirmed
 Execute I3.1 through I3.8. Do not refactor `pasol-patterns` structure during the first I3 slice, and do not begin worker, scanner, CLI, persistence, or enforcement work.
 ### Next exact action
 Begin slice I3.1: add the `pasol-pattern-compiler` crate with policy, limit, report, diagnostic, error, failure, and compiled proof types, plus `schemas/pattern-compiler-report-1.0.0.schema.json` with runtime validation.
+
+## 2026-08-05 — I3.1 compiler-adapter contracts
+### Planned work
+Begin I3 implementation with slice I3.1: add the `pasol-pattern-compiler` crate and its contract types, add the versioned compiler-report schema with runtime validation, and add deterministic normalization and report-size checks without invoking YARA-X.
+### Work completed
+Added `crates/pasol-pattern-compiler` with `error`, `policy`, `diagnostics`, and `report` modules plus the crate-root proof types. Added `schemas/pattern-compiler-report-1.0.0.schema.json` and wired runtime schema validation. Registered the crate in the workspace and added the `pasol-patterns` path dependency. Added the crate's contract test to the schema-drift workflow. Recorded two newly discovered blockers.
+### Files changed
+`Cargo.toml`, `Cargo.lock`, `crates/pasol-pattern-compiler/**`, `schemas/pattern-compiler-report-1.0.0.schema.json`, `.github/workflows/schema-drift.yml`, `plans/CURRENT-MILESTONE.md`, `plans/RISKS-AND-BLOCKERS.md`, `plans/TEST-EVIDENCE.md`, and this log. `crates/pasol-patterns/` was not modified, honoring the bar on restructuring during the first I3 slice.
+### Tests run
+Rust 1.91.0 on Windows: workspace check, workspace tests, `pasol-pattern-compiler` tests, `pasol-patterns` tests, Clippy with warnings denied, and formatting.
+### Results
+Workspace 71 passed, 0 failed (51 before this slice). `pasol-pattern-compiler` 20 passed. `pasol-patterns` 14 passed, unchanged. Clippy and formatting exited 0.
+### Commit
+Recorded on push below.
+### Checklist changes
+I3.1 marked complete. I3.2 through I3.8 remain unchecked.
+### Known limitations
+No YARA-X compilation is exercised yet, so no engine-diagnostic normalization is proven. Hosted cross-platform evidence for this slice is pending. Two open blockers await a scope decision before I3.3: the absent I2 development-pack API, and the six unreferenced I2 pattern-pack goldens.
+### Remaining work
+Resolve both blockers, then execute I3.2 strict compiler construction.
+### Next exact action
+Obtain the scope decision on the development-pack API and the unreferenced goldens, then begin I3.2.

@@ -21,5 +21,6 @@ jobs:
       - run: cargo test --workspace schema
       - run: cargo test -p pasol-reputation --test goldens
       - run: cargo test -p pasol-patterns --test contracts
+      - run: cargo test -p pasol-pattern-compiler --test contracts
       - run: cargo test -p pasol-trust --test store
       - run: cargo check --manifest-path fuzz/Cargo.toml --bins

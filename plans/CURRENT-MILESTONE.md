@@ -35,7 +35,7 @@ Accepted G/H/J foundation and accepted I0, I1, and I2 pattern foundation. I2 rem
 - [x] Complete I1 contracts, schemas, runtime validation, deterministic serialization, proof-boundary checks, and golden corpus.
 - [x] Complete I2 signed pattern-pack validation, trust verification, hosted replay, and bounded smoke evidence.
 - [x] Planning-only I3 activation.
-- [ ] I3.1 crate and report contracts.
+- [x] I3.1 crate and report contracts. Evidence: `TEST-EVIDENCE.md#2026-08-05-i31-compiler-contracts`.
 - [ ] I3.2 strict compiler construction.
 - [ ] I3.3 deterministic source ingestion.
 - [ ] I3.4 post-build policy audit.

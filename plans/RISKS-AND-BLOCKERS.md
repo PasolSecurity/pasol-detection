@@ -143,6 +143,30 @@
 - Target resolution: 2026-08-05
 - Resolution evidence: `plans/TEST-EVIDENCE.md#2026-08-05--current-commit-pattern-fuzz-smoke-passed`; workflow run `30999489110`.
 
+## I2 development-pack API was never implemented and I3 depends on it
+- Status: Open — awaiting scope decision
+- Severity: High
+- Area: I2 contracts / I3 compiler entry points
+- Description: The I2 specification required `DevelopmentPatternPack` and `load_development_pattern_pack`. Neither exists. Only `verify_signed_pattern_pack` is implemented, and the one development-related test merely asserts that an unsigned bundle is rejected by production verification. The `fixtures/pattern-packs/development-valid/` fixture has no API that consumes it.
+- Impact: I3 cannot reach its acceptance gate as written. `compile_development_pack` is a required entry point, "proof-carrying verified/development entry points are separate" is a required architecture item, and two required I3 tests exercise the development path. I3.1 contracts were completed without it because the compiler entry points do not land until I3.3.
+- Mitigation: Recorded rather than silently worked around. Three candidate resolutions were put to the maintainer: implement it as an I3.1 prerequisite scoped as I3 work; reopen I2 as a hardening slice; or narrow I3 to verified packs only and defer development-pack support. No option is selected yet.
+- Owner: Detection maintainers
+- Introduced: 2026-08-05
+- Target resolution: Before slice I3.3 deterministic source ingestion.
+- Resolution evidence: Pending
+
+## I2 pattern-pack goldens are unreferenced by any executing check
+- Status: Open — awaiting scope decision
+- Severity: Medium
+- Area: I2 evidence integrity
+- Description: All six files in `fixtures/golden/pattern-packs/` — `canonical-manifest.json`, `detached-signature.json`, `verified-identity.json`, `development-identity.json`, `valid-source-index.json`, and `verification-summary.json` — are referenced by no test, fuzz target, or workflow. The twelve I1 goldens in `fixtures/golden/patterns/` are correctly wired into `pasol-patterns/tests/contracts.rs` by contrast.
+- Impact: The recorded I2 acceptance item covering golden regeneration has no executing check behind it. The fourteen passing `pasol-patterns` tests never read these files, so a change to canonicalization, signing, or identity construction would not be caught by them.
+- Mitigation: Recorded explicitly so the acceptance record is not read as stronger than it is. Three candidate resolutions were put to the maintainer: wire the goldens into a regeneration test; record as deferred and qualify the acceptance entry; or delete the unreferenced files. No option is selected yet.
+- Owner: Detection maintainers
+- Introduced: 2026-08-05
+- Target resolution: Before I3 acceptance, so that I3 goldens do not repeat the pattern.
+- Resolution evidence: Pending
+
 ## Deferred I2 hardening reduces generative assurance depth
 - Status: Open
 - Severity: Low
