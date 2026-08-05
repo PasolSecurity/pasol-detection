@@ -701,3 +701,25 @@ Pattern manifests, detached signatures, canonical signing, and bundle verificati
 Add pattern manifest and detached-signature contracts.
 ### Next exact action
 Implement versioned pattern manifest and detached signature types with schema and semantic validation.
+
+## 2026-08-05 — Pattern manifest and detached signatures
+### Planned work
+Add typed versioned pattern manifests, detached Ed25519 signatures, canonical signing messages, exact source hashing, and bounded in-memory verification.
+### Work completed
+Added manifest/signature types and schemas, semantic engine/path/version/hash validation, canonical manifest bytes and digest helpers, domain-separated deterministic signing, bounded source verification, trusted-key resolution, and production verified-pack construction.
+### Files changed
+`crates/pasol-patterns/src/manifest.rs`, `crates/pasol-patterns/src/lib.rs`, pattern schemas, and pattern contract tests.
+### Tests run
+`cargo +1.91.0 fmt --all`; `cargo +1.91.0 test -p pasol-patterns --all-features`; `cargo +1.91.0 clippy -p pasol-patterns --all-targets --all-features -- -D warnings`.
+### Results
+Three unit tests and eight pattern integration tests passed; formatting and Clippy passed.
+### Commit
+Pending focused manifest/signature commit.
+### Checklist changes
+Manifest/signature and bounded verification items remain in progress pending full workspace and adversarial coverage.
+### Known limitations
+Fuzz targets, hosted CI, full golden pack fixtures, and I2 documentation are not yet complete.
+### Remaining work
+Add adversarial/property coverage, fixtures, fuzz targets, CI, and documentation.
+### Next exact action
+Add complete I2 manifest/source/key mutation and property tests, then add deterministic pack goldens.

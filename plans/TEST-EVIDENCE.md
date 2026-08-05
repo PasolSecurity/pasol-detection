@@ -641,3 +641,23 @@ Expected result achieved for the extracted library slice. Pattern integration an
 `crates/pasol-trust/tests/store.rs` and existing rule-pack tests.
 ### Conclusion
 I2.1 trust extraction is locally verified but not yet formally complete until pattern integration and full workspace evidence pass.
+
+## 2026-08-05 — I2 manifest, signature, and bounded verification
+### Requirement verified
+Versioned pattern manifest/signature contracts, schema validation, domain-separated deterministic signing, exact source-byte hashing, trusted-key verification, and immutable verified-pack construction.
+### Commit tested
+Working tree after `cc4d9cd`; manifest/signature commit pending.
+### Environment
+Windows MSVC, Rust `1.91.0`, YARA-X compatibility pinned at `1.19.0`.
+### Commands
+`cargo +1.91.0 fmt --all`; `cargo +1.91.0 test -p pasol-patterns --all-features`; `cargo +1.91.0 clippy -p pasol-patterns --all-targets --all-features -- -D warnings`.
+### Results
+Formatting passed; 3 unit and 8 integration tests passed; Clippy passed with warnings denied.
+### Expected result
+Valid signed source bundles verify deterministically; source mutation, revoked keys, invalid paths/hashes, unsupported engines, and malformed signatures reject.
+### Actual result
+Expected result achieved for the implemented slice. Full workspace, fuzz, hosted, fixture, and documentation gates remain pending.
+### Artifacts or fixtures
+Pattern manifest/signature schemas and `crates/pasol-patterns/tests/contracts.rs`.
+### Conclusion
+I2 manifest and bounded verification foundations are operational but not accepted until all remaining I2 evidence is complete.

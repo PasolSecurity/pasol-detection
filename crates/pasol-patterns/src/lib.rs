@@ -8,6 +8,9 @@ use serde_json::Value;
 use sha2::{Digest, Sha256};
 use thiserror::Error;
 
+mod manifest;
+pub use manifest::*;
+
 pub const PATTERN_SCHEMA_VERSION: &str = "1.0.0";
 pub const PATTERN_ENGINE: &str = "yara-x";
 pub const MAX_STRING_LENGTH: usize = 4096;
@@ -73,6 +76,10 @@ pub struct PatternPackReference {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct VerifiedPatternPack {
     reference: PatternPackReference,
+    pub(crate) manifest: Option<PatternPackManifest>,
+    pub(crate) sources: Vec<VerifiedPatternSource>,
+    pub(crate) signing_key_id: Option<String>,
+    pub(crate) signing_key_status: Option<pasol_trust::KeyStatus>,
 }
 
 impl VerifiedPatternPack {
@@ -83,10 +90,43 @@ impl VerifiedPatternPack {
         if reference.identity.signature_state != PatternSignatureState::Verified {
             return Err(PatternContractError::Invalid("pack is not verified".into()));
         }
-        Ok(Self { reference })
+        Ok(Self {
+            reference,
+            manifest: None,
+            sources: Vec::new(),
+            signing_key_id: None,
+            signing_key_status: None,
+        })
+    }
+    pub(crate) fn from_verified_parts(
+        reference: PatternPackReference,
+        manifest: PatternPackManifest,
+        sources: Vec<VerifiedPatternSource>,
+        signing_key_id: String,
+        signing_key_status: pasol_trust::KeyStatus,
+    ) -> Self {
+        Self {
+            reference,
+            manifest: Some(manifest),
+            sources,
+            signing_key_id: Some(signing_key_id),
+            signing_key_status: Some(signing_key_status),
+        }
     }
     pub fn identity(&self) -> &PatternPackIdentity {
         &self.reference.identity
+    }
+    pub fn manifest(&self) -> Option<&PatternPackManifest> {
+        self.manifest.as_ref()
+    }
+    pub fn sources(&self) -> &[VerifiedPatternSource] {
+        &self.sources
+    }
+    pub fn signing_key_id(&self) -> Option<&str> {
+        self.signing_key_id.as_deref()
+    }
+    pub fn signing_key_status(&self) -> Option<pasol_trust::KeyStatus> {
+        self.signing_key_status
     }
 }
 

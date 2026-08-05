@@ -1,9 +1,42 @@
 use pasol_patterns::{
-    PATTERN_ENGINE, PATTERN_SCHEMA_VERSION, PatternInput, PatternLimits, PatternPackIdentity,
-    PatternPackReference, PatternReport, PatternScanRequest, PatternScanStatus,
-    PatternSignatureState, PatternWorkerRequest,
+    PATTERN_ENGINE, PATTERN_LIMITS_PROFILE, PATTERN_METADATA_POLICY, PATTERN_SCHEMA_VERSION,
+    PatternInput, PatternLimits, PatternPackBundleInput, PatternPackIdentity, PatternPackManifest,
+    PatternPackReference, PatternPackVerificationLimits, PatternReport, PatternScanRequest,
+    PatternScanStatus, PatternSignatureState, PatternSourceManifest, PatternWorkerRequest,
+    sign_pattern_pack, verify_signed_pattern_pack,
 };
 use sha2::Digest;
+use std::collections::BTreeMap;
+
+fn signed_manifest_fixture() -> (
+    PatternPackManifest,
+    BTreeMap<String, Vec<u8>>,
+    ed25519_dalek::SigningKey,
+) {
+    let source = b"rule marker { strings: $x = \"marker\" condition: $x }".to_vec();
+    let mut sources = BTreeMap::new();
+    sources.insert("rules/marker.yar".into(), source.clone());
+    let manifest = PatternPackManifest {
+        schema_version: PATTERN_SCHEMA_VERSION.into(),
+        pack_id: "pasol.test.patterns".into(),
+        pack_version: "1.0.0".into(),
+        engine: PATTERN_ENGINE.into(),
+        engine_version_requirement: "=1.19.0".into(),
+        created_at: Some("2026-08-05T00:00:00Z".into()),
+        limits_profile: Some(PATTERN_LIMITS_PROFILE.into()),
+        metadata_policy: Some(PATTERN_METADATA_POLICY.into()),
+        sources: vec![PatternSourceManifest {
+            namespace: "pasol".into(),
+            path: "rules/marker.yar".into(),
+            sha256: hex::encode(sha2::Sha256::digest(source)),
+        }],
+    };
+    (
+        manifest,
+        sources,
+        ed25519_dalek::SigningKey::from_bytes(&[7; 32]),
+    )
+}
 
 fn report() -> PatternReport {
     serde_json::from_value(serde_json::json!({
@@ -26,6 +59,8 @@ fn checked_in_contract_schemas_are_valid_documents() {
         "pattern-report-1.0.0.schema.json",
         "pattern-worker-request-1.0.0.schema.json",
         "pattern-worker-response-1.0.0.schema.json",
+        "pattern-pack-signature-1.0.0.schema.json",
+        "trusted-key-store-1.0.0.schema.json",
     ] {
         let text = match name {
             "pattern-pack-1.0.0.schema.json" => {
@@ -36,6 +71,12 @@ fn checked_in_contract_schemas_are_valid_documents() {
             }
             "pattern-worker-request-1.0.0.schema.json" => {
                 include_str!("../../../schemas/pattern-worker-request-1.0.0.schema.json")
+            }
+            "pattern-pack-signature-1.0.0.schema.json" => {
+                include_str!("../../../schemas/pattern-pack-signature-1.0.0.schema.json")
+            }
+            "trusted-key-store-1.0.0.schema.json" => {
+                include_str!("../../../schemas/trusted-key-store-1.0.0.schema.json")
             }
             _ => include_str!("../../../schemas/pattern-worker-response-1.0.0.schema.json"),
         };
@@ -241,6 +282,83 @@ fn request_and_response_goldens_round_trip() {
     assert_eq!(
         canonical_json(&worker_request),
         include_bytes!("../../../fixtures/golden/patterns/worker-request-valid.json")
+    );
+}
+
+#[test]
+fn pattern_manifest_signing_is_deterministic_and_verifies_bounded_sources() {
+    let (manifest, sources, signing_key) = signed_manifest_fixture();
+    let limits = PatternPackVerificationLimits::default();
+    let signature = sign_pattern_pack(&manifest, &sources, "test-key", &signing_key, &limits)
+        .expect("sign manifest");
+    let mut store = pasol_trust::TrustedKeyStore::empty();
+    store
+        .add(pasol_trust::TrustedKey {
+            key_id: "test-key".into(),
+            algorithm: "ed25519".into(),
+            public_key_hex: hex::encode(signing_key.verifying_key().to_bytes()),
+            status: pasol_trust::KeyStatus::Active,
+            trusted_from: "2026-08-05T00:00:00Z".into(),
+            revoked_at: None,
+            replacement_key_id: None,
+        })
+        .expect("trust key");
+    let bundle = PatternPackBundleInput {
+        manifest_json: serde_json::to_vec(&manifest).expect("manifest json"),
+        signature_json: Some(serde_json::to_vec(&signature).expect("signature json")),
+        sources,
+    };
+    let verified =
+        verify_signed_pattern_pack(&bundle, &store, &semver::Version::new(1, 19, 0), &limits)
+            .expect("verify pack");
+    assert_eq!(
+        verified.identity().signature_state,
+        PatternSignatureState::Verified
+    );
+}
+
+#[test]
+fn source_mutation_and_revocation_fail_verification() {
+    let (manifest, mut sources, signing_key) = signed_manifest_fixture();
+    let limits = PatternPackVerificationLimits::default();
+    let signature =
+        sign_pattern_pack(&manifest, &sources, "test-key", &signing_key, &limits).expect("sign");
+    sources.get_mut("rules/marker.yar").expect("source")[0] ^= 1;
+    let mut store = pasol_trust::TrustedKeyStore::empty();
+    store
+        .add(pasol_trust::TrustedKey {
+            key_id: "test-key".into(),
+            algorithm: "ed25519".into(),
+            public_key_hex: hex::encode(signing_key.verifying_key().to_bytes()),
+            status: pasol_trust::KeyStatus::Active,
+            trusted_from: "2026-08-05T00:00:00Z".into(),
+            revoked_at: None,
+            replacement_key_id: None,
+        })
+        .expect("trust");
+    let bundle = PatternPackBundleInput {
+        manifest_json: serde_json::to_vec(&manifest).expect("manifest"),
+        signature_json: Some(serde_json::to_vec(&signature).expect("signature")),
+        sources,
+    };
+    assert!(
+        verify_signed_pattern_pack(&bundle, &store, &semver::Version::new(1, 19, 0), &limits)
+            .is_err()
+    );
+    store
+        .revoke("test-key", "2026-08-05T01:00:00Z".into())
+        .expect("revoke");
+    let (manifest, sources, _) = signed_manifest_fixture();
+    let signature =
+        sign_pattern_pack(&manifest, &sources, "test-key", &signing_key, &limits).expect("sign");
+    let bundle = PatternPackBundleInput {
+        manifest_json: serde_json::to_vec(&manifest).expect("manifest"),
+        signature_json: Some(serde_json::to_vec(&signature).expect("signature")),
+        sources,
+    };
+    assert!(
+        verify_signed_pattern_pack(&bundle, &store, &semver::Version::new(1, 19, 0), &limits)
+            .is_err()
     );
 }
 

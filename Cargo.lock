@@ -1958,9 +1958,12 @@ dependencies = [
 name = "pasol-patterns"
 version = "0.1.0"
 dependencies = [
+ "ed25519-dalek",
  "hex",
  "jsonschema",
+ "pasol-trust",
  "schemars",
+ "semver",
  "serde",
  "serde_json",
  "sha2",
