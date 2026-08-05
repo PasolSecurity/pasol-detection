@@ -1,5 +1,6 @@
 use ed25519_dalek::SigningKey;
 use pasol_trust::{KeyStatus, TrustError, TrustedKey, TrustedKeyStore};
+use serde_json::json;
 
 fn key() -> TrustedKey {
     let signing = SigningKey::from_bytes(&[7; 32]);
@@ -46,6 +47,16 @@ fn duplicate_unknown_and_invalid_keys_are_rejected() {
     ));
     store.keys[0].public_key_hex = "zz".into();
     assert!(store.validate().is_err());
+}
+
+#[test]
+fn runtime_schema_validation_rejects_unknown_fields_and_versions() {
+    let mut value = json!({"schema_version":"1.0.0","keys":[]});
+    TrustedKeyStore::validate_json(&value).expect("valid store schema");
+    value["unexpected"] = json!(true);
+    assert!(TrustedKeyStore::validate_json(&value).is_err());
+    value = json!({"schema_version":"9.0.0","keys":[]});
+    assert!(TrustedKeyStore::validate_json(&value).is_err());
 }
 
 #[test]

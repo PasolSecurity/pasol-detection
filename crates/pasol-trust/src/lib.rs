@@ -103,12 +103,14 @@ impl TrustedKeyStore {
 
     pub fn save_atomic(&self, path: &Path) -> Result<(), TrustError> {
         self.validate()?;
+        let json = serde_json::to_value(self)?;
+        Self::validate_json(&json)?;
         let parent = path
             .parent()
             .ok_or_else(|| TrustError::Io("key-store path has no parent".into()))?;
         std::fs::create_dir_all(parent).map_err(|error| TrustError::Io(error.to_string()))?;
         let temp = path.with_extension("tmp");
-        let data = serde_json::to_vec_pretty(self)?;
+        let data = serde_json::to_vec_pretty(&json)?;
         std::fs::write(&temp, data).map_err(|error| TrustError::Io(error.to_string()))?;
         std::fs::rename(&temp, path).map_err(|error| TrustError::Io(error.to_string()))
     }
