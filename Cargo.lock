@@ -1962,6 +1962,7 @@ dependencies = [
  "hex",
  "jsonschema",
  "pasol-trust",
+ "proptest",
  "schemars",
  "semver",
  "serde",

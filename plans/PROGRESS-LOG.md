@@ -723,3 +723,25 @@ Fuzz targets, hosted CI, full golden pack fixtures, and I2 documentation are not
 Add adversarial/property coverage, fixtures, fuzz targets, CI, and documentation.
 ### Next exact action
 Add complete I2 manifest/source/key mutation and property tests, then add deterministic pack goldens.
+
+## 2026-08-05 — I2 adversarial coverage, fuzz targets, and documentation
+### Planned work
+Harden I2 with manifest/source mutation tests, bounded properties, fuzz-target compilation, read-only workflow integration, deterministic harmless seeds, and trust/privacy/threat-model documentation.
+### Work completed
+Added manifest mutation rejection, source tamper/revocation tests, canonicalization property testing, three I2 fuzz targets and seeds, workflow target integration, and six I2 trust/format documentation files.
+### Files changed
+`crates/pasol-patterns/tests/contracts.rs`, `fuzz/`, `.github/workflows/reputation-fuzz.yml`, and `docs/PATTERN-PACK*.md` plus trust/signature ADRs.
+### Tests run
+`cargo +1.91.0 fmt --all`; `cargo +1.91.0 test -p pasol-patterns --all-features`; `cargo +1.91.0 clippy -p pasol-patterns --all-targets --all-features -- -D warnings`; `cargo +1.91.0 check --manifest-path fuzz/Cargo.toml --bins`.
+### Results
+Pattern tests: 10 passed. Pattern Clippy and formatting passed. All ten fuzz binaries compiled under Rust 1.91. The combined full-workspace command exceeded the 300-second local timeout before producing a result and is not claimed as passed.
+### Commit
+Pending focused I2 coverage/docs commit.
+### Checklist changes
+I2 adversarial/property, fuzz compilation, CI, and documentation items are partially implemented; acceptance remains open.
+### Known limitations
+Hosted I2 workflow has not run; no production key or private key is committed; full workspace gate needs a separate run.
+### Remaining work
+Add deterministic signed-pack fixtures/goldens, complete schema-drift coverage, run hosted workflow, and reconcile final acceptance evidence.
+### Next exact action
+Add signed-valid, multi-source, and development fixture bundles plus deterministic manifest/signature/identity verification goldens.

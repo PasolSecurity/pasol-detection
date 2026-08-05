@@ -3,8 +3,9 @@ use pasol_patterns::{
     PatternInput, PatternLimits, PatternPackBundleInput, PatternPackIdentity, PatternPackManifest,
     PatternPackReference, PatternPackVerificationLimits, PatternReport, PatternScanRequest,
     PatternScanStatus, PatternSignatureState, PatternSourceManifest, PatternWorkerRequest,
-    sign_pattern_pack, verify_signed_pattern_pack,
+    canonical_manifest_bytes, sign_pattern_pack, verify_signed_pattern_pack,
 };
+use proptest::prop_assert_eq;
 use sha2::Digest;
 use std::collections::BTreeMap;
 
@@ -360,6 +361,38 @@ fn source_mutation_and_revocation_fail_verification() {
         verify_signed_pattern_pack(&bundle, &store, &semver::Version::new(1, 19, 0), &limits)
             .is_err()
     );
+}
+
+#[test]
+fn manifest_mutations_are_rejected_before_verification() {
+    let (mut manifest, sources, signing_key) = signed_manifest_fixture();
+    let limits = PatternPackVerificationLimits::default();
+    for mutation in [
+        |m: &mut PatternPackManifest| m.engine = "unknown".into(),
+        |m: &mut PatternPackManifest| m.pack_version = "not-semver".into(),
+        |m: &mut PatternPackManifest| m.sources[0].path = "../escape.yar".into(),
+        |m: &mut PatternPackManifest| m.sources[0].sha256 = "A".repeat(64),
+    ] {
+        let mut mutated = manifest.clone();
+        mutation(&mut mutated);
+        assert!(mutated.validate(&limits).is_err());
+    }
+    manifest.sources.push(manifest.sources[0].clone());
+    assert!(sign_pattern_pack(&manifest, &sources, "test-key", &signing_key, &limits).is_err());
+}
+
+proptest::proptest! {
+    #[test]
+    fn canonicalization_is_independent_of_source_order(seed in 0u8..=255) {
+        let mut first = signed_manifest_fixture().0;
+        let mut second = first.clone();
+        first.sources.push(PatternSourceManifest { namespace: "z".into(), path: format!("rules/{seed}.yar"), sha256: "b".repeat(64) });
+        second.sources.insert(0, PatternSourceManifest { namespace: "z".into(), path: format!("rules/{seed}.yar"), sha256: "b".repeat(64) });
+        prop_assert_eq!(
+            canonical_manifest_bytes(&first).expect("canonical first"),
+            canonical_manifest_bytes(&second).expect("canonical second")
+        );
+    }
 }
 
 fn canonical_json<T: serde::Serialize>(value: &T) -> Vec<u8> {
