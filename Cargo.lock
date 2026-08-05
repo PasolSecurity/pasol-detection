@@ -1988,6 +1988,7 @@ dependencies = [
  "ed25519-dalek",
  "jsonschema",
  "pasol-detection-sdk",
+ "pasol-trust",
  "serde",
  "serde_json",
  "sha2",
@@ -2000,6 +2001,16 @@ version = "0.1.0"
 dependencies = [
  "pasol-detection-sdk",
  "serde",
+]
+
+[[package]]
+name = "pasol-trust"
+version = "0.1.0"
+dependencies = [
+ "ed25519-dalek",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.19",
 ]
 
 [[package]]
