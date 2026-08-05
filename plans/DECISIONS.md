@@ -138,3 +138,23 @@ The I1 JSON shape changes before public production release; schema remains `1.0.
 Allowing arbitrary JSON metadata or treating the worker as the sole validator would expand attack surface and complicate deterministic reports.
 ### Revisit conditions
 Revisit only if I2 framing integration requires a protocol-compatible adjustment or a schema review identifies a breaking issue.
+
+## D-I-004
+### Date
+2026-08-04
+### Decision
+Keep verified pattern-pack identity non-forgeable at the I1 boundary and preserve exact UTF-8 rule-source bytes for hashing while accepting LF, CRLF, and tabs as ordinary source whitespace.
+### Context
+I1 request contracts must not allow untrusted JSON or development identities to masquerade as verified packs. YARA source commonly uses multiline LF/CRLF and tabs, but source hashing must remain byte-exact.
+### Options considered
+Serialize the verified wrapper; reject all controls; normalize source before hashing; or enforce proof and source policy before I2.
+### Selected option
+Use `PatternPackReference` in requests, keep `VerifiedPatternPack` constructible only through an internal Verified-state constructor, accept LF/CRLF/TAB, reject standalone CR/NUL/other controls, and retain original UTF-8 bytes for hashing.
+### Security implications
+Prevents forged trust state, ambiguous source identity, path/control injection, and manifest/source hash drift.
+### Compatibility implications
+The I1 schema remains `1.0.0`; the proof boundary is a Rust API restriction and source validation policy that I2 must preserve.
+### Alternatives rejected
+Public deserialization of verified state, permissive control-character handling, and silent line-ending normalization before hashing.
+### Revisit conditions
+Revisit only if a future signed-pack protocol requires an explicitly versioned source canonicalization rule.

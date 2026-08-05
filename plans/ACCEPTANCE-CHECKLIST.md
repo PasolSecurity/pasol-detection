@@ -16,7 +16,7 @@
 
 ## I — Pattern Matching
 - [x] I0 YARA-X engine decision, pinned dependency, compatibility evidence, and harmless in-memory test — Evidence: `TEST-EVIDENCE.md#2026-08-04-phase-i0-msrv-and-i1-contracts`; Commit `58e20ed`.
-- [~] I1 contracts, schemas, runtime validation, deterministic serialization, and bounded evidence — Evidence: `TEST-EVIDENCE.md#2026-08-04-phase-i0-msrv-and-i1-contracts`.
+- [x] I1 contracts, schemas, runtime validation, deterministic serialization, bounded evidence, proof boundary, source-line-ending policy, negative matrix, and twelve deterministic goldens — Evidence: `TEST-EVIDENCE.md#2026-08-04-i1-proof-boundary-and-golden-corpus`.
 - [ ] I2-I9 signing, compiler, worker, packs, limits, CLI, goldens, fuzzing, hosted CI, and acceptance.
 
 ## J — Reputation

@@ -601,3 +601,23 @@ All commands exited 0.
 Feature, rule, and reputation fixtures/goldens and schemas under `fixtures/` and `schemas/`.
 ### Conclusion
 The local regression gate is green; hosted Linux fuzz execution is recorded separately above.
+
+## 2026-08-04 — I1 proof boundary and golden corpus
+### Requirement verified
+I1 proof-boundary corrections, source-line-ending policy, twelve deterministic pattern goldens, schema validation, semantic validation, and negative contract coverage.
+### Commit tested
+`3e10d43`.
+### Environment
+Windows MSVC, `rustc 1.91.0 (f8297e351 2025-10-28)`, Cargo `1.91.0`, YARA-X `1.19.0` with restricted features.
+### Commands
+`cargo +1.91.0 check --workspace --all-targets --all-features` (exit 0); `cargo +1.91.0 test --workspace --all-features` (exit 0); `cargo +1.91.0 clippy --workspace --all-targets --all-features -- -D warnings` (exit 0); `cargo +1.91.0 fmt --all -- --check` (exit 0 after formatting); focused contract tests were included in the workspace run.
+### Results
+Workspace check, 1.91 workspace tests, Clippy with warnings denied, and formatting passed. Pattern contracts: 3 unit tests and 6 integration tests passed. The twelve checked-in pattern goldens validate and round-trip byte-for-byte; source tests accept LF/CRLF/TAB and reject standalone CR, NUL, and prohibited controls.
+### Expected result
+Untrusted verified-pack construction, payload identity mismatch, unsupported schemas, invalid source paths/controls, invalid status/evidence combinations, and unbounded output are rejected; valid deterministic reports and protocol envelopes validate against schema `1.0.0`.
+### Actual result
+All expected checks passed. No worker, compiler, signing, CLI, file scanning, upload, verdict, or enforcement behavior was added.
+### Artifacts or fixtures
+`fixtures/golden/patterns/` contains nine report goldens plus valid scan, worker-request, and worker-response goldens. Schemas are under `schemas/pattern-*.schema.json`.
+### Conclusion
+I1 contract foundation is accepted. I2 signed pattern-pack validation remains the next planned milestone and is not implemented.

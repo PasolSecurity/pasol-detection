@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0.0",
+  "input": {
+    "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "size_bytes": 5
+  },
+  "pack": {
+    "identity": {
+      "id": "pasol.test",
+      "version": "0.1.0",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "signature_state": "development"
+    }
+  },
+  "limits": {
+    "input_bytes": 33554432,
+    "pack_source_bytes": 4194304,
+    "source_files": 64,
+    "rules": 2000,
+    "namespaces": 32,
+    "compile_time_ms": 3000,
+    "scan_time_ms": 2000,
+    "worker_wall_time_ms": 6000,
+    "worker_memory_bytes": 402653184,
+    "matches_per_pattern": 32,
+    "matching_rules": 128,
+    "evidence_entries": 1024,
+    "report_bytes": 1048576,
+    "compiler_warnings": 64
+  }
+}

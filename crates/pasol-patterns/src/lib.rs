@@ -70,14 +70,20 @@ pub struct PatternPackReference {
     pub identity: PatternPackIdentity,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct VerifiedPatternPack {
     reference: PatternPackReference,
 }
 
 impl VerifiedPatternPack {
-    pub fn development(reference: PatternPackReference) -> Self {
-        Self { reference }
+    #[allow(dead_code)]
+    pub(crate) fn from_verified_reference(
+        reference: PatternPackReference,
+    ) -> Result<Self, PatternContractError> {
+        if reference.identity.signature_state != PatternSignatureState::Verified {
+            return Err(PatternContractError::Invalid("pack is not verified".into()));
+        }
+        Ok(Self { reference })
     }
     pub fn identity(&self) -> &PatternPackIdentity {
         &self.reference.identity
@@ -210,7 +216,7 @@ pub struct PatternReport {
 pub struct PatternScanRequest {
     pub schema_version: String,
     pub input: PatternInput,
-    pub pack: VerifiedPatternPack,
+    pub pack: PatternPackReference,
     pub limits: PatternLimits,
 }
 
@@ -255,7 +261,7 @@ impl PatternScanRequest {
         }
         self.limits.validate()?;
         self.input.validate(&self.limits)?;
-        validate_pack_identity(self.pack.identity())
+        validate_pack_identity(&self.pack.identity)
     }
     pub fn to_validated_json(&self) -> Result<Value, PatternContractError> {
         self.validate()?;
@@ -304,7 +310,7 @@ impl PatternWorkerRequest {
                     "invalid or colliding rule source path".into(),
                 ));
             }
-            if source.chars().any(|c| c.is_control()) {
+            if has_forbidden_source_control(source) {
                 return Err(PatternContractError::Invalid(
                     "control character in rule source".into(),
                 ));
@@ -358,6 +364,20 @@ impl PatternWorkerRequest {
         validate_schema("pattern-worker-request-1.0.0.schema.json", value)?;
         Ok(out)
     }
+}
+
+fn has_forbidden_source_control(source: &str) -> bool {
+    let bytes = source.as_bytes();
+    for (index, character) in source.char_indices() {
+        if character == '\r' {
+            if bytes.get(index + 1) != Some(&b'\n') {
+                return true;
+            }
+        } else if character.is_control() && !matches!(character, '\n' | '\t') {
+            return true;
+        }
+    }
+    false
 }
 
 impl PatternWorkerResponse {
@@ -647,6 +667,12 @@ fn validate_schema(name: &str, value: &Value) -> Result<(), PatternContractError
         )),
         "pattern-scan-request-1.0.0.schema.json" => serde_json::from_str(include_str!(
             "../../../schemas/pattern-scan-request-1.0.0.schema.json"
+        )),
+        "pattern-worker-request-1.0.0.schema.json" => serde_json::from_str(include_str!(
+            "../../../schemas/pattern-worker-request-1.0.0.schema.json"
+        )),
+        "pattern-worker-response-1.0.0.schema.json" => serde_json::from_str(include_str!(
+            "../../../schemas/pattern-worker-response-1.0.0.schema.json"
         )),
         _ => return Err(PatternContractError::Invalid("unknown schema".into())),
     }

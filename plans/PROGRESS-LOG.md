@@ -635,3 +635,25 @@ No worker, schemas, CLI, production pattern packs, or scanning functionality was
 Verify the exact Rust 1.91 toolchain, then begin I1 contracts and schemas.
 ### Next exact action
 Run the I0 compatibility test under Rust 1.91 on Windows or an equivalent CI runner and record the result.
+
+## 2026-08-04 — I1 proof boundary and golden corpus
+### Planned work
+Finish the I1 contract proof boundary, source-line-ending validation, twelve-file deterministic golden corpus, and negative mutation coverage without activating I2.
+### Work completed
+Changed scan requests to use unverified `PatternPackReference`, restricted verified-pack construction to an internal Verified-state constructor, bound worker payloads to declared size/hash, accepted LF/CRLF/TAB rule source text while rejecting standalone CR/NUL/other controls, and added twelve checked-in pattern goldens with schema and round-trip tests.
+### Files changed
+`crates/pasol-patterns/src/lib.rs`, `crates/pasol-patterns/tests/contracts.rs`, `schemas/pattern-*.schema.json`, `fixtures/golden/patterns/`, and I1 planning/evidence files.
+### Tests run
+`cargo +1.91.0 check --workspace --all-targets --all-features`; `cargo +1.91.0 test --workspace --all-features`; `cargo +1.91.0 clippy --workspace --all-targets --all-features -- -D warnings`; `cargo +1.91.0 fmt --all -- --check`.
+### Results
+All commands exited 0. Workspace tests and pattern contract tests passed; all checked-in goldens validated and round-tripped deterministically.
+### Commit
+`3e10d43`.
+### Checklist changes
+I1 marked complete in the milestone and consolidated acceptance checklist; next action is I2 activation only.
+### Known limitations
+Pattern signing, YARA-X production compilation, worker execution, CLI, and file scanning remain unimplemented by design.
+### Remaining work
+Create an I2 planning activation for signed pattern-pack validation.
+### Next exact action
+Activate I2 signed pattern-pack validation in planning before changing implementation code.
