@@ -190,3 +190,21 @@ Prevents cross-protocol signature reuse, source-hash substitution, and canonical
 LF and CRLF source variants have distinct hashes; formatting changes require a new signature.
 ### Revisit conditions
 Revisit only with a new signature schema major version.
+
+## D-I-007
+### Date
+2026-08-05
+### Decision
+Define I3 as a separate, planning-only `pasol-pattern-compiler` milestone with proof-carrying inputs and a strict YARA-X policy.
+### Context
+I0–I2 are accepted, but compiler behavior must remain isolated from contracts, trust, worker execution, and scanning until explicitly activated.
+### Selected option
+Use a dedicated compiler crate accepting only verified or explicitly development-validated pack types; allow only `pe`, `hash`, `math`, and `string`; disable includes and relaxed regular-expression syntax; reject slow patterns, slow loops, global rules, and all compiler warnings; prohibit scanners, persistence, compiled-rule deserialization, and enforcement.
+### Security implications
+The proof boundary prevents raw or unverified sources from reaching compilation. The allowlist and zero-warning policy fail closed. Hard time and memory isolation is deferred to I4.
+### Compatibility implications
+YARA-X remains pinned at 1.19.0 with the existing restricted feature set. Compiler reports are versioned independently from pattern reports.
+### Alternatives rejected
+Embedding compiler logic in `pasol-patterns`, accepting raw source maps, enabling includes, ignoring modules, tolerating warnings, or loading serialized compiled rules.
+### Revisit conditions
+Revisit only through explicit I3 activation or a new policy/schema decision.

@@ -920,3 +920,25 @@ The first push-triggered version did not run smoke campaigns; the workflow is be
 Push the smoke-condition correction and record its result.
 ### Next exact action
 Commit and push the smoke-condition correction, then inspect the resulting run.
+
+## 2026-08-05 — Add I3 compiler-adapter planning milestone
+### Planned work
+Add the supplied planning-only I3 compiler-adapter specification and reconcile all planning records without activating implementation.
+### Work completed
+Added the complete I3 milestone specification, recorded the separate compiler crate and strict YARA-X policy decision, added I3 risks, and updated milestone and acceptance checklists.
+### Files changed
+`plans/milestones/I3-COMPILER-ADAPTER.md`, `plans/CURRENT-MILESTONE.md`, `plans/milestones/I-PATTERN-MATCHING.md`, `plans/ACCEPTANCE-CHECKLIST.md`, `plans/DECISIONS.md`, `plans/RISKS-AND-BLOCKERS.md`, and this log.
+### Tests run
+Planning-state inspection only; no production-code tests were run or required.
+### Results
+No Rust, schema, fixture, CI, compiler, worker, scanner, or enforcement files changed.
+### Commit
+Pending.
+### Checklist changes
+I3 planning marked complete; I3 implementation remains unchecked.
+### Known limitations
+I3 implementation is not authorized and all compiler risks remain open.
+### Remaining work
+Obtain explicit approval before activating I3 as the sole implementation milestone.
+### Next exact action
+Explicitly approve I3 implementation, then update `CURRENT-MILESTONE.md` before changing production code.

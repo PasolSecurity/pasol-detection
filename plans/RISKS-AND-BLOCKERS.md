@@ -142,3 +142,75 @@
 - Introduced: 2026-08-05
 - Target resolution: 2026-08-05
 - Resolution evidence: `plans/TEST-EVIDENCE.md#2026-08-05--current-commit-pattern-fuzz-smoke-passed`; workflow run `30999489110`.
+
+## Risk or blocker
+- Status: Open
+- Severity: High
+- Area: I3 in-process compiler resource exhaustion
+- Description: Compiler policy runs in-process until I4 worker isolation exists.
+- Impact: A malformed or adversarial validated pack could consume excessive compiler resources.
+- Mitigation: Bounded proof-carrying inputs, slow-pattern and slow-loop rejection, strict limits, fuzzing, and mandatory I4 isolation before external use.
+- Owner: Detection maintainers
+- Introduced: 2026-08-05
+- Target resolution: I4 worker milestone
+- Resolution evidence: Pending
+
+## Risk or blocker
+- Status: Open
+- Severity: Medium
+- Area: I3 engine API and diagnostic drift
+- Description: YARA-X compiler APIs or diagnostics may change across upgrades.
+- Impact: Reports, policy enforcement, and deterministic goldens could drift.
+- Mitigation: Pin YARA-X 1.19.0, version reports and policy, sanitize diagnostics, and require explicit upgrade decisions.
+- Owner: Detection maintainers
+- Introduced: 2026-08-05
+- Target resolution: I3 acceptance
+- Resolution evidence: Pending
+
+## Risk or blocker
+- Status: Open
+- Severity: Medium
+- Area: I3 warning policy
+- Description: Zero-warning rejection may over-reject otherwise usable rules.
+- Impact: Compatibility and adoption may be reduced.
+- Mitigation: Fail closed initially; any exception requires a policy-version decision and evidence.
+- Owner: Detection maintainers
+- Introduced: 2026-08-05
+- Target resolution: I3 policy review
+- Resolution evidence: Pending
+
+## Risk or blocker
+- Status: Open
+- Severity: High
+- Area: I3 module-policy drift
+- Description: Future engine modules may be introduced without an explicit allowlist decision.
+- Impact: Rules could access unsupported or unsafe module behavior.
+- Mitigation: Keep the exact `pe`, `hash`, `math`, and `string` allowlist, ban other modules, and audit imports after build.
+- Owner: Detection maintainers
+- Introduced: 2026-08-05
+- Target resolution: I3 acceptance
+- Resolution evidence: Pending
+
+## Risk or blocker
+- Status: Open
+- Severity: High
+- Area: I3 compiled-rule blob misuse
+- Description: Serialized compiled rules could be mistaken for portable or trusted artifacts.
+- Impact: Manipulated or incompatible compiled bytes could bypass source and manifest identity.
+- Mitigation: No persistence, binary goldens, deserialization, or third-party compiled bytes; source manifest remains authoritative.
+- Owner: Detection maintainers
+- Introduced: 2026-08-05
+- Target resolution: I3 acceptance
+- Resolution evidence: Pending
+
+## Risk or blocker
+- Status: Open
+- Severity: Medium
+- Area: I3 diagnostic information leakage
+- Description: Compiler diagnostics may expose host paths, source excerpts, ANSI escapes, or machine-specific data.
+- Impact: Reports could leak local information or become nondeterministic.
+- Mitigation: Canonical relative origins, bounded sanitized diagnostics, no source excerpts, and deterministic normalization.
+- Owner: Detection maintainers
+- Introduced: 2026-08-05
+- Target resolution: I3 acceptance
+- Resolution evidence: Pending

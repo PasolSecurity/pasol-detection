@@ -18,6 +18,8 @@
 - [x] I0 YARA-X engine decision, pinned dependency, compatibility evidence, and harmless in-memory test — Evidence: `TEST-EVIDENCE.md#2026-08-04-phase-i0-msrv-and-i1-contracts`; Commit `58e20ed`.
 - [x] I1 contracts, schemas, runtime validation, deterministic serialization, bounded evidence, proof boundary, source-line-ending policy, negative matrix, and twelve deterministic goldens — Evidence: `TEST-EVIDENCE.md#2026-08-04-i1-proof-boundary-and-golden-corpus`.
 - [x] I2 signed pattern-pack validation, shared trust, exact-byte source verification, hosted replay, and bounded smoke campaigns. Evidence: `TEST-EVIDENCE.md#2026-08-05-current-commit-pattern-fuzz-smoke-passed`; Commits `07546b3`, `57aa637`, `324e83e`, `0c36f03`.
+- [x] I3 planning-only compiler-adapter milestone defines architecture, limits, module policy, warning policy, tests, CI, documentation, and non-goals. Evidence: `milestones/I3-COMPILER-ADAPTER.md`.
+- [ ] I3 compiler-adapter implementation and hosted acceptance.
 
 ## J — Reputation
 - [x] J1-J8 provider, store, cache, CLI, goldens, property tests, fuzzing, documentation, and hosted evidence — Evidence: `TEST-EVIDENCE.md#2026-08-04-hosted-fuzz-acceptance-run`.
