@@ -701,3 +701,23 @@ Expected result achieved.
 `fixtures/pattern-packs/` and `fixtures/golden/pattern-packs/`.
 ### Conclusion
 Fixture and golden coverage is verified; I2 remains open pending full CI, fuzz, and acceptance evidence.
+
+## 2026-08-05 — I2 Windows Rust 1.91 workspace gate
+### Requirement verified
+Full I2 workspace compilation, tests, Clippy, formatting, fuzz compilation, and schema-drift workflow coverage.
+### Commit tested
+Working tree after `dc38558`; schema-drift workflow update pending commit.
+### Environment
+Windows MSVC, Rust `1.91.0`, YARA-X `1.19.0`.
+### Commands
+`cargo +1.91.0 check --workspace --all-targets --all-features`; `cargo +1.91.0 test --workspace --all-features`; `cargo +1.91.0 clippy --workspace --all-targets --all-features -- -D warnings`; `cargo +1.91.0 fmt --all -- --check`; `cargo +1.91.0 check --manifest-path fuzz/Cargo.toml --bins`.
+### Results
+All commands exited 0. Workspace tests passed across all crates, including 11 pattern integration tests and 3 trust tests. All ten fuzz binaries compiled. Schema-drift workflow now includes trust and pattern contract tests on Ubuntu and Windows matrices.
+### Expected result
+No regressions in accepted phases; I2 contracts and bounded trust code remain warning-free and compile under Rust 1.91.
+### Actual result
+Expected result achieved locally. Hosted I2 execution has not yet run.
+### Artifacts or fixtures
+`schemas/pattern-pack-signature-1.0.0.schema.json`, `schemas/trusted-key-store-1.0.0.schema.json`, fixture bundles, and fuzz targets.
+### Conclusion
+Local I2 quality gates are green; hosted fuzz/schema evidence and final acceptance remain open.

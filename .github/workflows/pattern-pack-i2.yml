@@ -1,0 +1,32 @@
+name: pattern-pack-i2
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  contracts:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Install Rust 1.91
+        shell: pwsh
+        run: |
+          rustup toolchain install 1.91.0 --profile minimal
+          rustup component add rustfmt clippy --toolchain 1.91.0
+      - name: Workspace check
+        run: cargo +1.91.0 check --workspace --all-targets --all-features
+      - name: Workspace tests
+        run: cargo +1.91.0 test --workspace --all-features
+      - name: Clippy
+        run: cargo +1.91.0 clippy --workspace --all-targets --all-features -- -D warnings
+      - name: Formatting
+        run: cargo +1.91.0 fmt --all -- --check
+      - name: Fuzz target compilation
+        run: cargo +1.91.0 check --manifest-path fuzz/Cargo.toml --bins

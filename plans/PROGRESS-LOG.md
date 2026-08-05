@@ -767,3 +767,25 @@ The fixed key is test-only and no private key is stored. Full hosted I2 workflow
 Add schema-drift checks for trust schemas, run full Rust 1.91 workspace gates, and obtain hosted fuzz evidence.
 ### Next exact action
 Extend schema-drift and CI workflow coverage for trust/pattern schemas, then run all workspace gates.
+
+## 2026-08-05 — I2 local workspace gate
+### Planned work
+Run the full Rust 1.91 workspace and fuzz compilation gates after I2 trust, manifest, fixture, and documentation changes.
+### Work completed
+Validated the complete workspace, all pattern/trust tests, Clippy, formatting, and all ten fuzz binaries; extended the schema-drift matrix with trust and pattern contract tests.
+### Files changed
+`.github/workflows/schema-drift.yml`.
+### Tests run
+`cargo +1.91.0 check --workspace --all-targets --all-features`; `cargo +1.91.0 test --workspace --all-features`; `cargo +1.91.0 clippy --workspace --all-targets --all-features -- -D warnings`; `cargo +1.91.0 fmt --all -- --check`; `cargo +1.91.0 check --manifest-path fuzz/Cargo.toml --bins`.
+### Results
+All commands exited 0. The prior combined run exceeded a timeout during a cold rebuild; the individual gates subsequently completed successfully.
+### Commit
+Pending schema-drift workflow commit.
+### Checklist changes
+Local I2 quality evidence is recorded; hosted evidence remains open.
+### Known limitations
+No hosted I2 workflow run has been executed; no pattern matching or worker code exists by design.
+### Remaining work
+Run hosted I2 workflow, record evidence, and close or retain blockers honestly.
+### Next exact action
+Push the schema-drift workflow update and dispatch the hosted I2 verification workflow.
