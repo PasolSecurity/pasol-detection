@@ -803,3 +803,23 @@ Not yet verified for the current commit.
 `.github/workflows/pattern-pack-fuzz.yml`; three `fuzz/corpus/pattern_pack_*` directories.
 ### Conclusion
 I2 remains open until this workflow produces current-commit evidence.
+
+## 2026-08-05 — Current-commit pattern fuzz replay
+### Requirement verified
+Pattern-pack fuzz target compilation and corpus replay on the current I2 source tree.
+### Commit tested
+`324e83ed7f2261239aaee7c392c161b056a5757d`.
+### Environment
+GitHub Actions Ubuntu latest, nightly Rust, cargo-fuzz 0.13.2.
+### Commands
+`cargo fuzz build`; three targets replayed with `-runs=20`: `pattern_pack_manifest`, `pattern_pack_signature`, `pattern_pack_bundle_verify`.
+### Results
+Workflow run `https://github.com/PasolSecurity/pasol-detection/actions/runs/30999221629`, job `92283658083`, completed successfully at 10:55:43Z. Three targets and three checked-in pattern seeds replayed with no crash, timeout, or invariant failure.
+### Expected result
+Current-commit pattern fuzz corpus replay passes.
+### Actual result
+Passed.
+### Artifacts or fixtures
+`fuzz/corpus/pattern_pack_manifest/seed-minimal.json`, `pattern_pack_signature/seed-invalid.json`, and `pattern_pack_bundle_verify/seed-empty.bin`.
+### Conclusion
+Replay evidence is complete; a subsequent push-triggered run will also record the bounded 15-second smoke campaigns.

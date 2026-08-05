@@ -36,7 +36,7 @@ jobs:
             cargo fuzz run "$target" "corpus/$target" -- -runs=20 -artifact_prefix="artifacts/$target/"
           done
       - name: Run bounded pattern smoke campaigns
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
         working-directory: fuzz
         shell: bash
         run: |

@@ -898,3 +898,25 @@ No worker or compiler execution is introduced; fuzz targets only exercise manife
 Push and inspect the current-commit workflow run, then record counts and outcomes.
 ### Next exact action
 Commit and push the dedicated fuzz workflow and wait for its replay result.
+
+## 2026-08-05 — Current-commit pattern fuzz replay passed
+### Planned work
+Verify the dedicated pattern fuzz workflow on the I2 source tree.
+### Work completed
+The push-triggered workflow built and replayed all three pattern-pack fuzz targets against their checked-in seeds.
+### Files changed
+Evidence only; workflow commit `324e83e`.
+### Tests run
+Run `30999221629`, job `92283658083`.
+### Results
+Replay passed with no crash, timeout, or invariant failure.
+### Commit
+`324e83e`.
+### Checklist changes
+Current-commit replay evidence is complete; bounded smoke evidence remains open.
+### Known limitations
+The first push-triggered version did not run smoke campaigns; the workflow is being adjusted to run them on push as well.
+### Remaining work
+Push the smoke-condition correction and record its result.
+### Next exact action
+Commit and push the smoke-condition correction, then inspect the resulting run.
