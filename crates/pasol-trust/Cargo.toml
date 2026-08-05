@@ -7,6 +7,7 @@ license.workspace = true
 
 [dependencies]
 ed25519-dalek.workspace = true
+jsonschema.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true

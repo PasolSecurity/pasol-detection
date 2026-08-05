@@ -2012,6 +2012,7 @@ name = "pasol-trust"
 version = "0.1.0"
 dependencies = [
  "ed25519-dalek",
+ "jsonschema",
  "serde",
  "serde_json",
  "thiserror 2.0.19",

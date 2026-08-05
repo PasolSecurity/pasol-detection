@@ -811,3 +811,24 @@ This environment does not expose a workflow-dispatch API; push-triggered executi
 Inspect the hosted run, record runner/toolchain/test/fuzz results, and resolve any failures.
 ### Next exact action
 Push the workflow trigger and retrieve the resulting GitHub Actions run evidence.
+## 2026-08-05 — Harden trust schema loading and hosted I2 workflow
+### Planned work
+Close the trust-schema validation gap and make the Windows/Ubuntu hosted I2 workflow shell-portable.
+### Work completed
+Added runtime validation of trusted-key-store JSON against schema 1.0.0 before deserialization and removed the PowerShell-only workflow shell declaration.
+### Files changed
+`crates/pasol-trust/Cargo.toml`, `crates/pasol-trust/src/lib.rs`, `Cargo.lock`, `.github/workflows/pattern-pack-i2.yml`.
+### Tests run
+Rust 1.91 formatting, pasol-trust tests, pasol-patterns tests, and Clippy with warnings denied.
+### Results
+All local commands passed; 3 trust tests and 14 pattern tests passed.
+### Commit
+Pending.
+### Checklist changes
+Trust schema runtime validation is now evidenced locally; I2 remains in progress pending hosted workflow evidence.
+### Known limitations
+The earlier hosted run `30997918594` remained in progress with 0/2 jobs completed; replacement-run evidence is required.
+### Remaining work
+Push the correction, verify the replacement workflow on Ubuntu and Windows, and record its URL and matrix results.
+### Next exact action
+Commit and push this focused correction, then inspect the replacement `pattern-pack-i2` workflow run.

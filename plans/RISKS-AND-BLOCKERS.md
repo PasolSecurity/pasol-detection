@@ -119,3 +119,14 @@
 - Introduced: 2026-08-04
 - Target resolution: Hosted Linux fuzz run
 - Resolution evidence: Pending
+## Risk or blocker
+- Status: Open
+- Severity: Medium
+- Area: Hosted I2 verification
+- Description: The first hosted pattern-pack workflow run (`30997918594`) remained in progress with no completed matrix jobs, so hosted Windows/Ubuntu evidence is not yet available.
+- Impact: I2 cannot be formally accepted until a replacement run completes successfully.
+- Mitigation: Corrected the workflow to use a shell portable across both runners and will verify the replacement run.
+- Owner: PasolSecurity maintainers
+- Introduced: 2026-08-05
+- Target resolution: Next hosted workflow run
+- Resolution evidence: Pending

@@ -721,3 +721,25 @@ Expected result achieved locally. Hosted I2 execution has not yet run.
 `schemas/pattern-pack-signature-1.0.0.schema.json`, `schemas/trusted-key-store-1.0.0.schema.json`, fixture bundles, and fuzz targets.
 ### Conclusion
 Local I2 quality gates are green; hosted fuzz/schema evidence and final acceptance remain open.
+## 2026-08-05 — I2 trust schema and hosted workflow correction
+### Requirement verified
+Shared trust-store JSON is now validated against the checked-in 1.0.0 schema before loading, and the hosted I2 workflow uses the default runner shell on both Ubuntu and Windows.
+### Commit tested
+Working tree after `8f33c75`; local changes pending commit.
+### Environment
+Windows, Rust 1.91.0, YARA-X 1.19.0 compatibility configuration.
+### Commands
+`cargo +1.91.0 fmt --all -- --check`
+`cargo +1.91.0 test -p pasol-trust --all-features`
+`cargo +1.91.0 test -p pasol-patterns --all-features`
+`cargo +1.91.0 clippy -p pasol-trust -p pasol-patterns --all-targets --all-features -- -D warnings`
+### Results
+Formatting, trust tests (3), pattern tests (14), and Clippy passed with exit code 0.
+### Expected result
+Trust schema validation and I2 contract gates pass without changing Phase H serialized formats.
+### Actual result
+Passed. The hosted workflow was corrected after its first run remained queued with no completed matrix jobs.
+### Artifacts or fixtures
+`schemas/trusted-key-store-1.0.0.schema.json`; `.github/workflows/pattern-pack-i2.yml`.
+### Conclusion
+Local trust and pattern contract gates are green. Hosted evidence remains pending for the replacement workflow run.

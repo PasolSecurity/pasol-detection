@@ -83,11 +83,22 @@ impl TrustedKeyStore {
     }
 
     pub fn load(path: &Path) -> Result<Self, TrustError> {
-        let value: Self = serde_json::from_slice(
-            &std::fs::read(path).map_err(|error| TrustError::Io(error.to_string()))?,
-        )?;
+        let bytes = std::fs::read(path).map_err(|error| TrustError::Io(error.to_string()))?;
+        let json: serde_json::Value = serde_json::from_slice(&bytes)?;
+        Self::validate_json(&json)?;
+        let value: Self = serde_json::from_value(json)?;
         value.validate()?;
         Ok(value)
+    }
+
+    pub fn validate_json(value: &serde_json::Value) -> Result<(), TrustError> {
+        let schema: serde_json::Value = serde_json::from_str(include_str!(
+            "../../../schemas/trusted-key-store-1.0.0.schema.json"
+        ))?;
+        jsonschema::validator_for(&schema)
+            .map_err(|error| TrustError::Invalid(error.to_string()))?
+            .validate(value)
+            .map_err(|error| TrustError::Invalid(error.to_string()))
     }
 
     pub fn save_atomic(&self, path: &Path) -> Result<(), TrustError> {
