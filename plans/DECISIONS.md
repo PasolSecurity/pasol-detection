@@ -158,3 +158,35 @@ The I1 schema remains `1.0.0`; the proof boundary is a Rust API restriction and 
 Public deserialization of verified state, permissive control-character handling, and silent line-ending normalization before hashing.
 ### Revisit conditions
 Revisit only if a future signed-pack protocol requires an explicitly versioned source canonicalization rule.
+
+## D-I-005
+### Date
+2026-08-05
+### Decision
+Activate I2 as the sole implementation milestone and extract reusable Ed25519 trust infrastructure into `pasol-trust`.
+### Context
+I0 and I1 are accepted, while pattern-pack signing and verification must be implemented without coupling `pasol-patterns` to `pasol-rules`.
+### Selected option
+Use `pasol-trust` as the shared dependency of rules and patterns, preserve Phase H serialized formats and behavior, and keep I3 compilation, worker, CLI, and scanning inactive.
+### Security implications
+One reviewed key-store and signature-verification implementation reduces divergence across artifact types.
+### Compatibility implications
+Existing `pasol-rules` public imports are re-exported where practical; trusted-key JSON remains compatible; pattern signatures use a distinct domain-separated payload.
+### Revisit conditions
+Revisit only for a documented trust-schema or algorithm migration.
+
+## D-I-006
+### Date
+2026-08-05
+### Decision
+Hash exact stored UTF-8 source bytes and sign a domain-separated canonical pattern manifest.
+### Context
+Line-ending normalization before hashing would create ambiguous source identity.
+### Selected option
+Hash exact bytes, canonicalize only the typed manifest, and sign `PASOL\\0PATTERN-PACK\\0SIGNATURE\\0V1\\0` plus length-prefixed key ID and manifest bytes.
+### Security implications
+Prevents cross-protocol signature reuse, source-hash substitution, and canonicalization ambiguity.
+### Compatibility implications
+LF and CRLF source variants have distinct hashes; formatting changes require a new signature.
+### Revisit conditions
+Revisit only with a new signature schema major version.

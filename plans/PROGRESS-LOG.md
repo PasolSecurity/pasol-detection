@@ -657,3 +657,25 @@ Pattern signing, YARA-X production compilation, worker execution, CLI, and file 
 Create an I2 planning activation for signed pattern-pack validation.
 ### Next exact action
 Activate I2 signed pattern-pack validation in planning before changing implementation code.
+
+## 2026-08-05 — I2 planning activation
+### Planned work
+Activate I2 as the sole implementation milestone for shared trust extraction and bounded signed pattern-pack validation.
+### Work completed
+Updated milestone, acceptance, decision, and risk records. I3, K, and L remain inactive; compiler, worker, CLI, scanning, uploads, verdicts, and enforcement remain excluded.
+### Files changed
+Planning files under `plans/`.
+### Tests run
+Repository and remote-state inspection only; no production code changed.
+### Results
+Starting commit `890a9a7e2e7566ac468c7dce176212a1530e8c33` was confirmed clean and current before activation.
+### Commit
+Pending planning activation commit.
+### Checklist changes
+I2 marked in progress; I3 remains unchecked.
+### Known limitations
+Trust extraction and all pattern-pack implementation work remain outstanding.
+### Remaining work
+Extract `pasol-trust` while preserving Phase H behavior.
+### Next exact action
+Create `pasol-trust` and migrate the existing rules trust implementation without changing Phase H schemas or behavior.

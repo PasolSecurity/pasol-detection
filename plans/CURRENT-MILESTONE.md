@@ -1,17 +1,18 @@
 # Current Milestone
 
 ## Milestone
-No active implementation milestone
+Phase I2 — Signed Pattern-Pack Validation
 
 ## Objective
-Preserve the accepted I1 foundation while preparing a separately approved I2 activation.
+Validate signed, bounded, versioned pattern packs and produce proof-carrying verified-pack objects without compiling or scanning rules.
 
 ## Approved scope
 - I0 compatibility is accepted.
 - I1 contracts, schemas, runtime validation, deterministic normalization, and bounded evidence are accepted.
+- I2 shared trust, manifest/signature contracts, canonical signing, exact source hashing, bounded verification, tests, CI, and documentation are active.
 
 ## Explicit non-goals
-Do not begin I2+ production functionality, Phase K, or Phase L. Do not add signing, worker execution, CLI commands, file scanning, uploads, enforcement, verdicts, blocking, quarantine, or deletion.
+Do not begin I3+ production functionality, Phase K, or Phase L. Do not add YARA-X compilation, worker execution, CLI commands, file scanning, uploads, enforcement, verdicts, blocking, quarantine, or deletion.
 
 ## Dependencies
 Accepted G/H/J foundation and accepted I0 YARA-X compatibility baseline.
@@ -25,7 +26,7 @@ Accepted G/H/J foundation and accepted I0 YARA-X compatibility baseline.
 - [x] Implement I1 pattern contracts, schemas, runtime validation, deterministic serialization, proof-boundary checks, and the twelve-file golden corpus.
 
 ## Files expected to change
-Planning files only until I2 is explicitly activated.
+`crates/pasol-trust/`, `crates/pasol-patterns/`, schemas, tests, fixtures, fuzz targets, CI, documentation, and planning files.
 
 ## Tests required
 Rust 1.91 workspace and compatibility checks, contract tests, schema validation, deterministic serialization, formatting, workspace tests, and Clippy with warnings denied.
@@ -43,4 +44,4 @@ Do not begin I2 until I1 schemas and generated outputs validate deterministicall
 Phase G, Phase H, Phase J, I0, and I1 are accepted. I2 is ready for explicit planning activation. Phases K and L remain open and unimplemented.
 
 ## Next exact action
-Activate I2 signed pattern-pack validation in planning before changing implementation code.
+Extract generic Ed25519 key-store and verification behavior into the new `pasol-trust` crate while preserving Phase H compatibility.

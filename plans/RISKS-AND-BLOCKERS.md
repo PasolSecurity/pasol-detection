@@ -12,6 +12,30 @@
 - Target resolution: CI and developer documentation
 - Resolution evidence: `TEST-EVIDENCE.md#2026-08-03-windows-validation`
 
+## I2 trust-layer extraction compatibility
+- Status: Open
+- Severity: High
+- Area: I2 shared trust
+- Description: Generic Ed25519 key-store behavior currently lives in `pasol-rules` and must be extracted without changing Phase H formats or verification semantics.
+- Impact: A flawed extraction could regress accepted rule-pack trust behavior or create divergent pattern trust behavior.
+- Mitigation: Preserve/re-export public rule types and run all Phase H tests after each trust slice.
+- Owner: Detection maintainers
+- Introduced: 2026-08-05
+- Target resolution: I2.1 shared trust extraction
+- Resolution evidence: Pending
+
+## I2 signing infrastructure
+- Status: Open
+- Severity: Medium
+- Area: I2 fixtures and release
+- Description: Production signing keys and protected release environments are not available in the repository.
+- Impact: Only ephemeral in-test signatures can be verified during I2.
+- Mitigation: Generate test keys in memory, never commit private keys, and defer production signing to protected environments.
+- Owner: Release maintainers
+- Introduced: 2026-08-05
+- Target resolution: Protected release setup before signed distribution
+- Resolution evidence: Pending
+
 ## Missing release signing infrastructure
 - Status: Open
 - Severity: High
