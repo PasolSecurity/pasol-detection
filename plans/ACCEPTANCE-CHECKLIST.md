@@ -19,6 +19,10 @@
 - [x] I1 contracts, schemas, runtime validation, deterministic serialization, bounded evidence, proof boundary, source-line-ending policy, negative matrix, and twelve deterministic goldens — Evidence: `TEST-EVIDENCE.md#2026-08-04-i1-proof-boundary-and-golden-corpus`.
 - [x] I2 signed pattern-pack validation, shared trust, exact-byte source verification, hosted replay, and bounded smoke campaigns. Evidence: `TEST-EVIDENCE.md#2026-08-05-current-commit-pattern-fuzz-smoke-passed`; Commits `07546b3`, `57aa637`, `324e83e`, `0c36f03`.
 - [x] I3 planning-only compiler-adapter milestone defines architecture, limits, module policy, warning policy, tests, CI, documentation, and non-goals. Evidence: `milestones/I3-COMPILER-ADAPTER.md`.
+- [x] I3 activated as the sole active implementation milestone with I4, I5, K, and L inactive and I0–I2 acceptance preserved. Evidence: `CURRENT-MILESTONE.md`; `DECISIONS.md#dec-i-008`.
+- [-] I2-H1 expanded pattern-pack property coverage — deferred hardening; does not qualify I2 acceptance. Evidence: `DEFERRED-WORK.md`.
+- [-] I2-H2 expanded semantic fuzz corpus seeds — deferred hardening; does not qualify I2 acceptance. Evidence: `DEFERRED-WORK.md`.
+- [-] I2-H3 `pasol-patterns` no-behavior-change module split — deferred hardening; does not qualify I2 acceptance. Evidence: `DEFERRED-WORK.md`.
 - [ ] I3 compiler-adapter implementation and hosted acceptance.
 
 ## J — Reputation

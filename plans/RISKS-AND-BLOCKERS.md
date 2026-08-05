@@ -13,16 +13,16 @@
 - Resolution evidence: `TEST-EVIDENCE.md#2026-08-03-windows-validation`
 
 ## I2 trust-layer extraction compatibility
-- Status: Open
+- Status: Resolved
 - Severity: High
 - Area: I2 shared trust
-- Description: Generic Ed25519 key-store behavior currently lives in `pasol-rules` and must be extracted without changing Phase H formats or verification semantics.
-- Impact: A flawed extraction could regress accepted rule-pack trust behavior or create divergent pattern trust behavior.
-- Mitigation: Preserve/re-export public rule types and run all Phase H tests after each trust slice.
+- Description: Generic Ed25519 key-store behavior lived in `pasol-rules` and had to be extracted without changing Phase H formats or verification semantics.
+- Impact: None observed. `pasol-trust` owns the shared key store and verification, `pasol-rules` re-exports the public types, and Phase H rule-pack trust behavior is unchanged.
+- Mitigation: Public rule types were preserved by re-export and the Phase H suite was rerun after the extraction.
 - Owner: Detection maintainers
 - Introduced: 2026-08-05
 - Target resolution: I2.1 shared trust extraction
-- Resolution evidence: Pending
+- Resolution evidence: Commit `07546b3`; re-verified at `6a6bed3` with `cargo +1.91.0 test -p pasol-rules --all-features` passing 6 tests and `-p pasol-trust --all-features` passing 4 tests.
 
 ## I2 signing infrastructure
 - Status: Open
@@ -142,6 +142,18 @@
 - Introduced: 2026-08-05
 - Target resolution: 2026-08-05
 - Resolution evidence: `plans/TEST-EVIDENCE.md#2026-08-05--current-commit-pattern-fuzz-smoke-passed`; workflow run `30999489110`.
+
+## Deferred I2 hardening reduces generative assurance depth
+- Status: Open
+- Severity: Low
+- Area: I2 test depth
+- Description: I2 was accepted with one property-test block instead of the specified invariant set, three fuzz corpus seeds instead of ten semantic seed categories, and a two-module `pasol-patterns` instead of the specified eight-module layout. Tracked as `I2-H1`, `I2-H2`, and `I2-H3`.
+- Impact: All affected invariants retain deterministic example-based coverage and passed hosted bounded fuzz campaigns, so no invariant is unverified. The residual risk is a lower probability of discovering an unanticipated counterexample, plus reduced maintainability of a 820-line `lib.rs`.
+- Mitigation: Gaps are recorded explicitly rather than silently; hosted smoke campaigns remain active on every push; the module split is barred from the first I3 slice so it cannot be conflated with compiler-adapter review.
+- Owner: Detection maintainers
+- Introduced: 2026-08-05
+- Target resolution: A scheduled I2-H hardening slice, promoted earlier if I3 uncovers a defect attributable to a deferred item.
+- Resolution evidence: Pending
 
 ## Risk or blocker
 - Status: Open

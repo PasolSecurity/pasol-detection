@@ -208,3 +208,23 @@ YARA-X remains pinned at 1.19.0 with the existing restricted feature set. Compil
 Embedding compiler logic in `pasol-patterns`, accepting raw source maps, enabling includes, ignoring modules, tolerating warnings, or loading serialized compiled rules.
 ### Revisit conditions
 Revisit only through explicit I3 activation or a new policy/schema decision.
+
+## DEC-I-008
+### Date
+2026-08-05
+### Decision
+Activate I3 as the sole active implementation milestone, hold I2 accepted at the signed pattern-pack foundation level, and record its three known coverage and structure gaps as deferred hardening items rather than reopening the milestone.
+### Context
+An independent re-verification of I2 at commit `6a6bed3` passed every local acceptance gate under Rust `1.91.0`: 51 workspace tests, 14 `pasol-patterns` tests, 4 `pasol-trust` tests, 6 `pasol-rules` Phase H regression tests, Clippy with warnings denied, and formatting, with a clean working tree and local `main` equal to `origin/main`. The review also found three deviations from the I2 specification: one `proptest!` block rather than the full property invariant set, three fuzz corpus seeds rather than the ten semantic seed categories, and `pasol-patterns` shipped as `lib.rs` plus `manifest.rs` rather than the specified eight-module layout.
+### Options considered
+Reopen and reimplement I2; reopen I2 as a hardening slice before I3; accept I2 as-is and defer the hardening work; or leave the gaps unrecorded.
+### Selected option
+Accept I2 as-is, record the gaps as `I2-H1`, `I2-H2`, and `I2-H3` in `DEFERRED-WORK.md`, and activate I3 without modifying production code in the activation commit.
+### Security implications
+Every invariant behind the deferred property work retains deterministic example-based coverage plus hosted bounded fuzz evidence, so no invariant is unverified. The module-split deferral is a maintainability item with no behavioral or security effect. Leaving the gaps recorded rather than silent preserves the rule that code existing alone never earns acceptance, and keeps the residual assurance limits visible.
+### Compatibility implications
+No public API, schema, signature payload, golden, or serialized format changes. I0, I1, and I2 acceptance records are unchanged.
+### Alternatives rejected
+Reimplementing accepted and pushed I2 work would have discarded verified evidence for no correctness gain. Performing the `pasol-patterns` module split inside an I3 slice would entangle compiler-adapter review with unrelated restructuring, so it is explicitly barred from the first I3 slice.
+### Revisit conditions
+Revisit if an I2-H hardening slice is scheduled, or if I3 implementation uncovers a defect attributable to a deferred item, in which case the affected item is promoted ahead of remaining I3 work.

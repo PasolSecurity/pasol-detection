@@ -16,6 +16,7 @@ Isolation, time/memory/input/rule/match/output limits; no execution.
 - [x] I1 versioned contracts, schemas, runtime validation, deterministic ordering, bounds, proof-boundary checks, and twelve deterministic goldens. Evidence: `../TEST-EVIDENCE.md#2026-08-04-i1-proof-boundary-and-golden-corpus`.
 - [x] I2 signed pattern-pack validation, shared trust layer, exact-byte source hashing, detached signatures, bounded bundle verification, fixtures, and local tests. Evidence: `../TEST-EVIDENCE.md#2026-08-05-hosted-i2-contract-verification`.
 - [x] I3 detailed compiler-adapter planning specification. Evidence: `I3-COMPILER-ADAPTER.md`.
+- [x] I3 planning-only implementation activation as the sole active milestone. Evidence: `../CURRENT-MILESTONE.md`; `../DECISIONS.md#dec-i-008`.
 - [ ] I3 compiler-adapter implementation and acceptance.
 - [ ] I4 isolated worker process and resource enforcement.
 - [ ] I5 pattern CLI and starter pack.
@@ -31,8 +32,8 @@ Isolation, time/memory/input/rule/match/output limits; no execution.
 ## Acceptance criteria
 All implementation and security tests pass with deterministic schema-valid evidence.
 ## Current status
-I0, I1, and I2 are accepted at the contract/trust foundation level. I3 planning is complete, but compiler implementation remains inactive.
+I0, I1, and I2 are accepted at the contract/trust foundation level. I3 is activated as the sole active implementation milestone and compiler-adapter implementation begins at slice I3.1. I2 hardening items I2-H1, I2-H2, and I2-H3 are deferred in `../DEFERRED-WORK.md` and do not reopen or qualify I2 acceptance. I4, I5, K, and L remain inactive.
 ## Completed commits
 `58e20ed` (I0 compatibility baseline), `8f827cf` (I1 contracts), `179ee7f` (I1 hardening), `53ad196` (I1 proof/golden closure), `df80c50` (I2 activation), `07546b3` (shared trust), `57aa637` (manifest/signing), `dc38558` (fixtures/goldens), and `b4aa3e7` (hosted contract evidence).
 ## Remaining work
-Obtain explicit approval to activate I3 implementation; do not modify production code before activation.
+Execute slices I3.1 through I3.8 in `I3-COMPILER-ADAPTER.md`. Do not refactor `pasol-patterns` module structure during the first I3 slice, and do not begin worker, scanner, CLI, persistence, or enforcement work.

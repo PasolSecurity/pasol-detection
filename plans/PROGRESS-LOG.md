@@ -942,3 +942,25 @@ I3 implementation is not authorized and all compiler risks remain open.
 Obtain explicit approval before activating I3 as the sole implementation milestone.
 ### Next exact action
 Explicitly approve I3 implementation, then update `CURRENT-MILESTONE.md` before changing production code.
+
+## 2026-08-05 — Activate I3 and defer I2 hardening
+### Planned work
+Re-verify the recorded I2 acceptance, record its known coverage and structure gaps as deferred hardening items without altering I2 acceptance, and activate I3 as the sole active implementation milestone in a planning-only commit.
+### Work completed
+Independently re-ran the I2 acceptance gates at `6a6bed3` and confirmed they pass. Recorded `I2-H1` expanded property coverage, `I2-H2` expanded semantic fuzz seeds, and `I2-H3` no-behavior-change `pasol-patterns` module split in `DEFERRED-WORK.md`. Activated I3 as the sole active implementation milestone, added decision `DEC-I-008`, resolved the I2 trust-layer extraction risk with re-verified evidence, and opened a low-severity risk covering the deferred hardening depth.
+### Files changed
+`plans/CURRENT-MILESTONE.md`, `plans/DEFERRED-WORK.md`, `plans/DECISIONS.md`, `plans/RISKS-AND-BLOCKERS.md`, `plans/ACCEPTANCE-CHECKLIST.md`, `plans/milestones/I-PATTERN-MATCHING.md`, and this log. No production code, schema, fixture, CI, or non-planning documentation file changed.
+### Tests run
+Verification of the existing tree only, at `6a6bed3` under Rust `1.91.0` on Windows: `cargo +1.91.0 test --workspace --all-features`; `cargo +1.91.0 test -p pasol-patterns --all-features`; `cargo +1.91.0 test -p pasol-trust --all-features`; `cargo +1.91.0 test -p pasol-rules --all-features`; `cargo +1.91.0 clippy --workspace --all-targets --all-features -- -D warnings`; `cargo +1.91.0 fmt --all -- --check`.
+### Results
+51 workspace tests passed with 0 failures; `pasol-patterns` 14, `pasol-trust` 4, `pasol-rules` 6. Clippy and formatting exited 0. Working tree clean and local `main` equal to `origin/main`. No test was run for the activation commit itself because it changes no production code.
+### Commit
+Recorded on push below.
+### Checklist changes
+I3 activation marked complete; the three I2-H hardening items recorded as explicitly deferred `[-]`; I2 acceptance unchanged; I3 implementation remains unchecked.
+### Known limitations
+Hosted CI runs referenced in the I2 evidence were not independently re-confirmed during this reconciliation because the GitHub CLI is unavailable on this host; those entries remain as previously recorded hosted evidence. The three deferred hardening items remain open.
+### Remaining work
+Execute I3.1 through I3.8. Do not refactor `pasol-patterns` structure during the first I3 slice, and do not begin worker, scanner, CLI, persistence, or enforcement work.
+### Next exact action
+Begin slice I3.1: add the `pasol-pattern-compiler` crate with policy, limit, report, diagnostic, error, failure, and compiled proof types, plus `schemas/pattern-compiler-report-1.0.0.schema.json` with runtime validation.
