@@ -14,18 +14,25 @@ Isolation, time/memory/input/rule/match/output limits; no execution.
 ## Implementation checklist
 - [x] I0 engine selection, ADR, dependency pin, Windows compatibility, and Rust 1.91 verification. Evidence: `../TEST-EVIDENCE.md#2026-08-04-phase-i0-msrv-and-i1-contracts`.
 - [x] I1 versioned contracts, schemas, runtime validation, deterministic ordering, bounds, proof-boundary checks, and twelve deterministic goldens. Evidence: `../TEST-EVIDENCE.md#2026-08-04-i1-proof-boundary-and-golden-corpus`.
+- [x] I2 signed pattern-pack validation, shared trust layer, exact-byte source hashing, detached signatures, bounded bundle verification, fixtures, and local tests. Evidence: `../TEST-EVIDENCE.md#2026-08-05-hosted-i2-contract-verification`.
+- [ ] I3 compiler adapter and YARA-X production compilation.
+- [ ] I4 isolated worker process and resource enforcement.
+- [ ] I5 pattern CLI and starter pack.
+- [ ] I6-I9 hosted fuzz campaigns, release evidence, and final acceptance.
 - [ ] I2–I9 signed packs, compiler, worker, CLI, goldens, fuzzing, hosted CI, and acceptance.
 ## Test checklist
 - [x] I1 status, schema, bounds, path, ordering, serialization, mutation, and golden tests.
-- [ ] Worker, timeout, crash, memory, scanner, trust, and hosted tests.
+- [x] I2 trust, manifest, source, key-state, signature, and bundle verification tests.
+- [ ] Worker, timeout, crash, memory, scanner, and hosted fuzz-campaign tests.
 ## Documentation checklist
 - [x] Engine ADR and compatibility policy.
-- [ ] Pattern pack, worker, limits, report, privacy, and threat-model docs.
+- [x] Pattern-pack trust, exact-byte hashing, privacy, and threat-model documentation.
+- [ ] Worker, limits, report, and compiler documentation.
 ## Acceptance criteria
 All implementation and security tests pass with deterministic schema-valid evidence.
 ## Current status
-I0 and I1 are accepted. I2 is the sole active milestone; I3 compiler, worker, CLI, and file scanning remain unstarted.
+I0 and I1 are accepted. I2 implementation is complete and hosted contract verification is green on Ubuntu and Windows; I2 formal acceptance remains pending bounded hosted fuzz-campaign evidence. I3 compiler, worker, CLI, and file scanning remain unstarted.
 ## Completed commits
-`58e20ed` (I0 compatibility baseline), `8f827cf` (I1 contracts), `179ee7f` (I1 hardening), and `53ad196` (I1 proof/golden closure).
+`58e20ed` (I0 compatibility baseline), `8f827cf` (I1 contracts), `179ee7f` (I1 hardening), `53ad196` (I1 proof/golden closure), `df80c50` (I2 activation), `07546b3` (shared trust), `57aa637` (manifest/signing), `dc38558` (fixtures/goldens), and `b4aa3e7` (hosted contract evidence).
 ## Remaining work
-Complete I2 acceptance without beginning I3.
+Complete bounded hosted fuzz-smoke evidence and reconcile the I2 acceptance checklist without beginning I3.
